@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Back",
+    "settings": "Settings",
+    "about": "About",
+    "privacy": "Privacy",
+    "home": "Home",
+    "navTitle": "Ready to customize",
+    "navBody": "This area is part of the Mini CRM base and is ready for your own workflows.",
+    "languageTitle": "Language support",
+    "languageBody": "You can switch the interface language from the dashboard whenever you need.",
+    "cancel": "Cancel",
+    "open": "Open"
+  },
+  "languages": {
+    "title": "Language",
+    "subtitle": "Choose your preferred language",
+    "english": "English",
+    "turkish": "Turkish",
+    "hindi": "Hindi",
+    "portuguese": "Portuguese"
+  },
+  "home": {
+    "welcome": "Mini CRM",
+    "subtitle": "Private mobile CRM foundation",
+    "privateBadge": "Private",
+    "whatsIncluded": "What's included",
+    "includedHint": "Core pieces already set up for the first version.",
+    "reactNavigation": "React Navigation",
+    "typeSafeRouting": "Type-safe routing",
+    "nativeWind": "NativeWind",
+    "tailwindCss": "Tailwind CSS styling",
+    "typescript": "TypeScript",
+    "fullTypeSafety": "Full type safety",
+    "i18nLibrary": "i18n Localization",
+    "localizationSupport": "Multi-language support",
+    "asyncStorage": "Async Storage",
+    "asyncStorageDesc": "Local key-value storage",
+    "vectorIcons": "Vector Icons",
+    "vectorIconsDesc": "Icon library for tabs & UI",
+    "languageTestTitle": "Language test:",
+    "languageTestBody": "Select a language to try the interface.",
+    "languageTestLine": "Try <1>language support</1>: switch the <2>interface language</2>.",
+    "projectTitle": "Project status",
+    "projectBody": "Old clone references have been removed. This app now starts as a clean Mini CRM base.",
+    "projectNoteTitle": "Next step",
+    "projectNoteBody": "Replace these starter sections with your own customers, pipeline, tasks, and notes flows."
+  },
+  "about": {
+    "title": "About",
+    "simpleMessage": "Project overview content for Mini CRM will live here."
+  },
+  "settings": {
+    "title": "Settings",
+    "simpleMessage": "Settings for Mini CRM will be managed here."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "simpleMessage": "Privacy details for Mini CRM will be managed here."
+  }
+}

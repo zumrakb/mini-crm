@@ -1,0 +1,28 @@
+import groovy.json.JsonSlurper
+
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+
+def projectRoot = rootDir.parentFile.canonicalFile
+def autolinkingDir = file("${rootDir}/build/generated/autolinking")
+def autolinkingFile = file("${autolinkingDir}/autolinking.json")
+
+if (autolinkingFile.exists()) {
+    try {
+        def cachedConfig = new JsonSlurper().parseText(autolinkingFile.text)
+        def cachedRoot = cachedConfig?.root ? new File(cachedConfig.root.toString()).canonicalFile : null
+
+        if (cachedRoot == null || cachedRoot != projectRoot) {
+            autolinkingDir.deleteDir()
+        }
+    } catch (Exception ignored) {
+        autolinkingDir.deleteDir()
+    }
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+    ex.autolinkLibrariesFromCommand()
+}
+rootProject.name = 'mini-crm'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')

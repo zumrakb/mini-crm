@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "वापस",
+    "settings": "सेटिंग्स",
+    "about": "के बारे में",
+    "privacy": "गोपनीयता",
+    "home": "होम",
+    "navTitle": "अनुकूलन के लिए तैयार",
+    "navBody": "यह भाग Mini CRM के बेस का हिस्सा है और आपके अपने वर्कफ़्लो के लिए तैयार है।",
+    "languageTitle": "भाषा समर्थन",
+    "languageBody": "आप डैशबोर्ड से कभी भी इंटरफ़ेस भाषा बदल सकते हैं।",
+    "cancel": "रद्द करें",
+    "open": "खोलें"
+  },
+  "languages": {
+    "title": "भाषा",
+    "subtitle": "अपनी पसंदीदा भाषा चुनें",
+    "english": "अंग्रेज़ी",
+    "turkish": "तुर्की",
+    "hindi": "हिंदी",
+    "portuguese": "पुर्तगाली"
+  },
+  "home": {
+    "welcome": "Mini CRM",
+    "subtitle": "निजी मोबाइल CRM आधार",
+    "privateBadge": "निजी",
+    "whatsIncluded": "क्या शामिल है",
+    "includedHint": "पहले संस्करण के लिए मुख्य हिस्से पहले से तैयार हैं।",
+    "reactNavigation": "React Navigation",
+    "typeSafeRouting": "टाइप-सेफ रूटिंग",
+    "nativeWind": "NativeWind",
+    "tailwindCss": "Tailwind CSS स्टाइलिंग",
+    "typescript": "TypeScript",
+    "fullTypeSafety": "पूरी टाइप सेफ्टी",
+    "i18nLibrary": "i18n लोकलाइज़ेशन",
+    "localizationSupport": "मल्टी-लैंग्वेज सपोर्ट",
+    "asyncStorage": "असिंक स्टोरेज",
+    "asyncStorageDesc": "लोकल की-वैल्यू स्टोरेज",
+    "vectorIcons": "वेक्टर आइकॉन",
+    "vectorIconsDesc": "टैब और UI के लिए आइकॉन लाइब्रेरी",
+    "languageTestTitle": "भाषा परीक्षण:",
+    "languageTestBody": "इंटरफ़ेस को आज़माने के लिए एक भाषा चुनें।",
+    "languageTestLine": "<1>भाषा समर्थन</1> आज़माएँ: <2>इंटरफ़ेस भाषा</2> बदलें।",
+    "projectTitle": "प्रोजेक्ट स्थिति",
+    "projectBody": "पुराने क्लोन और बॉयलरप्लेट संदर्भ हटा दिए गए हैं। अब यह ऐप एक साफ Mini CRM बेस के रूप में शुरू होता है।",
+    "projectNoteTitle": "अगला कदम",
+    "projectNoteBody": "इन शुरुआती सेक्शनों को अपने ग्राहकों, पाइपलाइन, कार्यों और नोट्स के फ़्लो से बदलें।"
+  },
+  "about": {
+    "title": "के बारे में",
+    "simpleMessage": "Mini CRM की प्रोजेक्ट जानकारी यहां दिखाई जाएगी।"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "simpleMessage": "Mini CRM की सेटिंग्स यहां प्रबंधित की जाएंगी।"
+  },
+  "privacy": {
+    "title": "गोपनीयता",
+    "simpleMessage": "Mini CRM की गोपनीयता जानकारी यहां दिखाई जाएगी।"
+  }
+}

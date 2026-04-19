@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Voltar",
+    "settings": "Configurações",
+    "about": "Sobre",
+    "privacy": "Privacidade",
+    "home": "Início",
+    "navTitle": "Pronto para personalizar",
+    "navBody": "Esta área faz parte da base do Mini CRM e está pronta para seus próprios fluxos.",
+    "languageTitle": "Suporte de idioma",
+    "languageBody": "Você pode trocar o idioma da interface no painel sempre que precisar.",
+    "cancel": "Cancelar",
+    "open": "Abrir"
+  },
+  "languages": {
+    "title": "Idioma",
+    "subtitle": "Escolha seu idioma preferido",
+    "english": "Inglês",
+    "turkish": "Turco",
+    "hindi": "Hindi",
+    "portuguese": "Português"
+  },
+  "home": {
+    "welcome": "Mini CRM",
+    "subtitle": "Base móvel privada de CRM",
+    "privateBadge": "Privado",
+    "whatsIncluded": "O que vem incluso",
+    "includedHint": "As peças principais já estão prontas para a primeira versão.",
+    "reactNavigation": "React Navigation",
+    "typeSafeRouting": "Roteamento seguro por tipos",
+    "nativeWind": "NativeWind",
+    "tailwindCss": "Estilização com Tailwind CSS",
+    "typescript": "TypeScript",
+    "fullTypeSafety": "Total segurança de tipos",
+    "i18nLibrary": "i18n Localização",
+    "localizationSupport": "Suporte a múltiplos idiomas",
+    "asyncStorage": "Armazenamento assíncrono",
+    "asyncStorageDesc": "Armazenamento local de chave-valor",
+    "vectorIcons": "Ícones vetoriais",
+    "vectorIconsDesc": "Biblioteca de ícones para abas e interface",
+    "languageTestTitle": "Teste de idioma:",
+    "languageTestBody": "Selecione um idioma para experimentar a interface.",
+    "languageTestLine": "Teste o <1>suporte de idioma</1>: altere o <2>idioma da interface</2>.",
+    "projectTitle": "Status do projeto",
+    "projectBody": "As referências antigas do projeto inicial foram removidas. Agora o app começa como uma base limpa do Mini CRM.",
+    "projectNoteTitle": "Próximo passo",
+    "projectNoteBody": "Substitua estas seções iniciais pelos seus fluxos de clientes, pipeline, tarefas e notas."
+  },
+  "about": {
+    "title": "Sobre",
+    "simpleMessage": "O resumo do projeto Mini CRM ficará aqui."
+  },
+  "settings": {
+    "title": "Configurações",
+    "simpleMessage": "As configurações do Mini CRM serão gerenciadas aqui."
+  },
+  "privacy": {
+    "title": "Privacidade",
+    "simpleMessage": "Os detalhes de privacidade do Mini CRM ficarão aqui."
+  }
+}

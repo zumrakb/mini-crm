@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Geri",
+    "settings": "Ayarlar",
+    "about": "Hakkında",
+    "privacy": "Gizlilik",
+    "home": "Ana Sayfa",
+    "navTitle": "Özelleştirmeye hazır",
+    "navBody": "Bu alan Mini CRM temel yapısının bir parçası ve kendi iş akışların için düzenlenmeye hazır.",
+    "languageTitle": "Dil desteği",
+    "languageBody": "Arayüz dilini istediğin zaman ana ekrandan değiştirebilirsin.",
+    "cancel": "İptal",
+    "open": "Aç"
+  },
+  "languages": {
+    "title": "Dil",
+    "subtitle": "Tercih ettiğin dili seç",
+    "english": "İngilizce",
+    "turkish": "Türkçe",
+    "hindi": "Hintçe",
+    "portuguese": "Portekizce"
+  },
+  "home": {
+    "welcome": "Mini CRM",
+    "subtitle": "Özel kullanım için mobil CRM temeli",
+    "privateBadge": "Özel",
+    "whatsIncluded": "Neler Var",
+    "includedHint": "İlk sürüm için temel parçalar hazır.",
+    "reactNavigation": "React Navigation",
+    "typeSafeRouting": "Tip güvenli yönlendirme",
+    "nativeWind": "NativeWind",
+    "tailwindCss": "Tailwind CSS stilleri",
+    "typescript": "TypeScript",
+    "fullTypeSafety": "Tam tip güvenliği",
+    "i18nLibrary": "i18n Yerelleştirme",
+    "localizationSupport": "Çok dilli destek",
+    "asyncStorage": "Asenkron Depolama",
+    "asyncStorageDesc": "Yerel anahtar-değer depolama",
+    "vectorIcons": "Vektör İkonlar",
+    "vectorIconsDesc": "Sekmeler ve arayüz için ikon kütüphanesi",
+    "languageTestTitle": "Dil testi:",
+    "languageTestBody": "Arayüzü denemek için bir dil seç.",
+    "languageTestLine": "<1>Dil desteğini</1> dene: <2>arayüz dilini</2> değiştir.",
+    "projectTitle": "Proje durumu",
+    "projectBody": "Eski clone ve şablon referansları temizlendi. Uygulama artık temiz bir Mini CRM başlangıcı.",
+    "projectNoteTitle": "Sıradaki adım",
+    "projectNoteBody": "Bu başlangıç alanlarını müşteri, fırsat, görev ve not akışlarınla değiştir."
+  },
+  "about": {
+    "title": "Hakkında",
+    "simpleMessage": "Mini CRM proje özeti burada yer alacak."
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "simpleMessage": "Mini CRM ayarları burada yönetilecek."
+  },
+  "privacy": {
+    "title": "Gizlilik",
+    "simpleMessage": "Mini CRM gizlilik detayları burada yer alacak."
+  }
+}
