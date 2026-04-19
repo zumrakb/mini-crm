@@ -110,6 +110,11 @@ android {
             manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
     }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
 }
 
 dependencies {

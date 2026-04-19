@@ -1,0 +1,21 @@
+diff --git a/node_modules/react-native-quick-sqlite/android/CMakeLists.txt b/node_modules/react-native-quick-sqlite/android/CMakeLists.txt
+index 0b4e9a1..8d7c4c2 100644
+--- a/node_modules/react-native-quick-sqlite/android/CMakeLists.txt
++++ b/node_modules/react-native-quick-sqlite/android/CMakeLists.txt
+@@ -27,7 +27,16 @@ set_target_properties(
+   CXX_STANDARD 17
+   CXX_EXTENSIONS OFF
+   POSITION_INDEPENDENT_CODE ON
+ )
++
++if(ANDROID)
++  # Align the native library for Android devices using 16 KB page sizes.
++  target_link_options(
++    ${CMAKE_PROJECT_NAME}
++    PRIVATE
++    "-Wl,-z,max-page-size=16384"
++  )
++endif()
+ 
+ find_package(ReactAndroid REQUIRED CONFIG)
+ find_package(fbjni REQUIRED CONFIG)
