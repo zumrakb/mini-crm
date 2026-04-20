@@ -5,6 +5,8 @@
     "about": "Hakkında",
     "privacy": "Gizlilik",
     "home": "Ana Sayfa",
+    "customers": "Müşteriler",
+    "terms": "Terminler",
     "navTitle": "Özelleştirmeye hazır",
     "navBody": "Bu alan Mini CRM temel yapısının bir parçası ve kendi iş akışların için düzenlenmeye hazır.",
     "languageTitle": "Dil desteği",
@@ -54,8 +56,127 @@
     "title": "Ayarlar",
     "simpleMessage": "Mini CRM ayarları burada yönetilecek."
   },
+  "customersScreen": {
+    "subtitle": "Müşteri kayıtları burada listelenecek. Sonraki adımda kart görünümü daha da zenginleşecek.",
+    "addButton": "Yeni Müşteri",
+    "searchPlaceholder": "Müşteri, şirket, telefon veya e-posta ara",
+    "loading": "Müşteriler yükleniyor...",
+    "emptyTitle": "Henüz müşteri yok",
+    "emptyBody": "İlk müşteriyi eklediğinde burada listelenecek.",
+    "searchEmptyTitle": "Sonuç bulunamadı",
+    "searchEmptyBody": "Arama metnini değiştirerek tekrar dene.",
+    "errorTitle": "Müşteriler yüklenemedi"
+  },
+  "customerCard": {
+    "nameLabel": "Ad Soyad:",
+    "companyLabel": "Şirket Adı:",
+    "lastActionLabel": "Son işlem",
+    "noActivity": "Henüz aktivite yok",
+    "noActivityDate": "Tarih bilgisi yok"
+  },
+  "customerDetail": {
+    "summaryTitle": "Müşteri özeti",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-posta",
+    "lastActionTypeLabel": "Son işlem türü",
+    "lastActionDateLabel": "Son işlem tarihi",
+    "activeTermsLabel": "Aktif termin sayısı",
+    "addActivityButton": "Aktivite Ekle",
+    "editCustomerButton": "Müşteriyi Düzenle",
+    "activityHistoryTitle": "Aktivite geçmişi",
+    "activityOrderHint": "En yeni önce",
+    "loadingActivities": "Aktiviteler yükleniyor...",
+    "emptyActivitiesTitle": "Henüz aktivite yok",
+    "emptyActivitiesBody": "Bu müşteri için ilk aktiviteyi eklediğinde burada görünecek.",
+    "errorTitle": "Aktiviteler yüklenemedi",
+    "notFoundTitle": "Müşteri bulunamadı",
+    "notFoundBody": "Bu kayıt artık mevcut olmayabilir.",
+    "noActivity": "Henüz aktivite yok",
+    "notProvided": "Belirtilmedi"
+  },
+  "customerEdit": {
+    "title": "Müşteriyi Düzenle",
+    "subtitle": "{{customerName}} kaydını güncelle.",
+    "submit": "Değişiklikleri Kaydet",
+    "submitError": "Müşteri kaydı güncellenemedi.",
+    "notFoundTitle": "Müşteri bulunamadı",
+    "notFoundBody": "Bu kayıt artık mevcut olmayabilir."
+  },
+  "newCustomer": {
+    "title": "Yeni Müşteri",
+    "subtitle": "Yeni müşteri kaydı oluşturmak için bilgileri doldur.",
+    "submit": "Kaydet",
+    "submitError": "Müşteri kaydı oluşturulamadı.",
+    "fields": {
+      "customerName": "Müşteri adı",
+      "companyName": "Şirket adı",
+      "phone": "Telefon",
+      "email": "E-posta"
+    },
+    "placeholders": {
+      "customerName": "Örn. Ahmet Yılmaz",
+      "companyName": "Örn. ABC Makina",
+      "phone": "İsteğe bağlı",
+      "email": "İsteğe bağlı"
+    },
+    "validation": {
+      "customerName": "Müşteri adı zorunlu.",
+      "companyName": "Şirket adı zorunlu.",
+      "email": "Geçerli bir e-posta gir."
+    }
+  },
+  "newActivity": {
+    "title": "Yeni Aktivite",
+    "subtitle": "{{customerName}} için yeni aktivite kaydı oluştur.",
+    "submit": "Kaydet",
+    "submitError": "Aktivite kaydı oluşturulamadı.",
+    "fields": {
+      "date": "Tarih",
+      "type": "Aktivite türü",
+      "note": "Not"
+    },
+    "placeholders": {
+      "date": "YYYY-AA-GG",
+      "note": "İsteğe bağlı not"
+    },
+    "validation": {
+      "date": "Tarih YYYY-AA-GG formatında olmalı.",
+      "type": "Bir aktivite türü seç."
+    }
+  },
+  "activityItem": {
+    "emptyNote": "Not girilmedi."
+  },
   "privacy": {
     "title": "Gizlilik",
     "simpleMessage": "Mini CRM gizlilik detayları burada yer alacak."
+  },
+  "phaseZero": {
+    "badge": "Faz 0",
+    "projectSubtitle": "Boş ama çalışan CRM iskeleti",
+    "projectTitle": "Temiz başlangıç",
+    "projectBody": "Uygulama artık demo sekmeler yerine gerçek CRM akışına hazırlanmış minimal bir kabukla açılıyor. Bu aşamada amaç, doğru bilgi mimarisini sabitlemek ve uygulamayı sorunsuz ayağa kaldırmak.",
+    "languageTitle": "Dil",
+    "languageBody": "i18n korunuyor. Ana akış oturana kadar dil desteği burada kalacak ve kullanıcı tercihleri cihaz içinde saklanmaya devam edecek.",
+    "homeCardTitle": "Ana Sayfa",
+    "homeCardBody": "Özet kartları, aylık takvim ve seçilen gün aktiviteleri bu ekranda yer alacak.",
+    "customersCardTitle": "Müşteriler",
+    "customersCardBody": "Arama, liste, yeni müşteri modalı ve müşteri detay akışı bu modülde kurulacak.",
+    "termsCardTitle": "Terminler",
+    "termsCardBody": "Bekleyen terminler, geldi durumu ve otomatik aktivite akışı bu modülde yönetilecek.",
+    "customersScreenTitle": "Müşteriler",
+    "customersScreenBody": "Bu ekran Faz 0 placeholder'ı. Arama alanı, FlatList müşteri listesi ve yeni müşteri modalı sonraki fazlarda eklenecek.",
+    "customersScreenHint": "Son işlem bilgisi de burada en son aktiviteden türetilerek gösterilecek.",
+    "termsScreenTitle": "Terminler",
+    "termsScreenBody": "Bu ekran Faz 0 placeholder'ı. Termin kartları, yeni termin modalı ve \"Geldi olarak işaretle\" aksiyonu sonraki fazlarda eklenecek.",
+    "termsScreenHint": "Bir termin geldi olduğunda arrivedAt ve otomatik aktivite akışı bu modülde çalışacak.",
+    "settingsScreenTitle": "Ayarlar",
+    "settingsScreenBody": "Bu ekran artık ana tab akışının parçası. Yedekleme ve uygulama seviyesindeki tercihler burada yönetilecek.",
+    "settingsScreenHint": "JSON export, JSON import, onay diyalogları ve versiyon bilgisi sonraki fazlarda bu ekrana eklenecek.",
+    "settingsBackupTitle": "Yedekleme ve geri yükleme",
+    "settingsBackupBody": "Cihaz içindeki veriyi dışa aktarma ve içe aktarma burada yer alacak. Amaç cloud ya da backend olmadan manuel yedekleme sağlamak.",
+    "settingsExportLabel": "Veriyi JSON olarak dışa aktar",
+    "settingsImportLabel": "JSON yedeğini içe aktar",
+    "settingsComingSoon": "Sonraki fazda eklenecek"
   }
 }

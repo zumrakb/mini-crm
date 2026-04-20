@@ -1,52 +1,91 @@
 import React from 'react';
-import { View, Text, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import AppButton from '../components/ui/AppButton';
+import AppScreen from '../components/ui/AppScreen';
+import PageHeader from '../components/ui/PageHeader';
+import SurfaceCard from '../components/ui/SurfaceCard';
 
 const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#0a0e27' }}>
-      <StatusBar barStyle="light-content" backgroundColor="#0a0e27" />
+    <AppScreen>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="px-6 pt-6 pb-6">
+          <View className="flex-col gap-6">
+            <PageHeader
+              title={t('phaseZero.settingsScreenTitle')}
+              subtitle={t('phaseZero.settingsScreenBody')}
+            />
 
-      <View className="flex-1 px-6 pt-10">
-        <View className="mb-6">
-          <Text className="text-white text-3xl font-bold">{t('settings.title')}</Text>
-          <Text className="text-slate-300 text-sm mt-2">
-            {t('common.navBody')}
-          </Text>
-        </View>
+            <SurfaceCard>
+              <View className="flex-col gap-3">
+                <View className="flex-row items-center gap-3">
+                  <View
+                    className="h-10 w-10 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: 'rgba(56, 189, 248, 0.18)' }}
+                  >
+                    <Text className="text-lg text-white">↥</Text>
+                  </View>
+                  <Text className="text-lg font-semibold text-white">
+                    {t('phaseZero.settingsBackupTitle')}
+                  </Text>
+                </View>
+                <Text className="text-sm leading-6 text-slate-300">
+                  {t('phaseZero.settingsBackupBody')}
+                </Text>
 
-        <View className="rounded-3xl border border-white/10 bg-white/5 p-6 mb-4">
-          <View className="flex-row items-center mb-3">
-            <View className="w-10 h-10 rounded-xl items-center justify-center bg-white/10">
-              <Text className="text-white text-lg">🧭</Text>
-            </View>
-            <Text className="text-white text-lg font-semibold ml-3">
-              {t('common.navTitle')}
-            </Text>
+                <View className="flex-col gap-3 pt-2">
+                  <AppButton
+                    label={t('phaseZero.settingsExportLabel')}
+                    description={t('phaseZero.settingsComingSoon')}
+                    disabled
+                    iconName="download-outline"
+                    style={{
+                      backgroundColor: 'rgba(56, 189, 248, 0.08)',
+                    }}
+                  />
+
+                  <AppButton
+                    label={t('phaseZero.settingsImportLabel')}
+                    description={t('phaseZero.settingsComingSoon')}
+                    disabled
+                    iconName="cloud-upload-outline"
+                    style={{
+                      backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                    }}
+                  />
+                </View>
+              </View>
+            </SurfaceCard>
+
+            <SurfaceCard tone="soft" className="p-5">
+              <View className="flex-col gap-3">
+                <View className="flex-row items-center gap-3">
+                  <View
+                    className="h-10 w-10 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: 'rgba(34, 197, 94, 0.18)' }}
+                  >
+                    <Text className="text-lg text-white">⚙</Text>
+                  </View>
+                  <Text className="text-lg font-semibold text-white">
+                    {t('common.settings')}
+                  </Text>
+                </View>
+                <Text className="text-sm leading-6 text-slate-300">
+                  {t('phaseZero.settingsScreenHint')}
+                </Text>
+              </View>
+            </SurfaceCard>
           </View>
-          <Text className="text-slate-200 text-base leading-6">
-            {t('common.navBody')}
-          </Text>
         </View>
-
-        <View className="rounded-3xl border border-white/10 bg-white/5 p-6">
-          <View className="flex-row items-center mb-3">
-            <View className="w-10 h-10 rounded-xl items-center justify-center bg-white/10">
-              <Text className="text-white text-lg">🌐</Text>
-            </View>
-            <Text className="text-white text-lg font-semibold ml-3">
-              {t('common.languageTitle')}
-            </Text>
-          </View>
-          <Text className="text-slate-200 text-base leading-6">
-            {t('common.languageBody')}
-          </Text>
-        </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </AppScreen>
   );
 };
 

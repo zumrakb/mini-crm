@@ -5,6 +5,8 @@
     "about": "About",
     "privacy": "Privacy",
     "home": "Home",
+    "customers": "Customers",
+    "terms": "Terms",
     "navTitle": "Ready to customize",
     "navBody": "This area is part of the Mini CRM base and is ready for your own workflows.",
     "languageTitle": "Language support",
@@ -54,8 +56,127 @@
     "title": "Settings",
     "simpleMessage": "Settings for Mini CRM will be managed here."
   },
+  "customersScreen": {
+    "subtitle": "Customer records will be listed here. The card view will be enriched in the next step.",
+    "addButton": "New Customer",
+    "searchPlaceholder": "Search by customer, company, phone, or email",
+    "loading": "Loading customers...",
+    "emptyTitle": "No customers yet",
+    "emptyBody": "The first customer you add will appear here.",
+    "searchEmptyTitle": "No matches found",
+    "searchEmptyBody": "Try changing the search text and search again.",
+    "errorTitle": "Customers could not be loaded"
+  },
+  "customerCard": {
+    "nameLabel": "Name:",
+    "companyLabel": "Company:",
+    "lastActionLabel": "Last action",
+    "noActivity": "No activity yet",
+    "noActivityDate": "No date available"
+  },
+  "customerDetail": {
+    "summaryTitle": "Customer summary",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "lastActionTypeLabel": "Last action type",
+    "lastActionDateLabel": "Last action date",
+    "activeTermsLabel": "Active term count",
+    "addActivityButton": "Add Activity",
+    "editCustomerButton": "Edit Customer",
+    "activityHistoryTitle": "Activity history",
+    "activityOrderHint": "Newest first",
+    "loadingActivities": "Loading activities...",
+    "emptyActivitiesTitle": "No activity yet",
+    "emptyActivitiesBody": "When you add the first activity for this customer, it will appear here.",
+    "errorTitle": "Activities could not be loaded",
+    "notFoundTitle": "Customer not found",
+    "notFoundBody": "This record may no longer exist.",
+    "noActivity": "No activity yet",
+    "notProvided": "Not provided"
+  },
+  "customerEdit": {
+    "title": "Edit Customer",
+    "subtitle": "Update the customer record for {{customerName}}.",
+    "submit": "Save Changes",
+    "submitError": "The customer record could not be updated.",
+    "notFoundTitle": "Customer not found",
+    "notFoundBody": "This record may no longer exist."
+  },
+  "newCustomer": {
+    "title": "New Customer",
+    "subtitle": "Fill in the details to create a new customer record.",
+    "submit": "Save",
+    "submitError": "The customer record could not be created.",
+    "fields": {
+      "customerName": "Customer name",
+      "companyName": "Company name",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "placeholders": {
+      "customerName": "e.g. Ahmet Yilmaz",
+      "companyName": "e.g. ABC Machinery",
+      "phone": "Optional",
+      "email": "Optional"
+    },
+    "validation": {
+      "customerName": "Customer name is required.",
+      "companyName": "Company name is required.",
+      "email": "Enter a valid email."
+    }
+  },
+  "newActivity": {
+    "title": "New Activity",
+    "subtitle": "Create a new activity record for {{customerName}}.",
+    "submit": "Save",
+    "submitError": "The activity record could not be created.",
+    "fields": {
+      "date": "Date",
+      "type": "Activity type",
+      "note": "Note"
+    },
+    "placeholders": {
+      "date": "YYYY-MM-DD",
+      "note": "Optional note"
+    },
+    "validation": {
+      "date": "Date must be in YYYY-MM-DD format.",
+      "type": "Select an activity type."
+    }
+  },
+  "activityItem": {
+    "emptyNote": "No note entered."
+  },
   "privacy": {
     "title": "Privacy",
     "simpleMessage": "Privacy details for Mini CRM will be managed here."
+  },
+  "phaseZero": {
+    "badge": "Phase 0",
+    "projectSubtitle": "Empty but working CRM shell",
+    "projectTitle": "Clean starting point",
+    "projectBody": "The app now opens with a minimal shell prepared for the real CRM flow instead of demo tabs. At this stage the goal is to lock in the right information architecture and keep startup stable.",
+    "languageTitle": "Language",
+    "languageBody": "i18n stays in place. Language support remains available here while the main workflow is being built, and the preference continues to be stored on device.",
+    "homeCardTitle": "Home",
+    "homeCardBody": "Summary cards, the monthly calendar, and selected-day activities will live on this screen.",
+    "customersCardTitle": "Customers",
+    "customersCardBody": "Search, list, new customer modal, and the customer detail flow will be built in this module.",
+    "termsCardTitle": "Terms",
+    "termsCardBody": "Pending terms, arrival status, and the automatic activity flow will be managed in this module.",
+    "customersScreenTitle": "Customers",
+    "customersScreenBody": "This screen is a Phase 0 placeholder. The search field, FlatList customer list, and new customer modal will be added in later phases.",
+    "customersScreenHint": "Last-action details will also be derived from the latest activity here.",
+    "termsScreenTitle": "Terms",
+    "termsScreenBody": "This screen is a Phase 0 placeholder. Term cards, the new term modal, and the \"Mark as arrived\" action will be added in later phases.",
+    "termsScreenHint": "When a term is marked as arrived, arrivedAt and the automatic activity flow will run in this module.",
+    "settingsScreenTitle": "Settings",
+    "settingsScreenBody": "This screen is now part of the main tab flow. Backup and app-level preferences will be managed from here.",
+    "settingsScreenHint": "JSON export, JSON import, confirmation dialogs, and version details will be added to this screen in later phases.",
+    "settingsBackupTitle": "Backup and restore",
+    "settingsBackupBody": "This is where on-device data export and import will live. The goal is manual backup without cloud sync or a backend.",
+    "settingsExportLabel": "Export data as JSON",
+    "settingsImportLabel": "Import data from JSON",
+    "settingsComingSoon": "Coming in a later phase"
   }
 }

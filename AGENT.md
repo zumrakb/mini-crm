@@ -218,6 +218,14 @@ src/
 - Son işlem tarihi
 - Son işlem türü (son aktiviteden türetilir)
 
+---
+
+## UI Notu
+
+- Buton rengi sayfa arka planından veya bulunduğu yüzeyden belirgin şekilde ayrışıyorsa border kullanma.
+- Buton rengi sayfa arka planı veya bulunduğu yüzey ile aynıya çok yakınsa, ancak o zaman border kullan.
+- Bu kural varsayılan görsel karar olarak kabul edilir.
+
 **Sağ üst:**
 
 - "Yeni Müşteri" butonu → `NewCustomerModal` açar

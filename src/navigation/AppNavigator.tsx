@@ -3,13 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { RootStackParamList } from '../types/navigation';
 import HomeScreen from '../screens/HomeScreen';
-import AboutScreen from '../screens/AboutScreen';
+import TermListScreen from '../screens/TermListScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import PrivacyScreen from '../screens/PrivacyScreen';
+import CustomerStackNavigator from './stacks/CustomerStack';
+import { RootTabParamList } from '../types/navigation';
 
-const Tab = createBottomTabNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const AppNavigator: React.FC = () => {
   const { t } = useTranslation();
@@ -17,14 +17,29 @@ const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Dashboard"
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: '#0b1222',
-            borderTopColor: 'rgba(255, 255, 255, 0.08)',
-            height: 64,
+            backgroundColor: 'rgba(11, 18, 34, 0.98)',
+            height: 68,
             paddingBottom: 10,
+            paddingTop: 8,
+            shadowColor: '#020617',
+            shadowOpacity: 0.2,
+            shadowRadius: 20,
+            shadowOffset: {
+              width: 0,
+              height: -8,
+            },
+            elevation: 10,
+          },
+          tabBarItemStyle: {
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+          tabBarIconStyle: {
+            marginBottom: 2,
           },
           tabBarActiveTintColor: '#38bdf8',
           tabBarInactiveTintColor: '#94a3b8',
@@ -35,12 +50,12 @@ const AppNavigator: React.FC = () => {
           tabBarIcon: ({ color, size }) => {
             const iconSize = size ?? 22;
             switch (route.name) {
-              case 'Dashboard':
+              case 'Home':
                 return <Ionicons name="home-outline" size={iconSize} color={color} />;
-              case 'About':
-                return <Ionicons name="information-circle-outline" size={iconSize} color={color} />;
-              case 'Privacy':
-                return <Ionicons name="lock-closed-outline" size={iconSize} color={color} />;
+              case 'Customers':
+                return <Ionicons name="people-outline" size={iconSize} color={color} />;
+              case 'Terms':
+                return <Ionicons name="calendar-outline" size={iconSize} color={color} />;
               case 'Settings':
                 return <Ionicons name="settings-outline" size={iconSize} color={color} />;
               default:
@@ -50,7 +65,7 @@ const AppNavigator: React.FC = () => {
         })}
       >
         <Tab.Screen
-          name="Dashboard"
+          name="Home"
           component={HomeScreen}
           options={{
             title: t('common.home'),
@@ -58,19 +73,19 @@ const AppNavigator: React.FC = () => {
           }}
         />
         <Tab.Screen
-          name="About"
-          component={AboutScreen}
+          name="Customers"
+          component={CustomerStackNavigator}
           options={{
-            title: t('common.about'),
-            tabBarLabel: t('common.about'),
+            title: t('common.customers'),
+            tabBarLabel: t('common.customers'),
           }}
         />
         <Tab.Screen
-          name="Privacy"
-          component={PrivacyScreen}
+          name="Terms"
+          component={TermListScreen}
           options={{
-            title: t('common.privacy'),
-            tabBarLabel: t('common.privacy'),
+            title: t('common.terms'),
+            tabBarLabel: t('common.terms'),
           }}
         />
         <Tab.Screen

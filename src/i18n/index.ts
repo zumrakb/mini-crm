@@ -5,14 +5,10 @@ import * as RNLocalize from 'react-native-localize';
 
 import en from './translations/en.json';
 import tr from './translations/tr.json';
-import hi from './translations/hi.json';
-import pt from './translations/pt.json';
 
 const resources = {
   en: { translation: en },
   tr: { translation: tr },
-  hi: { translation: hi },
-  pt: { translation: pt },
 };
 
 type SupportedLanguage = keyof typeof resources;
