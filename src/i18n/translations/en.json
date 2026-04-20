@@ -12,7 +12,8 @@
     "languageTitle": "Language support",
     "languageBody": "You can switch the interface language from the dashboard whenever you need.",
     "cancel": "Cancel",
-    "open": "Open"
+    "open": "Open",
+    "select": "Select"
   },
   "languages": {
     "title": "Language",

@@ -14,6 +14,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod/v3';
 import AppButton from '../components/ui/AppButton';
+import AppDateField from '../components/ui/AppDateField';
 import {
   CONTROL_SIZES,
   SMART_PDF_DARK,
@@ -162,36 +163,17 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
               >
                 <View className="flex-col gap-4">
                   <Controller
-                    control={control}
-                    name="date"
-                    render={({ field: { onBlur, onChange, value } }) => (
+                  control={control}
+                  name="date"
+                    render={({ field: { onChange, value } }) => (
                       <View className="flex-col gap-2">
-                        <Text
-                          className="text-sm font-semibold"
-                          style={uiStyles.titleText}
-                        >
-                          {t('newActivity.fields.date')}
-                        </Text>
-                        <TextInput
+                        <AppDateField
+                          label={t('newActivity.fields.date')}
                           value={value}
-                          onChangeText={onChange}
-                          onBlur={onBlur}
-                          placeholder={t('newActivity.placeholders.date')}
-                          placeholderTextColor={SMART_PDF_DARK.muted}
-                          autoCapitalize="none"
-                          underlineColorAndroid="transparent"
-                          selectionColor={SMART_PDF_DARK.accent}
-                          className={TEXT_INPUT_CLASSNAME}
-                          style={[
-                            uiStyles.inputBase,
-                            errors.date ? uiStyles.inputError : null,
-                          ]}
+                          onChange={onChange}
+                          maximumDate={new Date()}
+                          error={errors.date?.message}
                         />
-                        {errors.date ? (
-                          <Text className="text-sm" style={uiStyles.errorText}>
-                            {errors.date.message}
-                          </Text>
-                        ) : null}
                       </View>
                     )}
                   />
