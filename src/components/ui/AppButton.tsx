@@ -20,35 +20,6 @@ interface AppButtonProps {
   activeOpacity?: number;
 }
 
-const variantStyles: Record<ButtonVariant, ViewStyle> = {
-  primary: {
-    backgroundColor: SMART_PDF_DARK.accent,
-  },
-  secondary: {
-    backgroundColor: SMART_PDF_DARK.surfaceMuted,
-  },
-  soft: {
-    backgroundColor: SMART_PDF_DARK.accentSurface,
-  },
-  pill: {
-    backgroundColor: SMART_PDF_DARK.surface,
-  },
-};
-
-const labelColors: Record<ButtonVariant, string> = {
-  primary: SMART_PDF_DARK.text,
-  secondary: SMART_PDF_DARK.text,
-  soft: SMART_PDF_DARK.text,
-  pill: SMART_PDF_DARK.text,
-};
-
-const iconColors: Record<ButtonVariant, string> = {
-  primary: SMART_PDF_DARK.text,
-  secondary: SMART_PDF_DARK.text,
-  soft: SMART_PDF_DARK.text,
-  pill: SMART_PDF_DARK.accent,
-};
-
 const AppButton: React.FC<AppButtonProps> = ({
   label,
   onPress,
@@ -62,6 +33,36 @@ const AppButton: React.FC<AppButtonProps> = ({
   textStyle,
   activeOpacity = 0.85,
 }) => {
+  const isDark = SMART_PDF_DARK.statusBar === 'light-content';
+  const variantStyles: Record<ButtonVariant, ViewStyle> = {
+    primary: {
+      backgroundColor: SMART_PDF_DARK.accent,
+    },
+    secondary: {
+      backgroundColor: SMART_PDF_DARK.surfaceMuted,
+    },
+    soft: {
+      backgroundColor: SMART_PDF_DARK.accentSurface,
+    },
+    pill: {
+      backgroundColor: SMART_PDF_DARK.surface,
+    },
+  };
+
+  const labelColors: Record<ButtonVariant, string> = {
+    primary: '#FFFFFF',
+    secondary: SMART_PDF_DARK.text,
+    soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
+    pill: SMART_PDF_DARK.text,
+  };
+
+  const iconColors: Record<ButtonVariant, string> = {
+    primary: '#FFFFFF',
+    secondary: SMART_PDF_DARK.text,
+    soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
+    pill: SMART_PDF_DARK.accent,
+  };
+
   const minHeight = compact ? CONTROL_SIZES.buttonCompact : CONTROL_SIZES.button;
   const radiusClassName = iconOnly
     ? 'rounded-full'

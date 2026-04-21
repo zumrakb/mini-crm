@@ -16,21 +16,18 @@ const toneClassNames: Record<SurfaceTone, string> = {
   soft: 'rounded-[28px] p-6',
 };
 
-const toneStyles: Record<SurfaceTone, StyleProp<ViewStyle>> = {
-  default: surfaceStyles.card,
-  soft: surfaceStyles.softCard,
-};
-
 const SurfaceCard: React.FC<SurfaceCardProps> = ({
   children,
   className,
   style,
   tone = 'default',
 }) => {
+  const toneStyle = tone === 'soft' ? surfaceStyles.softCard : surfaceStyles.card;
+
   return (
     <View
       className={[toneClassNames[tone], className].filter(Boolean).join(' ')}
-      style={[toneStyles[tone], style]}
+      style={[toneStyle, style]}
     >
       {children}
     </View>

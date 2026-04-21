@@ -24,6 +24,9 @@ jest.mock('react-native-localize', () => ({
 }));
 jest.mock('../global.css', () => ({}), { virtual: true });
 jest.mock('../src/navigation/AppNavigator', () => () => null);
+jest.mock('../src/components/ui/theme', () => ({
+  AppThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
 
 import App from '../App';
 

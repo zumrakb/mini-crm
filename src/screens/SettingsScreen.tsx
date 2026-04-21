@@ -12,7 +12,7 @@ import Share from 'react-native-share';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
 import PageHeader from '../components/ui/PageHeader';
-import { uiStyles } from '../components/ui/theme';
+import { uiStyles, useAppTheme, type AppThemePreference } from '../components/ui/theme';
 import {
   exportBackupExcelFile,
   exportBackupJsonFile,
@@ -21,6 +21,7 @@ import {
 
 const SettingsScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { preference, setPreference } = useAppTheme();
   const [isJsonBusy, setIsJsonBusy] = useState(false);
   const [isExcelBusy, setIsExcelBusy] = useState(false);
 
@@ -29,6 +30,10 @@ const SettingsScreen: React.FC = () => {
   const languageButtons = [
     { code: 'en', label: t('languages.english'), flag: '🇺🇸' },
     { code: 'tr', label: t('languages.turkish'), flag: '🇹🇷' },
+  ];
+  const themeButtons: Array<{ code: AppThemePreference; label: string }> = [
+    { code: 'light', label: t('settingsDashboard.themeOptions.light') },
+    { code: 'dark', label: t('settingsDashboard.themeOptions.dark') },
   ];
 
   const deliverFile = useCallback(async (file: BackupExportFile) => {
@@ -123,28 +128,56 @@ const SettingsScreen: React.FC = () => {
 
             <View className="flex-col gap-3">
               <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.themeTitle')}
+              </Text>
+
+              <View className="flex-row gap-3">
+                {themeButtons.map(button => {
+                  const isActive = preference === button.code;
+
+                  return (
+                    <AppButton
+                      key={button.code}
+                      label={button.label}
+                      onPress={() => {
+                        void setPreference(button.code);
+                      }}
+                      variant={isActive ? 'primary' : 'secondary'}
+                      style={{ flex: 1 }}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+
+            <View className="flex-col gap-3">
+              <Text className="text-sm font-semibold" style={uiStyles.titleText}>
                 Veriler
               </Text>
 
-              <AppButton
-                label={t('settingsDashboard.downloadJsonAction')}
-                onPress={() => {
-                  void handleJsonDownload();
-                }}
-                disabled={isJsonBusy}
-                variant="primary"
-                iconName="download-outline"
-              />
+              <View className="flex-row gap-3">
+                <AppButton
+                  label={t('settingsDashboard.downloadJsonAction')}
+                  onPress={() => {
+                    void handleJsonDownload();
+                  }}
+                  disabled={isJsonBusy}
+                  variant="primary"
+                  iconName="download-outline"
+                  style={{ flex: 1 }}
+                />
 
-              <AppButton
-                label={t('settingsDashboard.downloadExcelAction')}
-                onPress={() => {
-                  void handleExcelExport();
-                }}
-                disabled={isExcelBusy}
-                variant="secondary"
-                iconName="download-outline"
-              />
+                <AppButton
+                  label={t('settingsDashboard.downloadExcelAction')}
+                  onPress={() => {
+                    void handleExcelExport();
+                  }}
+                  disabled={isExcelBusy}
+                  variant="secondary"
+                  iconName="download-outline"
+                  style={{ flex: 1 }}
+                />
+              </View>
             </View>
           </View>
         </View>

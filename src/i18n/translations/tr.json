@@ -64,6 +64,7 @@
     "heroTitle": "Bugün için net bir görünüm",
     "heroBody": "Hızlı geçişler, seçili gün ajandası ve yaklaşan terminler aynı akışta hazır.",
     "calendarHint": "Aktivite olan günlerde işaret görünür. Bir güne dokunup detayları açabilirsin.",
+    "calendarLoading": "Takvim yenileniyor...",
     "dayAgendaTitle": "Günlük aktiviteler",
     "addActivity": "Aktivite Ekle",
     "openAgenda": "Ajandayı Aç",
@@ -101,6 +102,12 @@
     "subtitle": "Dil ve manuel yedekleme akışını cihaz içinde güvenle yönet.",
     "languageTitle": "Uygulama dili",
     "languageBody": "Tercihini anında değiştir. Arayüz ve navigasyon birlikte güncellenir.",
+    "themeTitle": "Görünüm",
+    "themeBody": "Uygulamayı açık ve koyu mod arasında değiştir.",
+    "themeOptions": {
+      "light": "Açık",
+      "dark": "Koyu"
+    },
     "backupTitle": "JSON yedekleme",
     "backupBody": "Tüm verileri dışa aktarabilir veya elindeki JSON yedeğini içe alabilirsin.",
     "backupSummaryTitle": "Yedek kapsamı",

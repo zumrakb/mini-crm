@@ -64,6 +64,7 @@
     "heroTitle": "A clear view for today",
     "heroBody": "Quick navigation, the selected-day agenda, and upcoming terms are all ready in one flow.",
     "calendarHint": "Days with activity are marked. Tap a day to view the details.",
+    "calendarLoading": "Refreshing calendar...",
     "dayAgendaTitle": "Daily activities",
     "addActivity": "Add Activity",
     "openAgenda": "Open Agenda",
@@ -101,6 +102,12 @@
     "subtitle": "Manage language and manual backup safely on the device.",
     "languageTitle": "App language",
     "languageBody": "Switch your preference instantly. The interface and navigation update together.",
+    "themeTitle": "Appearance",
+    "themeBody": "Switch the app between light and dark mode.",
+    "themeOptions": {
+      "light": "Light",
+      "dark": "Dark"
+    },
     "backupTitle": "JSON backup",
     "backupBody": "You can export all data or import a backup JSON that you already have.",
     "backupSummaryTitle": "Backup scope",

@@ -1,5 +1,9 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
@@ -8,34 +12,47 @@ import TermListScreen from '../screens/TermListScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CustomerStackNavigator from './stacks/CustomerStack';
 import { RootTabParamList } from '../types/navigation';
-import { APP_BACKGROUND } from '../components/ui/theme';
+import { useAppTheme } from '../components/ui/theme';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const AppNavigator: React.FC = () => {
   const { t } = useTranslation();
+  const { colors, isDark } = useAppTheme();
+  const navigationTheme = {
+    ...(isDark ? NavigationDarkTheme : NavigationDefaultTheme),
+    colors: {
+      ...(isDark ? NavigationDarkTheme.colors : NavigationDefaultTheme.colors),
+      background: colors.background,
+      card: colors.surface,
+      text: colors.text,
+      border: colors.divider,
+      primary: colors.accent,
+      notification: colors.accent,
+    },
+  };
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <Tab.Navigator
         initialRouteName="Home"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: APP_BACKGROUND,
+            backgroundColor: colors.background,
             borderTopWidth: 1,
-            borderTopColor: 'rgba(15, 23, 42, 0.6)',
+            borderTopColor: colors.divider,
             height: 68,
             paddingBottom: 10,
             paddingTop: 8,
-            shadowColor: '#020617',
-            shadowOpacity: 0.2,
-            shadowRadius: 20,
+            shadowColor: colors.shadow,
+            shadowOpacity: isDark ? 0.16 : 0,
+            shadowRadius: isDark ? 20 : 0,
             shadowOffset: {
               width: 0,
-              height: -8,
+              height: isDark ? -8 : 0,
             },
-            elevation: 10,
+            elevation: isDark ? 10 : 0,
           },
           tabBarItemStyle: {
             alignItems: 'center',
@@ -44,8 +61,8 @@ const AppNavigator: React.FC = () => {
           tabBarIconStyle: {
             marginBottom: 2,
           },
-          tabBarActiveTintColor: '#38bdf8',
-          tabBarInactiveTintColor: '#94a3b8',
+          tabBarActiveTintColor: colors.accent,
+          tabBarInactiveTintColor: colors.muted,
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: '600',
