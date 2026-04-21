@@ -42,6 +42,19 @@ export function getActivitiesByCustomer(customerId: number): Activity[] {
   return getRows<Activity>(result);
 }
 
+export function getAllActivities(): Activity[] {
+  const db = getDB();
+  const result = db.execute(
+    `
+      SELECT *
+      FROM activities
+      ORDER BY date DESC, id DESC
+    `,
+  );
+
+  return getRows<Activity>(result);
+}
+
 export function getActivitiesByDate(date: string): Activity[] {
   const db = getDB();
   const result = db.execute(
@@ -55,6 +68,21 @@ export function getActivitiesByDate(date: string): Activity[] {
   );
 
   return getRows<Activity>(result);
+}
+
+export function getActivityDatesInRange(startDate: string, endDate: string): string[] {
+  const db = getDB();
+  const result = db.execute(
+    `
+      SELECT DISTINCT date
+      FROM activities
+      WHERE date BETWEEN ? AND ?
+      ORDER BY date ASC
+    `,
+    [startDate, endDate],
+  );
+
+  return getRows<{ date: string }>(result).map(row => row.date);
 }
 
 export function getLastActivityByCustomer(customerId: number): Activity | null {

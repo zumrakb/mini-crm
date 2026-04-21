@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -14,9 +14,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod/v3';
 import AppButton from '../components/ui/AppButton';
-import AppDateField from '../components/ui/AppDateField';
+import AppDateField, {
+  type AppDateFieldHandle,
+} from '../components/ui/AppDateField';
 import {
-  CONTROL_SIZES,
   SMART_PDF_DARK,
   TEXT_INPUT_CLASSNAME,
   uiStyles,
@@ -24,25 +25,28 @@ import {
 import { ACTIVITY_TYPES } from '../constants/activityTypes';
 import type { ActivityType } from '../constants/activityTypes';
 import { useActivityStore } from '../store/activity.store';
+import { useCustomerStore } from '../store/customer.store';
 import { createZodResolver } from '../utils/createZodResolver';
 import { todayISO } from '../utils/dateUtils';
 
 interface NewActivityModalProps {
   visible: boolean;
-  customerId: number;
-  customerName: string;
+  customerId?: number;
+  initialDate?: string;
   onClose: () => void;
 }
 
 interface FormValues {
+  customerId: number;
   date: string;
   type: ActivityType;
   note: string;
 }
 
-function getDefaultValues(): FormValues {
+function getDefaultValues(customerId?: number, initialDate?: string): FormValues {
   return {
-    date: todayISO(),
+    customerId: customerId ?? 0,
+    date: initialDate ?? todayISO(),
     type: ACTIVITY_TYPES[0],
     note: '',
   };
@@ -51,17 +55,28 @@ function getDefaultValues(): FormValues {
 const NewActivityModal: React.FC<NewActivityModalProps> = ({
   visible,
   customerId,
-  customerName,
+  initialDate,
   onClose,
 }) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const addActivity = useActivityStore(state => state.add);
+  const customers = useCustomerStore(state => state.customers);
+  const loadCustomers = useCustomerStore(state => state.load);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const noteInputRef = useRef<TextInput | null>(null);
+  const dateFieldRef = useRef<AppDateFieldHandle | null>(null);
 
   const schema = useMemo(
     () =>
       z.object({
+        customerId: z
+          .number({
+            required_error: t('newActivity.validation.customerId'),
+            invalid_type_error: t('newActivity.validation.customerId'),
+          })
+          .int()
+          .positive(t('newActivity.validation.customerId')),
         date: z
           .string()
           .trim()
@@ -81,14 +96,28 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
     control,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    defaultValues: getDefaultValues(),
+    defaultValues: getDefaultValues(customerId, initialDate),
     resolver: createZodResolver(schema),
   });
 
+  const selectedCustomerId = watch('customerId');
+
+  useEffect(() => {
+    if (visible && customerId === undefined) {
+      loadCustomers();
+    }
+  }, [customerId, loadCustomers, visible]);
+
+  useEffect(() => {
+    reset(getDefaultValues(customerId, initialDate));
+  }, [customerId, initialDate, reset, visible]);
+
   const closeModal = () => {
-    reset(getDefaultValues());
+    reset(getDefaultValues(customerId, initialDate));
     setSubmitError(null);
     onClose();
   };
@@ -96,8 +125,13 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
   const onSubmit = handleSubmit(async values => {
     setSubmitError(null);
 
+    if (values.customerId <= 0) {
+      setSubmitError(t('newActivity.validation.customerId'));
+      return;
+    }
+
     const activityId = addActivity({
-      customerId,
+      customerId: values.customerId,
       date: values.date.trim(),
       type: values.type,
       note: values.note.trim() || null,
@@ -118,7 +152,6 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
       visible={visible}
       transparent
       statusBarTranslucent
-      navigationBarTranslucent
       presentationStyle="overFullScreen"
       onRequestClose={closeModal}
     >
@@ -142,19 +175,23 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
             />
 
             <View className="flex-col gap-5">
-              <View className="flex-col gap-2">
+              <View className="flex-row items-center justify-between gap-3">
                 <Text
                   className="text-[24px] font-semibold tracking-[-0.5px]"
                   style={uiStyles.titleText}
                 >
                   {t('newActivity.title')}
                 </Text>
-                <Text
-                  className="text-sm leading-6"
-                  style={uiStyles.bodyText}
-                >
-                  {t('newActivity.subtitle', { customerName })}
-                </Text>
+
+                <AppButton
+                  label={t('common.cancel')}
+                  onPress={closeModal}
+                  variant="pill"
+                  compact
+                  iconOnly
+                  iconName="close"
+                  style={uiStyles.borderless}
+                />
               </View>
 
               <ScrollView
@@ -162,15 +199,61 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
                 keyboardShouldPersistTaps="handled"
               >
                 <View className="flex-col gap-4">
+                  {customerId === undefined ? (
+                    <View className="flex-col gap-2">
+                      <Text
+                        className="text-sm font-semibold"
+                        style={uiStyles.titleText}
+                      >
+                        {t('newActivity.fields.customer')}
+                      </Text>
+                      <View className="flex-row flex-wrap gap-2">
+                        {customers.map(customer => {
+                          const isSelected = selectedCustomerId === customer.id;
+
+                          return (
+                            <TouchableOpacity
+                              key={customer.id}
+                              onPress={() => setValue('customerId', customer.id, {
+                                shouldValidate: true,
+                              })}
+                              className="rounded-full px-4 py-2.5"
+                              style={
+                                isSelected
+                                  ? uiStyles.accentSurface
+                                  : uiStyles.mutedSurface
+                              }
+                              activeOpacity={0.85}
+                            >
+                              <Text
+                                className="text-sm font-medium"
+                                style={isSelected ? uiStyles.titleText : uiStyles.bodyText}
+                              >
+                                {customer.companyName}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                      {errors.customerId ? (
+                        <Text className="text-sm" style={uiStyles.errorText}>
+                          {errors.customerId.message}
+                        </Text>
+                      ) : null}
+                    </View>
+                  ) : null}
+
                   <Controller
-                  control={control}
-                  name="date"
+                    control={control}
+                    name="date"
                     render={({ field: { onChange, value } }) => (
                       <View className="flex-col gap-2">
                         <AppDateField
+                          ref={dateFieldRef}
                           label={t('newActivity.fields.date')}
                           value={value}
                           onChange={onChange}
+                          onChangeComplete={() => noteInputRef.current?.focus()}
                           maximumDate={new Date()}
                           error={errors.date?.message}
                         />
@@ -234,9 +317,14 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
                           {t('newActivity.fields.note')}
                         </Text>
                         <TextInput
+                          ref={noteInputRef}
                           value={value}
                           onChangeText={onChange}
                           onBlur={onBlur}
+                          returnKeyType="done"
+                          onSubmitEditing={() => {
+                            void onSubmit();
+                          }}
                           placeholder={t('newActivity.placeholders.note')}
                           placeholderTextColor={SMART_PDF_DARK.muted}
                           multiline

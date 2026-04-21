@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Modal,
   Platform,
@@ -28,6 +34,11 @@ interface AppDateFieldProps {
   maximumDate?: Date;
   minimumDate?: Date;
   error?: string;
+  onChangeComplete?: () => void;
+}
+
+export interface AppDateFieldHandle {
+  openPicker: () => void;
 }
 
 function formatDateKey(date: Date): string {
@@ -37,14 +48,15 @@ function formatDateKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-const AppDateField: React.FC<AppDateFieldProps> = ({
+const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
   label,
   value,
   onChange,
   maximumDate,
   minimumDate,
   error,
-}) => {
+  onChangeComplete,
+}, ref) => {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
@@ -69,9 +81,10 @@ const AppDateField: React.FC<AppDateFieldProps> = ({
         }
 
         onChange(formatDateKey(nextDate));
+        onChangeComplete?.();
       },
     });
-  }, [maximumDate, minimumDate, onChange, selectedDate]);
+  }, [maximumDate, minimumDate, onChange, onChangeComplete, selectedDate]);
 
   const openPicker = useCallback(() => {
     if (Platform.OS === 'android') {
@@ -97,7 +110,12 @@ const AppDateField: React.FC<AppDateFieldProps> = ({
   const handleApply = useCallback(() => {
     onChange(formatDateKey(draftDate));
     setIsPickerVisible(false);
-  }, [draftDate, onChange]);
+    onChangeComplete?.();
+  }, [draftDate, onChange, onChangeComplete]);
+
+  useImperativeHandle(ref, () => ({
+    openPicker,
+  }), [openPicker]);
 
   return (
     <View className="flex-col gap-2">
@@ -218,6 +236,6 @@ const AppDateField: React.FC<AppDateFieldProps> = ({
       ) : null}
     </View>
   );
-};
+});
 
 export default AppDateField;
