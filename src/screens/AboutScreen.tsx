@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AppScreen from '../components/ui/AppScreen';
 import PageHeader from '../components/ui/PageHeader';
 import SurfaceCard from '../components/ui/SurfaceCard';
+import { SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
 
 const AboutScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -22,14 +23,19 @@ const AboutScreen: React.FC = () => {
             <SurfaceCard>
               <View className="flex-col gap-3">
                 <View className="flex-row items-center gap-3">
-                  <View className="h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-                    <Text className="text-white text-lg">✅</Text>
+                  <View
+                    className="h-10 w-10 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+                  >
+                    <Text className="text-lg" style={{ color: SMART_PDF_DARK.accent }}>
+                      ✅
+                    </Text>
                   </View>
-                  <Text className="text-white text-lg font-semibold">
+                  <Text className="text-lg font-semibold" style={uiStyles.titleText}>
                     {t('common.navTitle')}
                   </Text>
                 </View>
-                <Text className="text-slate-200 text-base leading-6">
+                <Text className="text-base leading-6" style={uiStyles.bodyText}>
                   {t('common.navBody')}
                 </Text>
               </View>
@@ -38,14 +44,19 @@ const AboutScreen: React.FC = () => {
             <SurfaceCard tone="soft">
               <View className="flex-col gap-3">
                 <View className="flex-row items-center gap-3">
-                  <View className="h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-                    <Text className="text-white text-lg">🌐</Text>
+                  <View
+                    className="h-10 w-10 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+                  >
+                    <Text className="text-lg" style={{ color: SMART_PDF_DARK.accent }}>
+                      🌐
+                    </Text>
                   </View>
-                  <Text className="text-white text-lg font-semibold">
+                  <Text className="text-lg font-semibold" style={uiStyles.titleText}>
                     {t('common.languageTitle')}
                   </Text>
                 </View>
-                <Text className="text-slate-200 text-base leading-6">
+                <Text className="text-base leading-6" style={uiStyles.bodyText}>
                   {t('common.languageBody')}
                 </Text>
               </View>

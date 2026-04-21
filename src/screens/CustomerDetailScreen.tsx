@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -34,6 +33,8 @@ interface ContactInfoProps {
 }
 
 const ContactInfo: React.FC<ContactInfoProps> = ({ iconName, value }) => {
+  const styles = createStyles();
+
   return (
     <View
       className="min-w-0 flex-1 flex-row items-center gap-2 rounded-[18px] px-4 py-3"
@@ -66,6 +67,8 @@ const SectionTab: React.FC<SectionTabProps> = ({
   trailingIconName,
   onTrailingPress,
 }) => {
+  const styles = createStyles();
+
   return (
     <View
       className="flex-1 flex-row items-center gap-2 rounded-full px-4 py-3"
@@ -113,6 +116,8 @@ const SectionState: React.FC<SectionStateProps> = ({
   message,
   accent = false,
 }) => {
+  const styles = createStyles();
+
   return (
     <View
       className="items-center gap-3 rounded-[24px] px-5 py-8"
@@ -150,6 +155,7 @@ const CustomerDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   );
   const [pagerWidth, setPagerWidth] = useState(0);
   const pagerRef = useRef<ScrollView | null>(null);
+  const styles = createStyles();
 
   const activities = useActivityStore(state => state.activities);
   const isLoading = useActivityStore(state => state.isLoading);
@@ -455,113 +461,118 @@ const CustomerDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  backLink: {
-    marginHorizontal: 24,
-    alignSelf: 'flex-start',
-  },
-  editButton: {
-    minHeight: 38,
-    paddingHorizontal: 18,
-    backgroundColor: SMART_PDF_DARK.accentSurface,
-    borderWidth: 0,
-    borderColor: 'transparent',
-    marginTop: -4,
-    alignSelf: 'flex-start',
-    justifyContent: 'center',
-  },
-  editButtonText: {
-    color: SMART_PDF_DARK.text,
-    fontWeight: '400',
-  },
-  floatingActionButton: {
-    minHeight: 44,
-    paddingHorizontal: 20,
-    borderRadius: 24,
-    ...SHADOWS.floatingCompact,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 120,
-  },
-  scrollView: {
-    backgroundColor: SMART_PDF_DARK.background,
-  },
-  screenBody: {
-    backgroundColor: SMART_PDF_DARK.background,
-  },
-  infoBlock: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  tabsContainer: {
-    backgroundColor: SMART_PDF_DARK.surface,
-    borderWidth: 0,
-    borderColor: 'transparent',
-  },
-  tabInlineIconButton: {
-    width: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  activeTab: {
-    backgroundColor: SMART_PDF_DARK.accentSurface,
-  },
-  inactiveTab: {
-    backgroundColor: SMART_PDF_DARK.surface,
-  },
-  sectionState: {
-    backgroundColor: SMART_PDF_DARK.surface,
-  },
-  stateIconMuted: {
-    backgroundColor: SMART_PDF_DARK.surfaceMuted,
-  },
-  stateIconAccent: {
-    backgroundColor: SMART_PDF_DARK.accentSurface,
-  },
-  topBackdrop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 280,
-    backgroundColor: SMART_PDF_DARK.surfaceAlt,
-  },
-  headerSection: {
-    paddingHorizontal: 24,
-    paddingTop: 18,
-    paddingBottom: 18,
-    marginHorizontal: 20,
-    marginTop: 14,
-    backgroundColor: SMART_PDF_DARK.surface,
-    borderRadius: 28,
-    borderWidth: 0,
-    borderColor: 'transparent',
-    zIndex: 2,
-    ...SHADOWS.soft,
-  },
-  contentSection: {
-    flex: 1,
-    flexGrow: 1,
-    marginTop: -8,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 24,
-    backgroundColor: SMART_PDF_DARK.background,
-    zIndex: 1,
-    minHeight: 520,
-  },
-  page: {
-    paddingBottom: 12,
-  },
-  floatingActionWrap: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    gap: 10,
-    alignItems: 'flex-end',
-  },
-});
+function createStyles() {
+  return {
+    backLink: {
+      marginHorizontal: 24,
+      alignSelf: 'flex-start' as const,
+    },
+    editButton: {
+      minHeight: 38,
+      paddingHorizontal: 18,
+      backgroundColor: SMART_PDF_DARK.accentSurface,
+      borderWidth: 0,
+      borderColor: 'transparent',
+      marginTop: -4,
+      alignSelf: 'flex-start' as const,
+      justifyContent: 'center' as const,
+    },
+    editButtonText: {
+      color: SMART_PDF_DARK.text,
+      fontWeight: '400' as const,
+    },
+    floatingActionButton: {
+      minHeight: 44,
+      paddingHorizontal: 20,
+      borderRadius: 24,
+      ...SHADOWS.floatingCompact,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      paddingBottom: 120,
+    },
+    scrollView: {
+      backgroundColor: SMART_PDF_DARK.background,
+    },
+    screenBody: {
+      backgroundColor: SMART_PDF_DARK.background,
+    },
+    infoBlock: {
+      backgroundColor:
+        SMART_PDF_DARK.statusBar === 'light-content'
+          ? 'rgba(255,255,255,0.08)'
+          : SMART_PDF_DARK.surfaceMuted,
+    },
+    tabsContainer: {
+      backgroundColor: SMART_PDF_DARK.surface,
+      borderWidth: 0,
+      borderColor: 'transparent',
+    },
+    tabInlineIconButton: {
+      width: 20,
+      height: 20,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      backgroundColor: 'transparent',
+    },
+    activeTab: {
+      backgroundColor: SMART_PDF_DARK.accentSurface,
+    },
+    inactiveTab: {
+      backgroundColor: SMART_PDF_DARK.surface,
+    },
+    sectionState: {
+      backgroundColor: SMART_PDF_DARK.surface,
+    },
+    stateIconMuted: {
+      backgroundColor: SMART_PDF_DARK.surfaceMuted,
+    },
+    stateIconAccent: {
+      backgroundColor: SMART_PDF_DARK.accentSurface,
+    },
+    topBackdrop: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 280,
+      backgroundColor: SMART_PDF_DARK.surfaceAlt,
+    },
+    headerSection: {
+      paddingHorizontal: 24,
+      paddingTop: 18,
+      paddingBottom: 18,
+      marginHorizontal: 20,
+      marginTop: 14,
+      backgroundColor: SMART_PDF_DARK.surface,
+      borderRadius: 28,
+      borderWidth: 0,
+      borderColor: 'transparent',
+      zIndex: 2,
+      ...SHADOWS.soft,
+    },
+    contentSection: {
+      flex: 1,
+      flexGrow: 1,
+      marginTop: -8,
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      paddingBottom: 24,
+      backgroundColor: SMART_PDF_DARK.background,
+      zIndex: 1,
+      minHeight: 520,
+    },
+    page: {
+      paddingBottom: 12,
+    },
+    floatingActionWrap: {
+      position: 'absolute' as const,
+      right: 24,
+      bottom: 24,
+      gap: 10,
+      alignItems: 'flex-end' as const,
+    },
+  };
+}
 
 export default CustomerDetailScreen;

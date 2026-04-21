@@ -86,7 +86,12 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
             >
               <Text
                 className="text-sm font-semibold tracking-[0.2px]"
-                style={{ color: SMART_PDF_DARK.accent }}
+                style={{
+                  color:
+                    SMART_PDF_DARK.statusBar === 'light-content'
+                      ? SMART_PDF_DARK.accent
+                      : SMART_PDF_DARK.accentMuted,
+                }}
               >
                 {initials || 'C'}
               </Text>

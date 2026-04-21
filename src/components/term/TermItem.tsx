@@ -3,7 +3,6 @@ import {
   Dimensions,
   Modal,
   Pressable,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -16,7 +15,7 @@ import {
   TERM_STATUS,
 } from '../../constants/termStatus';
 import type { Term } from '../../constants/term.types';
-import { SMART_PDF_DARK, uiStyles } from '../ui/theme';
+import { SHADOWS, SMART_PDF_DARK, surfaceStyles, uiStyles } from '../ui/theme';
 import { formatDate } from '../../utils/dateUtils';
 import { useActivityStore } from '../../store/activity.store';
 import { useTermStore } from '../../store/term.store';
@@ -48,6 +47,7 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
     TERM_STATUS.ARRIVED,
   ];
   const menuWidth = 170;
+  const styles = createStyles();
 
   const openMenu = () => {
     menuButtonRef.current?.measureInWindow((x: number, y: number, width: number, height: number) => {
@@ -122,7 +122,15 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
         </Pressable>
       </Pressable>
     </Modal>
-    <View className="rounded-[20px] px-4 py-4" style={uiStyles.mutedSurface}>
+    <View
+      className="rounded-[20px] px-4 py-4"
+      style={[
+        surfaceStyles.card,
+        {
+          backgroundColor: SMART_PDF_DARK.surface,
+        },
+      ]}
+    >
       <View className="flex-col gap-2.5">
         <View className="flex-row items-start justify-between gap-3">
           <View className="min-w-0 flex-1 gap-1">
@@ -147,10 +155,17 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
                 style={{
                   backgroundColor: isPendingTermStatus(term.status)
                     ? SMART_PDF_DARK.accent
-                    : SMART_PDF_DARK.surface,
+                    : SMART_PDF_DARK.surfaceMuted,
                 }}
               >
-                <Text className="text-xs font-semibold text-white">
+                <Text
+                  className="text-xs font-semibold"
+                  style={{
+                    color: isPendingTermStatus(term.status)
+                      ? '#FFFFFF'
+                      : SMART_PDF_DARK.text,
+                  }}
+                >
                   {t(getTermStatusTranslationKey(term.status))}
                 </Text>
               </View>
@@ -189,66 +204,62 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  menuWrap: {
-    position: 'relative',
-  },
-  menuButton: {
-    width: 16,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  menuBackdrop: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-  menuPanel: {
-    position: 'absolute',
-    width: 170,
-    borderRadius: 16,
-    padding: 4,
-    backgroundColor: SMART_PDF_DARK.surface,
-    borderWidth: 0,
-    borderColor: 'transparent',
-    shadowColor: '#020617',
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    shadowOffset: {
-      width: 0,
-      height: 6,
+function createStyles() {
+  return {
+    menuWrap: {
+      position: 'relative' as const,
     },
-    elevation: 6,
-    zIndex: 20,
-  },
-  menuItem: {
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    backgroundColor: 'transparent',
-  },
-  menuItemText: {
-    color: SMART_PDF_DARK.muted,
-  },
-  menuItemTextActive: {
-    color: SMART_PDF_DARK.accent,
-  },
-  metaBlock: {
-    paddingTop: 2,
-  },
-  metaText: {
-    color: SMART_PDF_DARK.text,
-  },
-  metaDateText: {
-    color: SMART_PDF_DARK.text,
-    fontWeight: '700',
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: SMART_PDF_DARK.divider,
-    marginVertical: 3,
-  },
-});
+    menuButton: {
+      width: 16,
+      height: 20,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      backgroundColor: 'transparent',
+    },
+    menuBackdrop: {
+      flex: 1,
+      backgroundColor: 'transparent',
+    },
+    menuPanel: {
+      position: 'absolute' as const,
+      width: 170,
+      borderRadius: 16,
+      padding: 4,
+      backgroundColor: SMART_PDF_DARK.surface,
+      borderWidth: 0,
+      borderColor: 'transparent',
+      zIndex: 20,
+      ...SHADOWS.floatingCompact,
+      elevation: SMART_PDF_DARK.statusBar === 'light-content' ? 6 : 0,
+    },
+    menuItem: {
+      borderRadius: 12,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      backgroundColor: 'transparent',
+    },
+    menuItemText: {
+      color: SMART_PDF_DARK.muted,
+    },
+    menuItemTextActive: {
+      color: SMART_PDF_DARK.accent,
+    },
+    metaBlock: {
+      paddingTop: 2,
+    },
+    metaText: {
+      color: SMART_PDF_DARK.text,
+    },
+    metaDateText: {
+      color: SMART_PDF_DARK.text,
+      fontWeight: '700' as const,
+    },
+    menuDivider: {
+      height: 1,
+      backgroundColor: SMART_PDF_DARK.divider,
+      marginVertical: 3,
+    },
+  };
+}
 
 export default TermItem;

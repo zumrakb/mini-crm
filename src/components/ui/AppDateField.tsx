@@ -209,7 +209,11 @@ const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
                     maximumDate={maximumDate}
                     minimumDate={minimumDate}
                     onChange={handleIOSPickerChange}
-                    themeVariant="dark"
+                    themeVariant={
+                      SMART_PDF_DARK.statusBar === 'light-content'
+                        ? 'dark'
+                        : 'light'
+                    }
                     textColor={SMART_PDF_DARK.text}
                   />
                 </View>

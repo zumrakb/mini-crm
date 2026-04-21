@@ -84,7 +84,12 @@ const CustomerListScreen: React.FC = () => {
             >
               <Text
                 className="text-xs font-semibold tracking-[0.8px]"
-                style={{ color: SMART_PDF_DARK.accent }}
+                style={{
+                  color:
+                    SMART_PDF_DARK.statusBar === 'light-content'
+                      ? SMART_PDF_DARK.accent
+                      : SMART_PDF_DARK.accentMuted,
+                }}
               >
                 {visibleCustomerCount}
               </Text>
@@ -99,14 +104,6 @@ const CustomerListScreen: React.FC = () => {
               iconName="add"
               style={{
                 minHeight: 40,
-                shadowColor: '#020617',
-                shadowOpacity: 0.1,
-                shadowRadius: 12,
-                shadowOffset: {
-                  width: 0,
-                  height: 6,
-                },
-                elevation: 2,
               }}
             />
           }

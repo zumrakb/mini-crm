@@ -289,7 +289,14 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
                                 ]}
                                 activeOpacity={0.85}
                               >
-                                <Text className="text-[12px] font-semibold text-white">
+                                <Text
+                                  className="text-[12px] font-semibold"
+                                  style={{
+                                    color: isActive
+                                      ? SMART_PDF_DARK.text
+                                      : SMART_PDF_DARK.accent,
+                                  }}
+                                >
                                   {activityType}
                                 </Text>
                               </TouchableOpacity>

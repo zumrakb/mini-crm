@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Modal,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -15,7 +14,7 @@ import TermItem from '../components/term/TermItem';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
 import SurfaceCard from '../components/ui/SurfaceCard';
-import { SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
+import { SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
 import { isPendingTermStatus, TERM_STATUS } from '../constants/termStatus';
 import type { Customer } from '../constants/customer.types';
 import NewTermModal from '../modals/NewTermModal';
@@ -74,6 +73,8 @@ const FilterChip = ({
   label: string;
   onPress: () => void;
 }) => {
+  const styles = createStyles();
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -204,6 +205,7 @@ const TermListScreen: React.FC = () => {
     dateRange !== 'all',
     statusFilter !== 'all',
   ].filter(Boolean).length;
+  const styles = createStyles();
 
   return (
     <AppScreen>
@@ -435,59 +437,62 @@ const TermListScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  scrollContent: {
-    paddingBottom: 120,
-  },
-  headerIconButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: SMART_PDF_DARK.surface,
-  },
-  filterBadge: {
-    position: 'absolute',
-    top: -3,
-    right: -2,
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-    backgroundColor: SMART_PDF_DARK.accent,
-  },
-  filterBadgeText: {
-    color: SMART_PDF_DARK.text,
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  activeChip: {
-    backgroundColor: SMART_PDF_DARK.accentSurface,
-  },
-  inactiveChip: {
-    backgroundColor: SMART_PDF_DARK.surfaceMuted,
-  },
-  activeChipText: {
-    color: SMART_PDF_DARK.text,
-  },
-  inactiveChipText: {
-    color: SMART_PDF_DARK.muted,
-  },
-  modalAction: {
-    flex: 1,
-    minHeight: 42,
-  },
-  floatingActionWrap: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    alignItems: 'flex-end',
-  },
-  floatingActionButton: {
-    minHeight: 44,
-    paddingHorizontal: 20,
-    borderRadius: 24,
-  },
-});
+function createStyles() {
+  return {
+    scrollContent: {
+      paddingBottom: 120,
+    },
+    headerIconButton: {
+      width: 40,
+      height: 40,
+      backgroundColor: SMART_PDF_DARK.surface,
+    },
+    filterBadge: {
+      position: 'absolute' as const,
+      top: -3,
+      right: -2,
+      minWidth: 16,
+      height: 16,
+      borderRadius: 8,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      paddingHorizontal: 4,
+      backgroundColor: SMART_PDF_DARK.accent,
+    },
+    filterBadgeText: {
+      color: SMART_PDF_DARK.text,
+      fontSize: 10,
+      fontWeight: '700' as const,
+    },
+    activeChip: {
+      backgroundColor: SMART_PDF_DARK.accentSurface,
+    },
+    inactiveChip: {
+      backgroundColor: SMART_PDF_DARK.surfaceMuted,
+    },
+    activeChipText: {
+      color: SMART_PDF_DARK.text,
+    },
+    inactiveChipText: {
+      color: SMART_PDF_DARK.muted,
+    },
+    modalAction: {
+      flex: 1,
+      minHeight: 42,
+    },
+    floatingActionWrap: {
+      position: 'absolute' as const,
+      right: 24,
+      bottom: 24,
+      alignItems: 'flex-end' as const,
+    },
+    floatingActionButton: {
+      minHeight: 44,
+      paddingHorizontal: 20,
+      borderRadius: 24,
+      ...SHADOWS.floatingCompact,
+    },
+  };
+}
 
 export default TermListScreen;

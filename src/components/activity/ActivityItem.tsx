@@ -20,7 +20,10 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
             className="rounded-full px-3 py-1.5"
             style={{ backgroundColor: SMART_PDF_DARK.accent }}
           >
-            <Text className="text-xs font-semibold text-white">
+            <Text
+              className="text-xs font-semibold"
+              style={{ color: '#FFFFFF' }}
+            >
               {activity.type}
             </Text>
           </View>
