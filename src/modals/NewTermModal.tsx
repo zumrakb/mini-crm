@@ -34,6 +34,7 @@ import { parseISODate, todayISO } from '../utils/dateUtils';
 interface NewTermModalProps {
   visible: boolean;
   customerId?: number;
+  initialDate?: string;
   term?: Term | null;
   onClose: () => void;
 }
@@ -46,8 +47,12 @@ interface FormValues {
   note: string;
 }
 
-function getDefaultValues(customerId?: number, term?: Term | null): FormValues {
-  const today = todayISO();
+function getDefaultValues(
+  customerId?: number,
+  initialDate?: string,
+  term?: Term | null,
+): FormValues {
+  const today = initialDate ?? todayISO();
 
   return {
     customerId: term?.customerId ?? customerId ?? 0,
@@ -84,6 +89,7 @@ function getTermDurationLabel(
 const NewTermModal: React.FC<NewTermModalProps> = ({
   visible,
   customerId,
+  initialDate,
   term = null,
   onClose,
 }) => {
@@ -141,7 +147,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    defaultValues: getDefaultValues(customerId, term),
+    defaultValues: getDefaultValues(customerId, initialDate, term),
     resolver: createZodResolver(schema),
   });
 
@@ -155,11 +161,11 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
   }, [customerId, loadCustomers, visible]);
 
   useEffect(() => {
-    reset(getDefaultValues(customerId, term));
-  }, [customerId, reset, term, visible]);
+    reset(getDefaultValues(customerId, initialDate, term));
+  }, [customerId, initialDate, reset, term, visible]);
 
   const closeModal = () => {
-    reset(getDefaultValues(customerId, term));
+    reset(getDefaultValues(customerId, initialDate, term));
     setSubmitError(null);
     onClose();
   };
@@ -399,9 +405,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
                           onChangeText={onChange}
                           onBlur={onBlur}
                           returnKeyType="done"
-                          onSubmitEditing={() => {
-                            void onSubmit();
-                          }}
+                          onSubmitEditing={onSubmit}
                           placeholder={t('newTerm.placeholders.note')}
                           placeholderTextColor={SMART_PDF_DARK.muted}
                           multiline

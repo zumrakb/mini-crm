@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -10,39 +11,47 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Calendar, LocaleConfig, type DateData } from 'react-native-calendars';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
 import SurfaceCard from '../components/ui/SurfaceCard';
 import TermItem from '../components/term/TermItem';
 import NewActivityModal from '../modals/NewActivityModal';
-import { SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
-import { getActivitiesByDate, getActivityDatesInRange } from '../repositories/activity.repository';
+import NewTermModal from '../modals/NewTermModal';
+import { SMART_PDF_DARK, uiStyles, useAppTheme } from '../components/ui/theme';
+import { getActivityDatesInRange } from '../repositories/activity.repository';
 import { isPendingTermStatus } from '../constants/termStatus';
 import { useActivityStore } from '../store/activity.store';
 import { useCustomerStore } from '../store/customer.store';
 import { useTermStore } from '../store/term.store';
 import { formatDate, formatISODate, parseISODate, todayISO } from '../utils/dateUtils';
 
-function getMonthStart(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1, 12, 0, 0, 0);
+function pad(value: number): string {
+  return value.toString().padStart(2, '0');
 }
 
-function addMonths(date: Date, amount: number): Date {
-  return new Date(date.getFullYear(), date.getMonth() + amount, 1, 12, 0, 0, 0);
+function formatMonthKey(year: number, month: number): string {
+  return `${year}-${pad(month)}`;
 }
 
-function addDays(date: Date, amount: number): Date {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + amount);
-  return nextDate;
+function formatMonthDate(year: number, month: number): string {
+  return `${formatMonthKey(year, month)}-01`;
 }
 
-function getCalendarDays(monthDate: Date): Date[] {
-  const monthStart = getMonthStart(monthDate);
-  const firstGridDay = addDays(monthStart, -monthStart.getDay());
-  return Array.from({ length: 42 }, (_, index) => addDays(firstGridDay, index));
+function getMonthDayKeys(monthKey: string): string[] {
+  const [year, month] = monthKey.split('-').map(Number);
+  const monthStart = parseISODate(formatMonthDate(year, month));
+  const monthEnd = new Date(year, month, 0, 12, 0, 0, 0);
+  const days: string[] = [];
+  const cursor = new Date(monthStart);
+
+  while (cursor <= monthEnd) {
+    days.push(formatISODate(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return days;
 }
 
 function getDayDifference(fromDate: string, toDate: string): number {
@@ -51,8 +60,59 @@ function getDayDifference(fromDate: string, toDate: string): number {
   return Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-  const HomeScreen: React.FC = () => {
+function getDelayUntilNextDay(): number {
+  const now = new Date();
+  const nextDay = new Date(now);
+  nextDay.setHours(24, 0, 0, 0);
+
+  return Math.max(nextDay.getTime() - now.getTime(), 1000);
+}
+
+LocaleConfig.locales.tr = {
+  monthNames: [
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık',
+  ],
+  monthNamesShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+  dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+  dayNamesShort: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+  today: 'Bugün',
+};
+
+LocaleConfig.locales.en = {
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  today: 'Today',
+};
+
+const HomeScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const customers = useCustomerStore(state => state.customers);
@@ -60,40 +120,98 @@ function getDayDifference(fromDate: string, toDate: string): number {
   const terms = useTermStore(state => state.terms);
   const loadTerms = useTermStore(state => state.load);
   const activities = useActivityStore(state => state.activities);
+  const isActivitiesLoading = useActivityStore(state => state.isLoading);
+  const activeActivityDate = useActivityStore(state => state.activeDate);
   const loadActivitiesByDate = useActivityStore(state => state.loadByDate);
 
-  const today = todayISO();
+  const [today, setToday] = useState(() => todayISO());
   const locale = (i18n.language || 'en').startsWith('tr') ? 'tr-TR' : 'en-US';
+  const calendarLocale = (i18n.language || 'en').startsWith('tr') ? 'tr' : 'en';
   const [selectedDate, setSelectedDate] = useState(today);
-  const [visibleMonth, setVisibleMonth] = useState(() => getMonthStart(parseISODate(today)));
-  const [monthActivityDates, setMonthActivityDates] = useState<string[]>([]);
+  const [visibleMonth, setVisibleMonth] = useState(() => today.slice(0, 7));
+  const [monthActivityDatesByMonth, setMonthActivityDatesByMonth] = useState<Record<string, string[]>>(
+    {},
+  );
   const [isAgendaVisible, setIsAgendaVisible] = useState(false);
   const [isActivityModalVisible, setIsActivityModalVisible] = useState(false);
+  const [isTermModalVisible, setIsTermModalVisible] = useState(false);
+  const previousTodayRef = useRef(today);
+  const isAgendaLoading = isActivitiesLoading || activeActivityDate !== selectedDate;
 
-  const refreshDashboard = useCallback(() => {
+  const loadDashboardLists = useCallback(() => {
     loadCustomers();
     loadTerms();
-    loadActivitiesByDate(selectedDate);
+  }, [loadCustomers, loadTerms]);
 
-    const monthStart = getMonthStart(visibleMonth);
+  const refreshMonthActivityDates = useCallback((monthKey: string) => {
+    if (Object.prototype.hasOwnProperty.call(monthActivityDatesByMonth, monthKey)) {
+      return;
+    }
+
+    const [year, month] = monthKey.split('-').map(Number);
+    const monthStart = parseISODate(formatMonthDate(year, month));
     const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 12, 0, 0, 0);
-    setMonthActivityDates(
-      getActivityDatesInRange(
-        formatISODate(monthStart),
-        formatISODate(monthEnd),
-      ),
+    const nextDates = getActivityDatesInRange(
+      formatISODate(monthStart),
+      formatISODate(monthEnd),
     );
-  }, [loadActivitiesByDate, loadCustomers, loadTerms, selectedDate, visibleMonth]);
+
+    setMonthActivityDatesByMonth(current => ({
+      ...current,
+      [monthKey]: nextDates,
+    }));
+  }, [monthActivityDatesByMonth]);
+
+  const handleVisibleMonthChange = useCallback((monthData: DateData) => {
+    const nextVisibleMonth = formatMonthKey(monthData.year, monthData.month);
+
+    setVisibleMonth(currentMonth => (
+      currentMonth === nextVisibleMonth ? currentMonth : nextVisibleMonth
+    ));
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      refreshDashboard();
-    }, [refreshDashboard]),
+      loadDashboardLists();
+      loadActivitiesByDate(selectedDate);
+      refreshMonthActivityDates(visibleMonth);
+    }, [loadActivitiesByDate, loadDashboardLists, refreshMonthActivityDates, selectedDate, visibleMonth]),
   );
 
   useEffect(() => {
-    refreshDashboard();
-  }, [refreshDashboard]);
+    const timerId = setTimeout(() => {
+      setToday(todayISO());
+    }, getDelayUntilNextDay());
+
+    return () => clearTimeout(timerId);
+  }, [today]);
+
+  useEffect(() => {
+    loadDashboardLists();
+  }, [loadDashboardLists]);
+
+  useEffect(() => {
+    loadActivitiesByDate(selectedDate);
+  }, [loadActivitiesByDate, selectedDate]);
+
+  useEffect(() => {
+    refreshMonthActivityDates(visibleMonth);
+  }, [refreshMonthActivityDates, visibleMonth]);
+
+  useEffect(() => {
+    const previousToday = previousTodayRef.current;
+
+    if (selectedDate === previousToday && today !== previousToday) {
+      setSelectedDate(today);
+      setVisibleMonth(today.slice(0, 7));
+    }
+
+    previousTodayRef.current = today;
+  }, [selectedDate, today]);
+
+  useEffect(() => {
+    LocaleConfig.defaultLocale = calendarLocale;
+  }, [calendarLocale]);
 
   const customerMap = useMemo(
     () =>
@@ -101,11 +219,11 @@ function getDayDifference(fromDate: string, toDate: string): number {
     [customers],
   );
 
-  const todayActivities = useMemo(() => getActivitiesByDate(today), [customers, terms, today]);
   const pendingTerms = useMemo(
     () => terms.filter(term => isPendingTermStatus(term.status)),
     [terms],
   );
+
   const upcomingTerms = useMemo(
     () =>
       [...pendingTerms]
@@ -117,8 +235,43 @@ function getDayDifference(fromDate: string, toDate: string): number {
         .slice(0, 3),
     [pendingTerms, today],
   );
-  const markedDates = useMemo(() => new Set(monthActivityDates), [monthActivityDates]);
-  const calendarDays = useMemo(() => getCalendarDays(visibleMonth), [visibleMonth]);
+
+  const markedDates = useMemo(() => {
+    const monthDates = monthActivityDatesByMonth[visibleMonth] ?? [];
+    const isMonthLoaded = Object.prototype.hasOwnProperty.call(
+      monthActivityDatesByMonth,
+      visibleMonth,
+    );
+    const nextMarkedDates = (isMonthLoaded ? getMonthDayKeys(visibleMonth) : []).reduce<Record<string, {
+      marked?: boolean;
+      dotColor?: string;
+      selected?: boolean;
+      selectedColor?: string;
+      selectedTextColor?: string;
+    }>>((result, date) => {
+      result[date] = {};
+      return result;
+    }, {});
+
+    monthDates.forEach(date => {
+      nextMarkedDates[date] = {
+        ...nextMarkedDates[date],
+        marked: true,
+        dotColor: colors.accent,
+      };
+    });
+
+    if (selectedDate in nextMarkedDates) {
+      nextMarkedDates[selectedDate] = {
+        ...nextMarkedDates[selectedDate],
+        selected: true,
+        selectedColor: colors.accentSurface,
+        selectedTextColor: colors.accent,
+      };
+    }
+
+    return nextMarkedDates;
+  }, [colors.accent, colors.accentSurface, monthActivityDatesByMonth, selectedDate, visibleMonth]);
 
   const goToTerms = useCallback(() => {
     navigation.navigate('Terms');
@@ -126,12 +279,18 @@ function getDayDifference(fromDate: string, toDate: string): number {
 
   const openAgenda = useCallback((date: string) => {
     setSelectedDate(date);
+    loadActivitiesByDate(date);
     setIsAgendaVisible(true);
-  }, []);
+  }, [loadActivitiesByDate]);
 
   const openActivityModal = useCallback((date: string) => {
     setSelectedDate(date);
     setIsActivityModalVisible(true);
+  }, []);
+
+  const openTermModal = useCallback((date: string) => {
+    setSelectedDate(date);
+    setIsTermModalVisible(true);
   }, []);
 
   const handleDayPress = useCallback((date: string) => {
@@ -144,6 +303,11 @@ function getDayDifference(fromDate: string, toDate: string): number {
         visible={isActivityModalVisible}
         initialDate={selectedDate}
         onClose={() => setIsActivityModalVisible(false)}
+      />
+      <NewTermModal
+        visible={isTermModalVisible}
+        initialDate={selectedDate}
+        onClose={() => setIsTermModalVisible(false)}
       />
 
       <ScrollView
@@ -165,7 +329,15 @@ function getDayDifference(fromDate: string, toDate: string): number {
                 className="rounded-full px-3 py-1.5"
                 style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
               >
-                <Text className="text-xs font-semibold" style={{ color: SMART_PDF_DARK.accent }}>
+                <Text
+                  className="text-xs font-semibold"
+                  style={{
+                    color:
+                      SMART_PDF_DARK.statusBar === 'light-content'
+                        ? SMART_PDF_DARK.accent
+                        : SMART_PDF_DARK.accentMuted,
+                  }}
+                >
                   {formatDate(selectedDate, locale)}
                 </Text>
               </View>
@@ -173,105 +345,49 @@ function getDayDifference(fromDate: string, toDate: string): number {
 
             <SurfaceCard
               style={{
+                backgroundColor: colors.surface,
                 borderWidth: 0,
                 borderColor: 'transparent',
               }}
             >
-              <View className="flex-col gap-5">
-                <View className="flex-row items-center justify-between gap-4">
-                  <View className="flex-1">
-                    <Text className="text-lg font-semibold" style={uiStyles.titleText}>
-                      {visibleMonth.toLocaleDateString(locale, {
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </Text>
-                  </View>
-
-                  <View className="flex-row gap-2">
-                    <AppButton
-                      label={t('common.back')}
-                      onPress={() => setVisibleMonth(current => addMonths(current, -1))}
-                      variant="pill"
-                      compact
-                      iconOnly
-                      iconName="chevron-back"
-                    />
-                    <AppButton
-                      label={t('common.open')}
-                      onPress={() => setVisibleMonth(current => addMonths(current, 1))}
-                      variant="pill"
-                      compact
-                      iconOnly
-                      iconName="chevron-forward"
-                    />
-                  </View>
-                </View>
-
-                <View className="flex-row justify-between">
-                  {Array.from({ length: 7 }, (_, index) => {
-                    const dayName = new Date(2026, 3, index + 19).toLocaleDateString(locale, {
-                      weekday: 'short',
-                    });
-
-                    return (
-                      <Text
-                        key={dayName}
-                        className="w-9 text-center text-xs font-semibold uppercase"
-                        style={uiStyles.bodyText}
-                      >
-                        {dayName.slice(0, 2)}
-                      </Text>
-                    );
-                  })}
-                </View>
-
-                <View className="flex-row flex-wrap justify-between gap-y-3">
-                  {calendarDays.map(day => {
-                    const dayIso = formatISODate(day);
-                    const isCurrentMonth = day.getMonth() === visibleMonth.getMonth();
-                    const hasActivity = markedDates.has(dayIso);
-
-                    return (
-                      <TouchableOpacity
-                        key={dayIso}
-                        onPress={() => handleDayPress(dayIso)}
-                        activeOpacity={0.85}
-                        className="items-center justify-center"
-                        style={{
-                          width: 42,
-                          height: 42,
-                          opacity: isCurrentMonth ? 1 : 0.45,
-                        }}
-                      >
-                        <View
-                          className="items-center justify-center"
-                          style={{
-                            width: 34,
-                            height: 34,
-                            borderRadius: 17,
-                            overflow: 'hidden',
-                            backgroundColor: hasActivity
-                              ? SMART_PDF_DARK.accentSurface
-                              : 'transparent',
-                          }}
-                        >
-                          <Text
-                            className="text-sm font-semibold"
-                            style={{
-                              lineHeight: 18,
-                              color: hasActivity
-                                ? SMART_PDF_DARK.accent
-                                : SMART_PDF_DARK.text,
-                            }}
-                          >
-                            {day.getDate()}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
+              <View className="overflow-hidden rounded-[24px]">
+                <Calendar
+                  key={`${calendarLocale}-${colors.statusBar}`}
+                  current={`${visibleMonth}-01`}
+                  markedDates={markedDates}
+                  markingType="dot"
+                  displayLoadingIndicator={!Object.prototype.hasOwnProperty.call(
+                    monthActivityDatesByMonth,
+                    visibleMonth,
+                  )}
+                  enableSwipeMonths
+                  firstDay={1}
+                  onDayPress={day => handleDayPress(day.dateString)}
+                  onMonthChange={handleVisibleMonthChange}
+                  theme={{
+                    calendarBackground: colors.surface,
+                    textSectionTitleColor: colors.muted,
+                    monthTextColor: colors.text,
+                    dayTextColor: colors.text,
+                    todayTextColor: colors.accent,
+                    selectedDayBackgroundColor: colors.accentSurface,
+                    selectedDayTextColor: colors.accent,
+                    textDisabledColor: colors.muted,
+                    arrowColor: colors.accent,
+                    indicatorColor: colors.accent,
+                    dotColor: colors.accent,
+                    selectedDotColor: colors.accent,
+                    textMonthFontSize: 18,
+                    textMonthFontWeight: '700',
+                    textDayFontSize: 15,
+                    textDayHeaderFontSize: 12,
+                    textDayHeaderFontWeight: '700',
+                  }}
+                  style={{
+                    borderWidth: 0,
+                    borderColor: 'transparent',
+                  }}
+                />
               </View>
             </SurfaceCard>
 
@@ -337,9 +453,9 @@ function getDayDifference(fromDate: string, toDate: string): number {
                 style={uiStyles.modalHandle}
               />
 
-              <View className="flex-col gap-5">
-                <View className="flex-row items-center justify-between gap-3">
-                  <View className="min-w-0 flex-1 gap-1">
+                <View className="flex-col gap-5">
+                  <View className="flex-row items-center justify-between gap-3">
+                    <View className="min-w-0 flex-1 gap-1">
                     <Text
                       className="text-[24px] font-semibold tracking-[-0.5px]"
                       style={uiStyles.titleText}
@@ -361,11 +477,39 @@ function getDayDifference(fromDate: string, toDate: string): number {
                   />
                 </View>
 
+                <View className="flex-row gap-3">
+                  <AppButton
+                    label={t('homeDashboard.addActivity')}
+                    onPress={() => {
+                      setIsAgendaVisible(false);
+                      openActivityModal(selectedDate);
+                    }}
+                    variant="primary"
+                    iconName="add"
+                  />
+                  <AppButton
+                    label={t('homeDashboard.actions.terms')}
+                    onPress={() => {
+                      setIsAgendaVisible(false);
+                      openTermModal(selectedDate);
+                    }}
+                    variant="secondary"
+                    iconName="calendar-outline"
+                  />
+                </View>
+
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 8 }}
                 >
-                  {activities.length ? (
+                  {isAgendaLoading ? (
+                    <View className="items-center gap-3 rounded-[24px] px-5 py-8">
+                      <ActivityIndicator color={SMART_PDF_DARK.accent} />
+                      <Text className="text-center text-sm leading-6" style={uiStyles.bodyText}>
+                        {t('customerDetail.loadingActivities')}
+                      </Text>
+                    </View>
+                  ) : activities.length ? (
                     <View className="flex-col gap-3">
                       {activities.map(activity => {
                         const customer = customerMap.get(activity.customerId);
@@ -399,7 +543,15 @@ function getDayDifference(fromDate: string, toDate: string): number {
                                   className="rounded-full px-3 py-1.5"
                                   style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
                                 >
-                                  <Text className="text-xs font-semibold" style={{ color: SMART_PDF_DARK.accent }}>
+                                  <Text
+                                    className="text-xs font-semibold"
+                                    style={{
+                                      color:
+                                        SMART_PDF_DARK.statusBar === 'light-content'
+                                          ? SMART_PDF_DARK.accent
+                                          : SMART_PDF_DARK.accentMuted,
+                                    }}
+                                  >
                                     {activity.type}
                                   </Text>
                                 </View>
@@ -418,15 +570,6 @@ function getDayDifference(fromDate: string, toDate: string): number {
                       <Text className="text-sm" style={uiStyles.bodyText}>
                         {t('homeDashboard.emptyAgendaTitle')}
                       </Text>
-                      <AppButton
-                        label={t('homeDashboard.addActivity')}
-                        onPress={() => {
-                          setIsAgendaVisible(false);
-                          openActivityModal(selectedDate);
-                        }}
-                        variant="primary"
-                        iconName="add"
-                      />
                     </View>
                   )}
                 </ScrollView>

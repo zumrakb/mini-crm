@@ -28,6 +28,7 @@ export const useActivityStore = create<ActivityStore>(set => ({
   activeDate: null,
   loadByCustomer: customerId => {
     set({
+      activities: [],
       isLoading: true,
       error: null,
       activeCustomerId: customerId,
@@ -46,6 +47,7 @@ export const useActivityStore = create<ActivityStore>(set => ({
   },
   loadByDate: date => {
     set({
+      activities: [],
       isLoading: true,
       error: null,
       activeCustomerId: null,
