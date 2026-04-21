@@ -12,6 +12,7 @@
     "languageTitle": "Dil desteği",
     "languageBody": "Arayüz dilini istediğin zaman ana ekrandan değiştirebilirsin.",
     "cancel": "İptal",
+    "edit": "Düzenle",
     "open": "Aç",
     "select": "Seç"
   },
@@ -57,6 +58,83 @@
     "title": "Ayarlar",
     "simpleMessage": "Mini CRM ayarları burada yönetilecek."
   },
+  "homeDashboard": {
+    "title": "Ana Sayfa",
+    "subtitle": "Müşteri, termin ve günlük hareketleri tek yerden takip et.",
+    "heroTitle": "Bugün için net bir görünüm",
+    "heroBody": "Hızlı geçişler, seçili gün ajandası ve yaklaşan terminler aynı akışta hazır.",
+    "calendarHint": "Aktivite olan günlerde işaret görünür. Bir güne dokunup detayları açabilirsin.",
+    "dayAgendaTitle": "Günlük aktiviteler",
+    "addActivity": "Aktivite Ekle",
+    "openAgenda": "Ajandayı Aç",
+    "agendaReadyTitle": "Seçili gün hazır",
+    "agendaReadyBody": "O güne ait tüm aktiviteleri modal içinde daha rahat görebilirsin.",
+    "upcomingTermsTitle": "Yaklaşan terminler",
+    "upcomingTermsBody": "En yakın bekleyen terminler burada listelenir.",
+    "termExpectedDate": "Beklenen:",
+    "termDurationLabel": "Süre: {{duration}}",
+    "emptyAgendaTitle": "Bu gün için aktivite yok",
+    "emptyAgendaBody": "Başka bir gün seçebilir ya da müşteri detayından yeni aktivite ekleyebilirsin.",
+    "emptyTermsTitle": "Bekleyen termin yok",
+    "emptyTermsBody": "Aktif terminler oluştuğunda burada görünecek.",
+    "unknownCustomer": "Bilinmeyen müşteri",
+    "missingCompany": "Şirket bilgisi yok",
+    "termDueLabels": {
+      "today": "Bugün",
+      "tomorrow": "Yarın",
+      "inDays": "{{count}} gün kaldı",
+      "overdue": "{{count}} gün geçti"
+    },
+    "stats": {
+      "customers": "Toplam müşteri",
+      "pendingTerms": "Bekleyen termin",
+      "todayActivities": "Bugünkü aktivite"
+    },
+    "actions": {
+      "customers": "Müşteriler",
+      "terms": "Terminler",
+      "settings": "Ayarlar"
+    }
+  },
+  "settingsDashboard": {
+    "title": "Ayarlar",
+    "subtitle": "Dil ve manuel yedekleme akışını cihaz içinde güvenle yönet.",
+    "languageTitle": "Uygulama dili",
+    "languageBody": "Tercihini anında değiştir. Arayüz ve navigasyon birlikte güncellenir.",
+    "backupTitle": "JSON yedekleme",
+    "backupBody": "Tüm verileri dışa aktarabilir veya elindeki JSON yedeğini içe alabilirsin.",
+    "backupSummaryTitle": "Yedek kapsamı",
+    "backupSummaryBody": "{{customers}} müşteri, {{terms}} termin ve {{activities}} aktivite dışa aktarmaya hazır. Özet tarihi: {{exportedAt}}.",
+    "exportTitle": "JSON dışa aktar",
+    "exportHint": "Bu içerik paylaşım sayfasına da gönderildi. İstersen buradan da kontrol edebilirsin.",
+    "exportAction": "JSON yedeğini dışa aktar",
+    "exportExcelAction": "Excel olarak dışa aktar",
+    "downloadJsonAction": "JSON olarak indir",
+    "downloadExcelAction": "Excel olarak indir",
+    "exportErrorTitle": "Dışa aktarma başarısız",
+    "exportErrorBody": "Yedek oluşturulurken bir sorun oluştu.",
+    "exportExcelErrorTitle": "Excel dışa aktarma başarısız",
+    "exportExcelErrorBody": "Excel dosyası oluşturulurken bir sorun oluştu.",
+    "downloadSuccessTitle": "İndirme tamamlandı",
+    "downloadSuccessBody": "{{filename}} dosyası indirilenlere kaydedildi.",
+    "importTitle": "JSON içe aktar",
+    "importHint": "Daha önce dışa aktardığın JSON içeriğini aşağıya yapıştır.",
+    "importPlaceholder": "Yedek JSON içeriğini buraya yapıştır",
+    "importAction": "Yedeği içe aktar",
+    "importEmptyTitle": "JSON gerekli",
+    "importEmptyBody": "İçe aktarmadan önce bir yedek JSON'u yapıştır.",
+    "importSuccessTitle": "Yedek yüklendi",
+    "importSuccessBody": "Veriler başarıyla geri yüklendi.",
+    "importErrorTitle": "İçe aktarma başarısız",
+    "importErrorBody": "Yedek okunamadı. JSON içeriğini kontrol et.",
+    "dataPromiseTitle": "Veri sadece cihazda kalır",
+    "dataPromiseBody": "Bu uygulama cloud sync kullanmaz. Yedekleme akışı tamamen manuel ve offline-first yapıdadır.",
+    "stats": {
+      "customers": "Müşteri kaydı",
+      "terms": "Termin kaydı",
+      "activities": "Aktivite kaydı"
+    }
+  },
   "customersScreen": {
     "subtitle": "Müşteri kayıtları burada listelenecek. Sonraki adımda kart görünümü daha da zenginleşecek.",
     "addButton": "Yeni Müşteri",
@@ -82,23 +160,89 @@
     "lastActionTypeLabel": "Son işlem türü",
     "lastActionDateLabel": "Son işlem tarihi",
     "activeTermsLabel": "Aktif termin sayısı",
+    "activeTermsShort": "aktif",
+    "addTermButton": "Termin Ekle",
     "addActivityButton": "Aktivite Ekle",
     "editCustomerButton": "Müşteriyi Düzenle",
+    "backToCustomerList": "Müşteri Listesine Dön",
     "activityHistoryTitle": "Aktivite geçmişi",
     "activityOrderHint": "En yeni önce",
+    "sortNewestFirst": "Yeniden Eskiye",
+    "sortOldestFirst": "Eskiden Yeniye",
     "loadingActivities": "Aktiviteler yükleniyor...",
+    "loadingTerms": "Terminler yükleniyor...",
     "emptyActivitiesTitle": "Henüz aktivite yok",
     "emptyActivitiesBody": "Bu müşteri için ilk aktiviteyi eklediğinde burada görünecek.",
+    "emptyTermsBody": "Henüz termin yok.",
     "errorTitle": "Aktiviteler yüklenemedi",
     "notFoundTitle": "Müşteri bulunamadı",
     "notFoundBody": "Bu kayıt artık mevcut olmayabilir.",
     "noActivity": "Henüz aktivite yok",
-    "notProvided": "Belirtilmedi"
+    "notProvided": "Belirtilmedi",
+    "contactPersonLabel": "İletişim kişisi: {{customerName}}"
+  },
+  "newTerm": {
+    "title": "Yeni Termin",
+    "editTitle": "Termini Düzenle",
+    "submit": "Kaydet",
+    "editSubmit": "Güncelle",
+    "submitting": "Kaydediliyor...",
+    "submitError": "Termin kaydı oluşturulamadı.",
+    "duration": {
+      "sameDay": "Aynı gün",
+      "oneDay": "1 gün",
+      "multipleDays": "{{count}} gün"
+    },
+    "fields": {
+      "customer": "Müşteri",
+      "productName": "Ürün adı",
+      "orderDate": "Sipariş tarihi",
+      "termDuration": "Termin süresi",
+      "expectedDate": "Beklenen tarih",
+      "note": "Not"
+    },
+    "placeholders": {
+      "productName": "Örn. Klima filtresi",
+      "termDuration": "Örn. 7 iş günü",
+      "note": "İsteğe bağlı not"
+    },
+    "validation": {
+      "customerId": "Bir müşteri seç.",
+      "productName": "Ürün adı zorunlu.",
+      "orderDate": "Sipariş tarihi YYYY-AA-GG formatında olmalı.",
+      "termDuration": "Termin süresi zorunlu.",
+      "expectedDate": "Beklenen tarih YYYY-AA-GG formatında olmalı.",
+      "expectedDateAfterOrder": "Beklenen tarih sipariş tarihinden önce olamaz."
+    }
+  },
+  "termsScreen": {
+    "title": "Terminler",
+    "subtitle": "Tüm müşteriler için oluşturulan terminler burada listelenir.",
+    "emptyBody": "Henüz termin yok.",
+    "emptyFilteredBody": "Bu filtrelerle eşleşen termin bulunamadı.",
+    "filters": {
+      "title": "Filtrele",
+      "company": "Şirket",
+      "dateRange": "Tarih aralığı",
+      "status": "Durum",
+      "allCompanies": "Tüm şirketler",
+      "allDates": "Tüm tarihler",
+      "allStatuses": "Tüm durumlar",
+      "lastWeek": "Son 1 hafta",
+      "lastMonth": "Son 1 ay",
+      "last3Months": "Son 3 ay",
+      "last6Months": "Son 6 ay",
+      "lastYear": "Son 1 yıl",
+      "pending": "Bekleniyor",
+      "completed": "Tamamlandı",
+      "reset": "Sıfırla",
+      "apply": "Uygula"
+    }
   },
   "customerEdit": {
     "title": "Müşteriyi Düzenle",
     "subtitle": "{{customerName}} kaydını güncelle.",
-    "submit": "Değişiklikleri Kaydet",
+    "submit": "Kaydet",
     "submitError": "Müşteri kaydı güncellenemedi.",
     "notFoundTitle": "Müşteri bulunamadı",
     "notFoundBody": "Bu kayıt artık mevcut olmayabilir."
@@ -132,6 +276,7 @@
     "submit": "Kaydet",
     "submitError": "Aktivite kaydı oluşturulamadı.",
     "fields": {
+      "customer": "Müşteri",
       "date": "Tarih",
       "type": "Aktivite türü",
       "note": "Not"
@@ -141,12 +286,24 @@
       "note": "İsteğe bağlı not"
     },
     "validation": {
+      "customerId": "Bir müşteri seç.",
       "date": "Tarih YYYY-AA-GG formatında olmalı.",
       "type": "Bir aktivite türü seç."
     }
   },
   "activityItem": {
     "emptyNote": "Not girilmedi."
+  },
+  "termItem": {
+    "markAsCompleted": "Tamamlandı olarak işaretle",
+    "expectedDateLabel": "Termin vadesi",
+    "orderDateLabel": "Sipariş tarihi",
+    "edit": "Termini düzenle"
+  },
+  "termStatus": {
+    "ordered": "Sipariş edildi",
+    "pending": "Bekleniyor",
+    "arrived": "Geldi"
   },
   "privacy": {
     "title": "Gizlilik",

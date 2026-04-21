@@ -1,87 +1,151 @@
-import React from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import {
+  Alert,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Dirs, FileSystem } from 'react-native-file-access';
+import Share from 'react-native-share';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
 import PageHeader from '../components/ui/PageHeader';
-import SurfaceCard from '../components/ui/SurfaceCard';
+import { uiStyles } from '../components/ui/theme';
+import {
+  exportBackupExcelFile,
+  exportBackupJsonFile,
+  type BackupExportFile,
+} from '../utils/backupUtils';
 
 const SettingsScreen: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isJsonBusy, setIsJsonBusy] = useState(false);
+  const [isExcelBusy, setIsExcelBusy] = useState(false);
+
+  const currentLanguage = (i18n.language || 'en').slice(0, 2);
+
+  const languageButtons = [
+    { code: 'en', label: t('languages.english'), flag: '🇺🇸' },
+    { code: 'tr', label: t('languages.turkish'), flag: '🇹🇷' },
+  ];
+
+  const deliverFile = useCallback(async (file: BackupExportFile) => {
+    if (Platform.OS === 'android') {
+      await FileSystem.cpExternal(file.path, file.filename, 'downloads');
+      Alert.alert(
+        t('settingsDashboard.downloadSuccessTitle'),
+        t('settingsDashboard.downloadSuccessBody', {
+          filename: file.filename,
+        }),
+      );
+
+      return;
+    }
+
+    await Share.open({
+      url: `file://${file.path}`,
+      type: file.mimeType,
+      filename: file.filename,
+      failOnCancel: false,
+      saveToFiles: true,
+      title: file.filename,
+    });
+  }, [t]);
+
+  const handleJsonDownload = useCallback(async () => {
+    setIsJsonBusy(true);
+
+    try {
+      const jsonFile = await exportBackupJsonFile();
+      await deliverFile(jsonFile);
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.exportErrorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.exportErrorBody'),
+      );
+    } finally {
+      setIsJsonBusy(false);
+    }
+  }, [deliverFile, t]);
+
+  const handleExcelExport = useCallback(async () => {
+    setIsExcelBusy(true);
+
+    try {
+      const excelFile = await exportBackupExcelFile();
+      await deliverFile(excelFile);
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.exportExcelErrorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.exportExcelErrorBody'),
+      );
+    } finally {
+      setIsExcelBusy(false);
+    }
+  }, [deliverFile, t]);
 
   return (
     <AppScreen>
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: 28 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="px-6 pt-6 pb-6">
+        <View className="px-6 pb-6 pt-6">
           <View className="flex-col gap-6">
-            <PageHeader
-              title={t('phaseZero.settingsScreenTitle')}
-              subtitle={t('phaseZero.settingsScreenBody')}
-            />
+            <PageHeader title={t('settingsDashboard.title')} />
 
-            <SurfaceCard>
-              <View className="flex-col gap-3">
-                <View className="flex-row items-center gap-3">
-                  <View
-                    className="h-10 w-10 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: 'rgba(56, 189, 248, 0.18)' }}
-                  >
-                    <Text className="text-lg text-white">↥</Text>
-                  </View>
-                  <Text className="text-lg font-semibold text-white">
-                    {t('phaseZero.settingsBackupTitle')}
-                  </Text>
-                </View>
-                <Text className="text-sm leading-6 text-slate-300">
-                  {t('phaseZero.settingsBackupBody')}
-                </Text>
+            <View className="flex-col gap-3">
+              <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                Dil Yönetimi
+              </Text>
 
-                <View className="flex-col gap-3 pt-2">
-                  <AppButton
-                    label={t('phaseZero.settingsExportLabel')}
-                    description={t('phaseZero.settingsComingSoon')}
-                    disabled
-                    iconName="download-outline"
-                    style={{
-                      backgroundColor: 'rgba(56, 189, 248, 0.08)',
-                    }}
-                  />
+              <View className="flex-row gap-3">
+                {languageButtons.map(button => {
+                  const isActive = currentLanguage === button.code;
 
-                  <AppButton
-                    label={t('phaseZero.settingsImportLabel')}
-                    description={t('phaseZero.settingsComingSoon')}
-                    disabled
-                    iconName="cloud-upload-outline"
-                    style={{
-                      backgroundColor: 'rgba(34, 197, 94, 0.08)',
-                    }}
-                  />
-                </View>
+                  return (
+                    <AppButton
+                      key={button.code}
+                      label={`${button.flag} ${button.label}`}
+                      onPress={() => {
+                        void i18n.changeLanguage(button.code);
+                      }}
+                      variant={isActive ? 'primary' : 'secondary'}
+                      style={{ flex: 1 }}
+                    />
+                  );
+                })}
               </View>
-            </SurfaceCard>
+            </View>
 
-            <SurfaceCard tone="soft" className="p-5">
-              <View className="flex-col gap-3">
-                <View className="flex-row items-center gap-3">
-                  <View
-                    className="h-10 w-10 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: 'rgba(34, 197, 94, 0.18)' }}
-                  >
-                    <Text className="text-lg text-white">⚙</Text>
-                  </View>
-                  <Text className="text-lg font-semibold text-white">
-                    {t('common.settings')}
-                  </Text>
-                </View>
-                <Text className="text-sm leading-6 text-slate-300">
-                  {t('phaseZero.settingsScreenHint')}
-                </Text>
-              </View>
-            </SurfaceCard>
+            <View className="flex-col gap-3">
+              <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                Veriler
+              </Text>
+
+              <AppButton
+                label={t('settingsDashboard.downloadJsonAction')}
+                onPress={() => {
+                  void handleJsonDownload();
+                }}
+                disabled={isJsonBusy}
+                variant="primary"
+                iconName="download-outline"
+              />
+
+              <AppButton
+                label={t('settingsDashboard.downloadExcelAction')}
+                onPress={() => {
+                  void handleExcelExport();
+                }}
+                disabled={isExcelBusy}
+                variant="secondary"
+                iconName="download-outline"
+              />
+            </View>
           </View>
         </View>
       </ScrollView>

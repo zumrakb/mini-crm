@@ -12,6 +12,7 @@
     "languageTitle": "Language support",
     "languageBody": "You can switch the interface language from the dashboard whenever you need.",
     "cancel": "Cancel",
+    "edit": "Edit",
     "open": "Open",
     "select": "Select"
   },
@@ -57,6 +58,83 @@
     "title": "Settings",
     "simpleMessage": "Settings for Mini CRM will be managed here."
   },
+  "homeDashboard": {
+    "title": "Home",
+    "subtitle": "Track customers, terms, and daily activity from one place.",
+    "heroTitle": "A clear view for today",
+    "heroBody": "Quick navigation, the selected-day agenda, and upcoming terms are all ready in one flow.",
+    "calendarHint": "Days with activity are marked. Tap a day to view the details.",
+    "dayAgendaTitle": "Daily activities",
+    "addActivity": "Add Activity",
+    "openAgenda": "Open Agenda",
+    "agendaReadyTitle": "Selected day is ready",
+    "agendaReadyBody": "You can view all activities for that day more comfortably in a modal.",
+    "upcomingTermsTitle": "Upcoming terms",
+    "upcomingTermsBody": "The nearest pending terms are listed here.",
+    "termExpectedDate": "Due:",
+    "termDurationLabel": "Duration: {{duration}}",
+    "emptyAgendaTitle": "No activity for this day",
+    "emptyAgendaBody": "You can pick another day or add a new activity from a customer detail screen.",
+    "emptyTermsTitle": "No pending terms",
+    "emptyTermsBody": "Active terms will appear here when they are created.",
+    "unknownCustomer": "Unknown customer",
+    "missingCompany": "No company info",
+    "termDueLabels": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "inDays": "{{count}} days left",
+      "overdue": "{{count}} days overdue"
+    },
+    "stats": {
+      "customers": "Total customers",
+      "pendingTerms": "Pending terms",
+      "todayActivities": "Today's activities"
+    },
+    "actions": {
+      "customers": "Customers",
+      "terms": "Terms",
+      "settings": "Settings"
+    }
+  },
+  "settingsDashboard": {
+    "title": "Settings",
+    "subtitle": "Manage language and manual backup safely on the device.",
+    "languageTitle": "App language",
+    "languageBody": "Switch your preference instantly. The interface and navigation update together.",
+    "backupTitle": "JSON backup",
+    "backupBody": "You can export all data or import a backup JSON that you already have.",
+    "backupSummaryTitle": "Backup scope",
+    "backupSummaryBody": "{{customers}} customers, {{terms}} terms, and {{activities}} activities are ready to export. Summary date: {{exportedAt}}.",
+    "exportTitle": "Export JSON",
+    "exportHint": "This content was also sent to the share sheet. You can review it here as well.",
+    "exportAction": "Export JSON backup",
+    "exportExcelAction": "Export as Excel",
+    "downloadJsonAction": "Download as JSON",
+    "downloadExcelAction": "Download as Excel",
+    "exportErrorTitle": "Export failed",
+    "exportErrorBody": "Something went wrong while creating the backup.",
+    "exportExcelErrorTitle": "Excel export failed",
+    "exportExcelErrorBody": "Something went wrong while creating the Excel file.",
+    "downloadSuccessTitle": "Download complete",
+    "downloadSuccessBody": "{{filename}} was saved to Downloads.",
+    "importTitle": "Import JSON",
+    "importHint": "Paste the JSON content that you previously exported.",
+    "importPlaceholder": "Paste backup JSON here",
+    "importAction": "Import backup",
+    "importEmptyTitle": "JSON required",
+    "importEmptyBody": "Paste a backup JSON before importing.",
+    "importSuccessTitle": "Backup restored",
+    "importSuccessBody": "Your data has been restored successfully.",
+    "importErrorTitle": "Import failed",
+    "importErrorBody": "The backup could not be read. Check the JSON content.",
+    "dataPromiseTitle": "Data stays on this device",
+    "dataPromiseBody": "This app does not use cloud sync. The backup flow is fully manual and offline-first.",
+    "stats": {
+      "customers": "Customer records",
+      "terms": "Term records",
+      "activities": "Activity records"
+    }
+  },
   "customersScreen": {
     "subtitle": "Customer records will be listed here. The card view will be enriched in the next step.",
     "addButton": "New Customer",
@@ -82,23 +160,89 @@
     "lastActionTypeLabel": "Last action type",
     "lastActionDateLabel": "Last action date",
     "activeTermsLabel": "Active term count",
+    "activeTermsShort": "active",
+    "addTermButton": "Add Term",
     "addActivityButton": "Add Activity",
     "editCustomerButton": "Edit Customer",
+    "backToCustomerList": "Back to Customer List",
     "activityHistoryTitle": "Activity history",
     "activityOrderHint": "Newest first",
+    "sortNewestFirst": "Newest to oldest",
+    "sortOldestFirst": "Oldest to newest",
     "loadingActivities": "Loading activities...",
+    "loadingTerms": "Loading terms...",
     "emptyActivitiesTitle": "No activity yet",
     "emptyActivitiesBody": "When you add the first activity for this customer, it will appear here.",
+    "emptyTermsBody": "No terms yet.",
     "errorTitle": "Activities could not be loaded",
     "notFoundTitle": "Customer not found",
     "notFoundBody": "This record may no longer exist.",
     "noActivity": "No activity yet",
-    "notProvided": "Not provided"
+    "notProvided": "Not provided",
+    "contactPersonLabel": "Contact person: {{customerName}}"
+  },
+  "newTerm": {
+    "title": "New Term",
+    "editTitle": "Edit Term",
+    "submit": "Save",
+    "editSubmit": "Update",
+    "submitting": "Saving...",
+    "submitError": "The term record could not be created.",
+    "duration": {
+      "sameDay": "Same day",
+      "oneDay": "1 day",
+      "multipleDays": "{{count}} days"
+    },
+    "fields": {
+      "customer": "Customer",
+      "productName": "Product name",
+      "orderDate": "Order date",
+      "termDuration": "Term duration",
+      "expectedDate": "Expected date",
+      "note": "Note"
+    },
+    "placeholders": {
+      "productName": "e.g. Air conditioner filter",
+      "termDuration": "e.g. 7 business days",
+      "note": "Optional note"
+    },
+    "validation": {
+      "customerId": "Select a customer.",
+      "productName": "Product name is required.",
+      "orderDate": "Order date must be in YYYY-MM-DD format.",
+      "termDuration": "Term duration is required.",
+      "expectedDate": "Expected date must be in YYYY-MM-DD format.",
+      "expectedDateAfterOrder": "Expected date cannot be earlier than the order date."
+    }
+  },
+  "termsScreen": {
+    "title": "Terms",
+    "subtitle": "Terms created for all customers are listed here.",
+    "emptyBody": "No terms yet.",
+    "emptyFilteredBody": "No terms match these filters.",
+    "filters": {
+      "title": "Filter",
+      "company": "Company",
+      "dateRange": "Date range",
+      "status": "Status",
+      "allCompanies": "All companies",
+      "allDates": "All dates",
+      "allStatuses": "All statuses",
+      "lastWeek": "Last 1 week",
+      "lastMonth": "Last 1 month",
+      "last3Months": "Last 3 months",
+      "last6Months": "Last 6 months",
+      "lastYear": "Last 1 year",
+      "pending": "Pending",
+      "completed": "Completed",
+      "reset": "Reset",
+      "apply": "Apply"
+    }
   },
   "customerEdit": {
     "title": "Edit Customer",
     "subtitle": "Update the customer record for {{customerName}}.",
-    "submit": "Save Changes",
+    "submit": "Save",
     "submitError": "The customer record could not be updated.",
     "notFoundTitle": "Customer not found",
     "notFoundBody": "This record may no longer exist."
@@ -132,6 +276,7 @@
     "submit": "Save",
     "submitError": "The activity record could not be created.",
     "fields": {
+      "customer": "Customer",
       "date": "Date",
       "type": "Activity type",
       "note": "Note"
@@ -141,12 +286,24 @@
       "note": "Optional note"
     },
     "validation": {
+      "customerId": "Select a customer.",
       "date": "Date must be in YYYY-MM-DD format.",
       "type": "Select an activity type."
     }
   },
   "activityItem": {
     "emptyNote": "No note entered."
+  },
+  "termItem": {
+    "markAsCompleted": "Mark as completed",
+    "expectedDateLabel": "Term due date",
+    "orderDateLabel": "Order date",
+    "edit": "Edit term"
+  },
+  "termStatus": {
+    "ordered": "Ordered",
+    "pending": "Pending",
+    "arrived": "Arrived"
   },
   "privacy": {
     "title": "Privacy",
