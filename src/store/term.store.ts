@@ -4,9 +4,11 @@ import {
   getAllTerms,
   getTermsByCustomer,
   insertTerm,
-  markTermAsArrived,
+  updateTerm,
+  updateTermStatus,
   type TermWriteInput,
 } from '../repositories/term.repository';
+import type { TermStatus } from '../constants/termStatus';
 
 interface TermStore {
   terms: Term[];
@@ -16,7 +18,8 @@ interface TermStore {
   load: () => void;
   loadByCustomer: (customerId: number) => void;
   add: (data: TermWriteInput) => number | null;
-  markAsArrived: (termId: number, customerId: number) => void;
+  update: (termId: number, data: TermWriteInput) => boolean;
+  updateStatus: (termId: number, customerId: number, status: TermStatus) => void;
 }
 
 export const useTermStore = create<TermStore>(set => ({
@@ -82,9 +85,33 @@ export const useTermStore = create<TermStore>(set => ({
       return null;
     }
   },
-  markAsArrived: (termId, customerId) => {
+  update: (termId, data) => {
     try {
-      markTermAsArrived(termId, customerId);
+      updateTerm(termId, data);
+
+      set(state => {
+        const terms = state.activeCustomerId !== null
+          ? getTermsByCustomer(state.activeCustomerId)
+          : getAllTerms();
+
+        return {
+          terms,
+          error: null,
+        };
+      });
+
+      return true;
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to update term.',
+      });
+
+      return false;
+    }
+  },
+  updateStatus: (termId, customerId, status) => {
+    try {
+      updateTermStatus(termId, customerId, status);
 
       set(state => {
         const terms = state.activeCustomerId !== null

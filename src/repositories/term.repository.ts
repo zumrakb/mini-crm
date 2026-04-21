@@ -1,4 +1,5 @@
 import type { QueryResult } from 'react-native-quick-sqlite';
+import type { TermStatus } from '../constants/termStatus';
 import { TERM_STATUS } from '../constants/termStatus';
 import { ACTIVITY_TYPE } from '../constants/activityTypes';
 import { getDB } from '../db/client';
@@ -64,7 +65,40 @@ export function insertTerm(data: TermWriteInput): number {
   return result.insertId ?? 0;
 }
 
-export function markTermAsArrived(termId: number, customerId: number): void {
+export function updateTerm(termId: number, data: TermWriteInput): void {
+  const db = getDB();
+
+  db.execute(
+    `
+      UPDATE terms
+      SET
+        customerId = ?,
+        productName = ?,
+        orderDate = ?,
+        termDuration = ?,
+        expectedDate = ?,
+        status = ?,
+        arrivedAt = ?
+      WHERE id = ?
+    `,
+    [
+      data.customerId,
+      data.productName,
+      data.orderDate,
+      data.termDuration,
+      data.expectedDate,
+      data.status,
+      data.arrivedAt,
+      termId,
+    ],
+  );
+}
+
+export function updateTermStatus(
+  termId: number,
+  customerId: number,
+  status: TermStatus,
+): void {
   const db = getDB();
   const today = todayISO();
   const existingResult = db.execute(
@@ -73,26 +107,28 @@ export function markTermAsArrived(termId: number, customerId: number): void {
   );
   const existingTerm = getRows<Pick<Term, 'status'>>(existingResult)[0];
 
-  if (!existingTerm || existingTerm.status === TERM_STATUS.ARRIVED) {
+  if (!existingTerm || existingTerm.status === status) {
     return;
   }
 
   db.execute(
     'UPDATE terms SET status = ?, arrivedAt = ? WHERE id = ?',
-    [TERM_STATUS.ARRIVED, today, termId],
+    [status, status === TERM_STATUS.ARRIVED ? today : null, termId],
   );
 
-  db.execute(
-    `
-      INSERT INTO activities (customerId, date, type, note, relatedTermId)
-      VALUES (?, ?, ?, ?, ?)
-    `,
-    [
-      customerId,
-      today,
-      ACTIVITY_TYPE.PRODUCT_ARRIVED,
-      null,
-      termId,
-    ],
-  );
+  if (status === TERM_STATUS.ARRIVED) {
+    db.execute(
+      `
+        INSERT INTO activities (customerId, date, type, note, relatedTermId)
+        VALUES (?, ?, ?, ?, ?)
+      `,
+      [
+        customerId,
+        today,
+        ACTIVITY_TYPE.PRODUCT_ARRIVED,
+        null,
+        termId,
+      ],
+    );
+  }
 }
