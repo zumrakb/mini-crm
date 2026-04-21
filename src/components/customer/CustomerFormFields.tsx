@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import {
   Controller,
@@ -12,13 +12,18 @@ import { SMART_PDF_DARK, TEXT_INPUT_CLASSNAME, uiStyles } from '../ui/theme';
 interface CustomerFormFieldsProps {
   control: Control<CustomerFormValues>;
   errors: FieldErrors<CustomerFormValues>;
+  onSubmitLastField?: () => void;
 }
 
 const CustomerFormFields: React.FC<CustomerFormFieldsProps> = ({
   control,
   errors,
+  onSubmitLastField,
 }) => {
   const { t } = useTranslation();
+  const companyNameRef = useRef<TextInput | null>(null);
+  const phoneRef = useRef<TextInput | null>(null);
+  const emailRef = useRef<TextInput | null>(null);
 
   return (
     <View className="flex-col gap-4">
@@ -34,9 +39,11 @@ const CustomerFormFields: React.FC<CustomerFormFieldsProps> = ({
               {t('newCustomer.fields.customerName')}
             </Text>
             <TextInput
+              returnKeyType="next"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              onSubmitEditing={() => companyNameRef.current?.focus()}
               placeholder={t('newCustomer.placeholders.customerName')}
               placeholderTextColor={SMART_PDF_DARK.muted}
               underlineColorAndroid="transparent"
@@ -68,9 +75,12 @@ const CustomerFormFields: React.FC<CustomerFormFieldsProps> = ({
               {t('newCustomer.fields.companyName')}
             </Text>
             <TextInput
+              ref={companyNameRef}
+              returnKeyType="next"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              onSubmitEditing={() => phoneRef.current?.focus()}
               placeholder={t('newCustomer.placeholders.companyName')}
               placeholderTextColor={SMART_PDF_DARK.muted}
               underlineColorAndroid="transparent"
@@ -102,9 +112,12 @@ const CustomerFormFields: React.FC<CustomerFormFieldsProps> = ({
               {t('newCustomer.fields.phone')}
             </Text>
             <TextInput
+              ref={phoneRef}
+              returnKeyType="next"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              onSubmitEditing={() => emailRef.current?.focus()}
               placeholder={t('newCustomer.placeholders.phone')}
               placeholderTextColor={SMART_PDF_DARK.muted}
               keyboardType="phone-pad"
@@ -129,9 +142,12 @@ const CustomerFormFields: React.FC<CustomerFormFieldsProps> = ({
               {t('newCustomer.fields.email')}
             </Text>
             <TextInput
+              ref={emailRef}
+              returnKeyType="done"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              onSubmitEditing={onSubmitLastField}
               placeholder={t('newCustomer.placeholders.email')}
               placeholderTextColor={SMART_PDF_DARK.muted}
               keyboardType="email-address"

@@ -88,7 +88,6 @@ const CustomerEditModal: React.FC<CustomerEditModalProps> = ({
       visible={visible}
       transparent
       statusBarTranslucent
-      navigationBarTranslucent
       presentationStyle="overFullScreen"
       onRequestClose={closeModal}
     >
@@ -112,23 +111,23 @@ const CustomerEditModal: React.FC<CustomerEditModalProps> = ({
             />
 
             <View className="flex-col gap-5">
-              <View className="flex-row items-center gap-3">
-                <AppButton
-                  label={t('common.back')}
-                  onPress={closeModal}
-                  variant="pill"
-                  compact
-                  iconOnly
-                  iconName="chevron-back"
-                  style={uiStyles.borderless}
-                />
-
+              <View className="flex-row items-center justify-between gap-3">
                 <Text
                   className="text-[24px] font-semibold tracking-[-0.5px]"
                   style={uiStyles.titleText}
                 >
                   {t('customerEdit.title')}
                 </Text>
+
+                <AppButton
+                  label={t('common.cancel')}
+                  onPress={closeModal}
+                  variant="pill"
+                  compact
+                  iconOnly
+                  iconName="close"
+                  style={uiStyles.borderless}
+                />
               </View>
 
               {customer ? (
@@ -137,7 +136,13 @@ const CustomerEditModal: React.FC<CustomerEditModalProps> = ({
                   keyboardShouldPersistTaps="handled"
                 >
                   <View className="flex-col gap-4">
-                    <CustomerFormFields control={control} errors={errors} />
+                    <CustomerFormFields
+                      control={control}
+                      errors={errors}
+                      onSubmitLastField={() => {
+                        void onSubmit();
+                      }}
+                    />
 
                     {submitError ? (
                       <Text className="text-sm" style={uiStyles.errorText}>

@@ -77,7 +77,6 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
       visible={visible}
       transparent
       statusBarTranslucent
-      navigationBarTranslucent
       presentationStyle="overFullScreen"
       onRequestClose={closeModal}
     >
@@ -101,19 +100,23 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
             />
 
             <View className="flex-col gap-5">
-              <View className="flex-col gap-2">
+              <View className="flex-row items-center justify-between gap-3">
                 <Text
                   className="text-[24px] font-semibold tracking-[-0.5px]"
                   style={uiStyles.titleText}
                 >
                   {t('newCustomer.title')}
                 </Text>
-                <Text
-                  className="text-sm leading-6"
-                  style={uiStyles.bodyText}
-                >
-                  {t('newCustomer.subtitle')}
-                </Text>
+
+                <AppButton
+                  label={t('common.cancel')}
+                  onPress={closeModal}
+                  variant="pill"
+                  compact
+                  iconOnly
+                  iconName="close"
+                  style={uiStyles.borderless}
+                />
               </View>
 
               <ScrollView
@@ -121,7 +124,13 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
                 keyboardShouldPersistTaps="handled"
               >
                 <View className="flex-col gap-4">
-                  <CustomerFormFields control={control} errors={errors} />
+                  <CustomerFormFields
+                    control={control}
+                    errors={errors}
+                    onSubmitLastField={() => {
+                      void onSubmit();
+                    }}
+                  />
 
                   {submitError ? (
                     <Text className="text-sm" style={uiStyles.errorText}>

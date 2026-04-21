@@ -26,18 +26,12 @@ const variantStyles: Record<ButtonVariant, ViewStyle> = {
   },
   secondary: {
     backgroundColor: SMART_PDF_DARK.surfaceMuted,
-    borderWidth: 1,
-    borderColor: SMART_PDF_DARK.divider,
   },
   soft: {
     backgroundColor: SMART_PDF_DARK.accentSurface,
-    borderWidth: 1,
-    borderColor: SMART_PDF_DARK.divider,
   },
   pill: {
     backgroundColor: SMART_PDF_DARK.surface,
-    borderWidth: 1,
-    borderColor: SMART_PDF_DARK.divider,
   },
 };
 

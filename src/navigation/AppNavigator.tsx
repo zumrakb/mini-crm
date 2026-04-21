@@ -8,6 +8,7 @@ import TermListScreen from '../screens/TermListScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CustomerStackNavigator from './stacks/CustomerStack';
 import { RootTabParamList } from '../types/navigation';
+import { APP_BACKGROUND } from '../components/ui/theme';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -21,7 +22,9 @@ const AppNavigator: React.FC = () => {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: 'rgba(11, 18, 34, 0.98)',
+            backgroundColor: APP_BACKGROUND,
+            borderTopWidth: 1,
+            borderTopColor: 'rgba(15, 23, 42, 0.6)',
             height: 68,
             paddingBottom: 10,
             paddingTop: 8,

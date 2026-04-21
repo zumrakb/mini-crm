@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { SMART_PDF_DARK, TEXT_INPUT_CLASSNAME, uiStyles } from '../ui/theme';
+import { SMART_PDF_DARK, uiStyles } from '../ui/theme';
 
 interface CustomerSearchBarProps {
   value: string;

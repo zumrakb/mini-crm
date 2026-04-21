@@ -1,16 +1,25 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  type Edge,
+} from 'react-native-safe-area-context';
 import { APP_BACKGROUND } from './theme';
 
 interface AppScreenProps {
   children: React.ReactNode;
+  backgroundColor?: string;
+  edges?: Edge[];
 }
 
-const AppScreen: React.FC<AppScreenProps> = ({ children }) => {
+const AppScreen: React.FC<AppScreenProps> = ({
+  children,
+  backgroundColor = APP_BACKGROUND,
+  edges,
+}) => {
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: APP_BACKGROUND }}>
-      <StatusBar barStyle="light-content" backgroundColor={APP_BACKGROUND} />
+    <SafeAreaView className="flex-1" style={{ backgroundColor }} edges={edges}>
+      <StatusBar barStyle="light-content" backgroundColor={backgroundColor} />
       {children}
     </SafeAreaView>
   );

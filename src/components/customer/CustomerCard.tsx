@@ -76,21 +76,22 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
       ]}
       activeOpacity={0.85}
     >
-      <View className="flex-row items-center gap-4">
-        <View
-          className="h-[72px] w-[72px] items-center justify-center rounded-[24px]"
-          style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
-        >
-          <Text
-            className="text-xl font-semibold tracking-[0.3px]"
-            style={{ color: SMART_PDF_DARK.accent }}
-          >
-            {initials || 'C'}
-          </Text>
-        </View>
-
+      <View className="flex-row items-start gap-3">
         <View className="min-w-0 flex-1 flex-col gap-3">
-          <View className="flex-row items-start gap-3">
+          <View className="flex-row items-start justify-between gap-3">
+            <View className="min-w-0 flex-1 flex-row items-start gap-3">
+            <View
+              className="h-11 w-11 items-center justify-center rounded-[14px]"
+              style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+            >
+              <Text
+                className="text-sm font-semibold tracking-[0.2px]"
+                style={{ color: SMART_PDF_DARK.accent }}
+              >
+                {initials || 'C'}
+              </Text>
+            </View>
+
             <View className="min-w-0 flex-1 flex-col gap-1">
               <Text
                 className="text-lg font-semibold leading-6"
@@ -107,42 +108,32 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
                 {customer.customerName}
               </Text>
             </View>
-
-            <View
-              className="h-10 w-10 items-center justify-center rounded-full"
-              style={{ backgroundColor: SMART_PDF_DARK.surfaceMuted }}
-            >
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={SMART_PDF_DARK.accent}
-              />
             </View>
-          </View>
 
-          {contactItems.length > 0 ? (
-            <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
-              {contactItems.map(item => (
-                <View
-                  key={item.key}
-                  className="min-w-0 flex-row items-center gap-1.5"
-                >
-                  <Ionicons
-                    name={item.icon}
-                    size={13}
-                    color={SMART_PDF_DARK.muted}
-                  />
-                  <Text
-                    className="text-xs leading-5"
-                    style={{ color: SMART_PDF_DARK.muted }}
-                    numberOfLines={1}
+            {contactItems.length > 0 ? (
+              <View className="items-end gap-1.5 pt-0.5">
+                {contactItems.map(item => (
+                  <View
+                    key={item.key}
+                    className="flex-row items-center gap-1.5"
                   >
-                    {item.value}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          ) : null}
+                    <Ionicons
+                      name={item.icon}
+                      size={12}
+                      color={SMART_PDF_DARK.muted}
+                    />
+                    <Text
+                      className="text-[11px] leading-4"
+                      style={{ color: SMART_PDF_DARK.muted }}
+                      numberOfLines={1}
+                    >
+                      {item.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+          </View>
 
           <View
             className="h-px"
@@ -166,10 +157,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
               </Text>
             </View>
 
-            <View
-              className="flex-row items-center gap-2 rounded-full px-3 py-2"
-              style={{ backgroundColor: SMART_PDF_DARK.surfaceMuted }}
-            >
+            <View className="flex-row items-center gap-2">
               <Ionicons
                 name="time-outline"
                 size={14}
