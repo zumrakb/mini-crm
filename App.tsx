@@ -13,12 +13,18 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import './src/i18n';
 import { AppThemeProvider } from './src/components/ui/theme';
+import {
+  autoRequestNotificationPermission,
+  syncTermReminders,
+} from './src/services/termNotifications';
 
 LogBox.ignoreLogs(['SafeAreaView has been deprecated']);
 
 export default function App() {
   useEffect(() => {
     initDatabase();
+    autoRequestNotificationPermission().catch(() => undefined);
+    syncTermReminders().catch(() => undefined);
   }, []);
 
   return (
