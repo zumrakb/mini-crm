@@ -1,0 +1,77 @@
+diff --git a/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake b/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
+index 9570d5c..f7d6025 100644
+--- a/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
++++ b/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
+@@ -30,9 +30,15 @@ if(CCACHE_FOUND)
+ endif(CCACHE_FOUND)
+ 
+ # If the user toolchain supports IPO, we enable it for the app build
+-include(CheckIPOSupported)
+-check_ipo_supported(RESULT IPO_SUPPORT)
+-if (IPO_SUPPORT)
+-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
++# The Android NDK linker setup on macOS can fail during the IPO probe itself,
++# so we skip that probe entirely for Darwin hosts.
++if (NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
++  include(CheckIPOSupported)
++  check_ipo_supported(RESULT IPO_SUPPORT)
++  if (IPO_SUPPORT)
++    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
++  endif()
+ endif()
+ 
+ set(BUILD_DIR ${PROJECT_BUILD_DIR})
+diff --git a/node_modules/react-native/ReactAndroid/src/main/jni/CMakeLists.txt b/node_modules/react-native/ReactAndroid/src/main/jni/CMakeLists.txt
+index b0d02d0..9a3cb10 100644
+--- a/node_modules/react-native/ReactAndroid/src/main/jni/CMakeLists.txt
++++ b/node_modules/react-native/ReactAndroid/src/main/jni/CMakeLists.txt
+@@ -8,10 +8,12 @@ set(CMAKE_VERBOSE_MAKEFILE on)
+ 
+ project(ReactAndroid)
+ 
+-include(CheckIPOSupported)
+-check_ipo_supported(RESULT IPO_SUPPORT)
+-if (IPO_SUPPORT)
+-  message(STATUS "LTO support is enabled")
+-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
++if (NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
++  include(CheckIPOSupported)
++  check_ipo_supported(RESULT IPO_SUPPORT)
++  if (IPO_SUPPORT)
++    message(STATUS "LTO support is enabled")
++    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
++  endif()
+ endif()
+ 
+ include(${REACT_COMMON_DIR}/cmake-utils/react-native-flags.cmake)
+diff --git a/node_modules/react-native/ReactCommon/yoga/yoga/CMakeLists.txt b/node_modules/react-native/ReactCommon/yoga/yoga/CMakeLists.txt
+index a99a7b6..40cae82 100644
+--- a/node_modules/react-native/ReactCommon/yoga/yoga/CMakeLists.txt
++++ b/node_modules/react-native/ReactCommon/yoga/yoga/CMakeLists.txt
+@@ -10,8 +10,6 @@ if(TARGET yogacore)
+     return()
+ endif()
+ 
+-include(CheckIPOSupported)
+-
+ set(YOGA_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/..)
+ include(${YOGA_ROOT}/cmake/project-defaults.cmake)
+ 
+@@ -29,9 +27,13 @@ if (ANDROID)
+     target_link_libraries(yogacore log)
+ endif()
+ 
+-check_ipo_supported(RESULT result)
+-if(result)
+-  set_target_properties(yogacore PROPERTIES
+-    CMAKE_INTERPROCEDURAL_OPTIMIZATION true)
++if(NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
++  include(CheckIPOSupported)
++  check_ipo_supported(RESULT result)
++  if(result)
++    set_target_properties(yogacore PROPERTIES
++      CMAKE_INTERPROCEDURAL_OPTIMIZATION true)
++  endif()
+ endif()
+ 
+ target_include_directories(yogacore

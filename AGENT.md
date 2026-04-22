@@ -40,6 +40,13 @@ Tek kullanıcılı, Android odaklı, offline-first çalışan bir müşteri / ak
 
 ---
 
+## Yazım Kuralı
+
+- Push notification / bildirim ile ilgili tüm Türkçe kullanıcı metinlerinde doğru Türkçe karakterler kullanılmalıdır.
+- Özellikle `i, ı, ş, ğ, ü, ö, ç` harfleri atlanmamalı; ASCII yazım ancak teknik zorunluluk varsa kullanılmalıdır.
+
+---
+
 ## TODO Sonra Bakılacaklar
 
 - Push notification sistemi eklenecek ama şimdi yapılmayacak.

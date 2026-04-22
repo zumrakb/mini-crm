@@ -114,6 +114,16 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
+# Work around a macOS/JNA hang in the Android prefab CLI used by native modules
+# like react-native-screens during CMake configuration.
+case " $JAVA_TOOL_OPTIONS " in
+  *" -Djna.nounpack=true "*) ;;
+  *)
+    JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:+$JAVA_TOOL_OPTIONS }-Djna.nounpack=true"
+    export JAVA_TOOL_OPTIONS
+    ;;
+esac
+
 CLASSPATH="\\\"\\\""
 
 
