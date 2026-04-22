@@ -14,46 +14,46 @@ const THEME_PREFERENCE_STORAGE_KEY = 'app-theme-preference';
 export type AppThemePreference = 'light' | 'dark';
 
 export const darkModeColors = {
-  accent: '#2563EB',
-  accentMuted: '#1D4ED8',
-  accentSurface: '#10203B',
-  background: '#0B1220',
-  surface: '#121A2B',
-  surfaceAlt: '#16243A',
-  surfaceMuted: '#1A2436',
-  input: '#182235',
-  text: '#F8FAFC',
-  muted: '#98A6B9',
-  divider: '#253248',
-  overlay: 'rgba(8, 12, 20, 0.94)',
-  backdrop: 'rgba(2, 6, 23, 0.72)',
-  iconButton: '#1A2436',
+  accent: '#6F9BB8',
+  accentMuted: '#8AAFC7',
+  accentSurface: '#20394A',
+  background: '#0F1A22',
+  surface: '#162733',
+  surfaceAlt: '#1B313F',
+  surfaceMuted: '#213846',
+  input: '#1C3240',
+  text: '#ECF1F4',
+  muted: '#A8B6C0',
+  divider: '#284050',
+  overlay: 'rgba(15, 26, 34, 0.94)',
+  backdrop: 'rgba(7, 12, 18, 0.76)',
+  iconButton: '#213846',
   danger: '#EF4444',
   dangerSurface: '#331415',
   success: '#10B981',
-  shadow: '#020617',
+  shadow: '#02070B',
   statusBar: 'light-content' as StatusBarStyle,
 };
 
 export const lightModeColors = {
-  accent: '#2563EB',
-  accentMuted: '#1D4ED8',
-  accentSurface: '#E8F0FF',
-  background: '#F6F7FB',
-  surface: '#FFFFFF',
-  surfaceAlt: '#F8FAFC',
-  surfaceMuted: '#EEF2F7',
-  input: '#FFFFFF',
-  text: '#0F172A',
-  muted: '#5B6B81',
-  divider: '#E2E8F0',
-  overlay: 'rgba(246, 247, 251, 0.96)',
-  backdrop: 'rgba(15, 23, 42, 0.42)',
-  iconButton: '#F1F5F9',
+  accent: '#8B6F5A',
+  accentMuted: '#6D5443',
+  accentSurface: '#EEE4DA',
+  background: '#F5F1EA',
+  surface: '#FCFAF7',
+  surfaceAlt: '#F2E9DE',
+  surfaceMuted: '#E9DED1',
+  input: '#F9F5EF',
+  text: '#4A4038',
+  muted: '#7D7065',
+  divider: '#E5D8C8',
+  overlay: 'rgba(245, 241, 234, 0.94)',
+  backdrop: 'rgba(36, 49, 58, 0.18)',
+  iconButton: '#EADFD2',
   danger: '#DC2626',
   dangerSurface: '#FEF2F2',
   success: '#059669',
-  shadow: '#0F172A',
+  shadow: '#9F8C78',
   statusBar: 'dark-content' as StatusBarStyle,
 };
 
@@ -87,7 +87,7 @@ function buildShadows(colors: AppColors) {
   return {
     soft: {
       shadowColor: colors.shadow,
-      shadowOpacity: isDark ? 0.08 : 0,
+      shadowOpacity: isDark ? 0.12 : 0,
       shadowRadius: isDark ? 14 : 0,
       shadowOffset: {
         width: 0,
@@ -97,7 +97,7 @@ function buildShadows(colors: AppColors) {
     },
     softAlt: {
       shadowColor: colors.shadow,
-      shadowOpacity: isDark ? 0.06 : 0,
+      shadowOpacity: isDark ? 0.08 : 0,
       shadowRadius: isDark ? 12 : 0,
       shadowOffset: {
         width: 0,
@@ -107,7 +107,7 @@ function buildShadows(colors: AppColors) {
     },
     floatingCompact: {
       shadowColor: colors.shadow,
-      shadowOpacity: isDark ? 0.1 : 0,
+      shadowOpacity: isDark ? 0.14 : 0,
       shadowRadius: isDark ? 12 : 0,
       shadowOffset: {
         width: 0,
@@ -117,7 +117,7 @@ function buildShadows(colors: AppColors) {
     },
     modalSheet: {
       shadowColor: colors.shadow,
-      shadowOpacity: isDark ? 0.12 : 0,
+      shadowOpacity: isDark ? 0.16 : 0,
       shadowRadius: isDark ? 18 : 0,
       shadowOffset: {
         width: 0,
@@ -306,7 +306,7 @@ interface AppThemeProviderProps {
 }
 
 export function AppThemeProvider({ children }: AppThemeProviderProps) {
-  const [preference, setPreferenceState] = useState<AppThemePreference>('dark');
+  const [preference, setPreferenceState] = useState<AppThemePreference>('light');
 
   useEffect(() => {
     let isMounted = true;

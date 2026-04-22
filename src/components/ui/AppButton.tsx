@@ -38,16 +38,16 @@ const AppButton: React.FC<AppButtonProps> = ({
   const isDark = SMART_PDF_DARK.statusBar === 'light-content';
   const variantStyles: Record<ButtonVariant, ViewStyle> = {
     primary: {
-      backgroundColor: SMART_PDF_DARK.accent,
+      backgroundColor: isDark ? SMART_PDF_DARK.accent : SMART_PDF_DARK.accent,
     },
     secondary: {
-      backgroundColor: SMART_PDF_DARK.surfaceMuted,
+      backgroundColor: isDark ? SMART_PDF_DARK.surfaceMuted : SMART_PDF_DARK.surfaceMuted,
     },
     soft: {
       backgroundColor: SMART_PDF_DARK.accentSurface,
     },
     pill: {
-      backgroundColor: SMART_PDF_DARK.surface,
+      backgroundColor: isDark ? SMART_PDF_DARK.surface : SMART_PDF_DARK.surfaceAlt,
     },
   };
 
@@ -55,14 +55,14 @@ const AppButton: React.FC<AppButtonProps> = ({
     primary: '#FFFFFF',
     secondary: SMART_PDF_DARK.text,
     soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
-    pill: SMART_PDF_DARK.text,
+    pill: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.text,
   };
 
   const iconColors: Record<ButtonVariant, string> = {
     primary: '#FFFFFF',
     secondary: SMART_PDF_DARK.text,
     soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
-    pill: SMART_PDF_DARK.accent,
+    pill: isDark ? SMART_PDF_DARK.accent : SMART_PDF_DARK.text,
   };
 
   const minHeight = compact ? CONTROL_SIZES.buttonCompact : CONTROL_SIZES.button;

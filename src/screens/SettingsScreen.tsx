@@ -33,7 +33,7 @@ type ExportKind = 'json' | 'excel' | null;
 
 const SettingsScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const { preference, setPreference } = useAppTheme();
+  const { colors, isDark, preference, setPreference } = useAppTheme();
   const [isJsonBusy, setIsJsonBusy] = useState(false);
   const [isExcelBusy, setIsExcelBusy] = useState(false);
   const [isNotificationBusy, setIsNotificationBusy] = useState(false);
@@ -197,6 +197,28 @@ const SettingsScreen: React.FC = () => {
     }
   }, [handleExcelExport, handleJsonDownload, pendingExport]);
 
+  const getChoiceButtonStyle = useCallback((isActive: boolean) => {
+    if (isDark) {
+      return {
+        variant: isActive ? 'primary' : 'secondary',
+        style: { flex: 1 },
+      } as const;
+    }
+
+    return {
+      variant: 'secondary' as const,
+      style: {
+        flex: 1,
+        backgroundColor: isActive ? colors.accentSurface : 'transparent',
+        borderWidth: 1,
+        borderColor: isActive ? colors.accentSurface : colors.divider,
+      },
+      textStyle: {
+        color: isActive ? colors.accentMuted : colors.muted,
+      },
+    } as const;
+  }, [colors.accentMuted, colors.accentSurface, colors.divider, colors.muted, isDark]);
+
   return (
     <AppScreen>
       <BottomSheetModal
@@ -279,14 +301,16 @@ const SettingsScreen: React.FC = () => {
               <View className="flex-row gap-3">
                 {languageButtons.map(button => {
                   const isActive = currentLanguage === button.code;
+                  const buttonProps = getChoiceButtonStyle(isActive);
 
                   return (
                     <AppButton
                       key={button.code}
                       label={`${button.flag} ${button.label}`}
                       onPress={() => i18n.changeLanguage(button.code).catch(() => undefined)}
-                      variant={isActive ? 'primary' : 'secondary'}
-                      style={{ flex: 1 }}
+                      variant={buttonProps.variant}
+                      style={buttonProps.style}
+                      textStyle={buttonProps.textStyle}
                     />
                   );
                 })}
@@ -301,14 +325,16 @@ const SettingsScreen: React.FC = () => {
               <View className="flex-row gap-3">
                 {themeButtons.map(button => {
                   const isActive = preference === button.code;
+                  const buttonProps = getChoiceButtonStyle(isActive);
 
                   return (
                     <AppButton
                       key={button.code}
                       label={button.label}
                       onPress={() => setPreference(button.code).catch(() => undefined)}
-                      variant={isActive ? 'primary' : 'secondary'}
-                      style={{ flex: 1 }}
+                      variant={buttonProps.variant}
+                      style={buttonProps.style}
+                      textStyle={buttonProps.textStyle}
                     />
                   );
                 })}
