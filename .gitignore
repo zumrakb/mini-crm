@@ -55,6 +55,7 @@ yarn-error.log
 
 # Bundle artifact
 *.jsbundle
+*.apk
 
 # Ruby / CocoaPods
 **/Pods/
@@ -65,6 +66,9 @@ yarn-error.log
 
 # testing
 /coverage
+
+# Local build cache
+.gradle-temp/
 
 # Yarn
 .yarn/*
