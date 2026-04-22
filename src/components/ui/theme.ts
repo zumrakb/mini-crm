@@ -219,7 +219,7 @@ function getUiStyleValue(key: string) {
     case 'modalSheetCompact':
       return {
         backgroundColor: activeColors.background,
-        maxHeight: '78%' as const,
+        maxHeight: '88%' as const,
         borderWidth: 0,
         borderColor: 'transparent',
         ...activeShadows.modalSheetStrong,

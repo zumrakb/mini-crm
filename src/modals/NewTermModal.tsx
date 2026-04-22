@@ -189,14 +189,14 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
     };
 
     if (term) {
-      const isUpdated = updateTerm(term.id, payload);
+      const isUpdated = await updateTerm(term.id, payload);
 
       if (!isUpdated) {
         setSubmitError(t('newTerm.submitError'));
         return;
       }
     } else {
-      const termId = addTerm(payload);
+      const termId = await addTerm(payload);
 
       if (!termId) {
         setSubmitError(t('newTerm.submitError'));
@@ -220,7 +220,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
       visible={visible}
       onClose={closeModal}
     >
-      <View className="flex-col gap-4">
+      <View className="flex-col gap-4" style={{ flexShrink: 1 }}>
         <View className="flex-row items-center justify-between gap-3">
           <Text
             className="text-[22px] font-semibold tracking-[-0.4px]"
@@ -243,6 +243,8 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          style={{ flexShrink: 1 }}
+          contentContainerStyle={{ paddingBottom: 4 }}
         >
           <View className="flex-col gap-4">
             {customerId === undefined ? (
@@ -400,19 +402,24 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
           </View>
         </ScrollView>
 
-        <AppButton
-          label={
-            isSubmitting
-              ? t('newTerm.submitting')
-              : term
-                ? t('newTerm.editSubmit')
-                : t('newTerm.submit')
-          }
-          onPress={onSubmit}
-          variant="primary"
-          disabled={isSubmitting}
-          fullWidth
-        />
+        <View
+          className="border-t pt-4"
+          style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
+        >
+          <AppButton
+            label={
+              isSubmitting
+                ? t('newTerm.submitting')
+                : term
+                  ? t('newTerm.editSubmit')
+                  : t('newTerm.submit')
+            }
+            onPress={onSubmit}
+            variant="primary"
+            disabled={isSubmitting}
+            fullWidth
+          />
+        </View>
       </View>
     </BottomSheetModal>
   );

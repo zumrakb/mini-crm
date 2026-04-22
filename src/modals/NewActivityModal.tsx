@@ -147,7 +147,7 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
       visible={visible}
       onClose={closeModal}
     >
-      <View className="flex-col gap-4">
+      <View className="flex-col gap-4" style={{ flexShrink: 1 }}>
         <View className="flex-row items-center justify-between gap-3">
           <Text
             className="text-[22px] font-semibold tracking-[-0.4px]"
@@ -170,6 +170,8 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          style={{ flexShrink: 1 }}
+          contentContainerStyle={{ paddingBottom: 4 }}
         >
           <View className="flex-col gap-4">
             {customerId === undefined ? (
@@ -326,7 +328,10 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
           </View>
         </ScrollView>
 
-        <View className="flex-row gap-3">
+        <View
+          className="flex-row gap-3 border-t pt-4"
+          style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
+        >
           <AppButton
             label={t('common.cancel')}
             onPress={closeModal}

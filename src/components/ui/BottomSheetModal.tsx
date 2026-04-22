@@ -108,28 +108,40 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
 
   const sheetContent = (
     <Animated.View
-      className="rounded-t-[28px] px-5 pt-4"
+      className="rounded-t-[28px]"
       style={[
         uiStyles.modalSheetCompact,
         {
-          paddingBottom: Math.max(insets.bottom, 16) + 12,
+          overflow: 'hidden',
+          width: '100%',
+          alignSelf: 'stretch',
           transform: [{ translateY }],
         },
         sheetStyle,
       ]}
       {...panResponder.panHandlers}
     >
-      <Pressable
-        onPress={onClose}
-        hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}
-        className="mb-4 self-center"
+      <View
+        className="px-5 pt-4"
+        style={[
+          {
+            backgroundColor: SMART_PDF_DARK.background,
+            paddingBottom: Math.max(insets.bottom, 16) + 12,
+          },
+        ]}
       >
-        <View
-          className="h-1.5 w-12 rounded-full"
-          style={uiStyles.modalHandle}
-        />
-      </Pressable>
-      {children}
+        <Pressable
+          onPress={onClose}
+          hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}
+          className="mb-4 self-center"
+        >
+          <View
+            className="h-1.5 w-12 rounded-full"
+            style={uiStyles.modalHandle}
+          />
+        </Pressable>
+        {children}
+      </View>
     </Animated.View>
   );
 
@@ -142,7 +154,11 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
       presentationStyle="overFullScreen"
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end" pointerEvents="box-none">
+      <View
+        className="flex-1 justify-end"
+        pointerEvents="box-none"
+        style={{ paddingTop: Math.max(insets.top, 12) + 12 }}
+      >
         <Animated.View
           pointerEvents="box-none"
           style={{
@@ -172,6 +188,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         ) : (
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ flex: 1, justifyContent: 'flex-end' }}
           >
             {sheetContent}
           </KeyboardAvoidingView>

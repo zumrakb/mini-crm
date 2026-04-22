@@ -85,7 +85,7 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
               <TouchableOpacity
                 key={status}
                 onPress={() => {
-                  updateStatus(term.id, term.customerId, status);
+                  updateStatus(term.id, term.customerId, status).catch(() => undefined);
                   loadActivitiesByCustomer(term.customerId);
                   setIsMenuOpen(false);
                 }}

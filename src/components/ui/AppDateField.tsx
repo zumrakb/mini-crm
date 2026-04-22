@@ -155,7 +155,7 @@ const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
           visible={isPickerVisible}
           onClose={() => setIsPickerVisible(false)}
         >
-          <View className="flex-col gap-4">
+          <View className="flex-col gap-4" style={{ flexShrink: 1 }}>
             <View className="flex-col gap-1">
               <Text
                 className="text-[22px] font-semibold tracking-[-0.4px]"
@@ -185,7 +185,10 @@ const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
               />
             </View>
 
-            <View className="flex-row gap-3">
+            <View
+              className="flex-row gap-3 border-t pt-4"
+              style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
+            >
               <AppButton
                 label={t('common.cancel')}
                 onPress={() => setIsPickerVisible(false)}
