@@ -9,6 +9,7 @@ import {
   type TermWriteInput,
 } from '../repositories/term.repository';
 import type { TermStatus } from '../constants/termStatus';
+import { cancelTermReminder, scheduleTermReminder } from '../services/termNotifications';
 
 interface TermStore {
   terms: Term[];
@@ -17,9 +18,9 @@ interface TermStore {
   activeCustomerId: number | null;
   load: () => void;
   loadByCustomer: (customerId: number) => void;
-  add: (data: TermWriteInput) => number | null;
-  update: (termId: number, data: TermWriteInput) => boolean;
-  updateStatus: (termId: number, customerId: number, status: TermStatus) => void;
+  add: (data: TermWriteInput) => Promise<number | null>;
+  update: (termId: number, data: TermWriteInput) => Promise<boolean>;
+  updateStatus: (termId: number, customerId: number, status: TermStatus) => Promise<void>;
 }
 
 export const useTermStore = create<TermStore>(set => ({
@@ -61,7 +62,7 @@ export const useTermStore = create<TermStore>(set => ({
       });
     }
   },
-  add: data => {
+  add: async data => {
     try {
       const termId = insertTerm(data);
 
@@ -76,6 +77,14 @@ export const useTermStore = create<TermStore>(set => ({
         };
       });
 
+      if (termId) {
+        await scheduleTermReminder({
+          ...data,
+          id: termId,
+          createdAt: new Date().toISOString(),
+        });
+      }
+
       return termId;
     } catch (error) {
       set({
@@ -85,7 +94,7 @@ export const useTermStore = create<TermStore>(set => ({
       return null;
     }
   },
-  update: (termId, data) => {
+  update: async (termId, data) => {
     try {
       updateTerm(termId, data);
 
@@ -100,6 +109,12 @@ export const useTermStore = create<TermStore>(set => ({
         };
       });
 
+      await scheduleTermReminder({
+        ...data,
+        id: termId,
+        createdAt: new Date().toISOString(),
+      });
+
       return true;
     } catch (error) {
       set({
@@ -109,20 +124,30 @@ export const useTermStore = create<TermStore>(set => ({
       return false;
     }
   },
-  updateStatus: (termId, customerId, status) => {
+  updateStatus: async (termId, customerId, status) => {
     try {
       updateTermStatus(termId, customerId, status);
 
+      let nextTerms: Term[] = [];
+
       set(state => {
-        const terms = state.activeCustomerId !== null
+        nextTerms = state.activeCustomerId !== null
           ? getTermsByCustomer(state.activeCustomerId)
           : getAllTerms();
 
         return {
-          terms,
+          terms: nextTerms,
           error: null,
         };
       });
+
+      const updatedTerm = nextTerms.find(term => term.id === termId);
+
+      if (updatedTerm) {
+        await scheduleTermReminder(updatedTerm);
+      } else {
+        await cancelTermReminder(termId);
+      }
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to update term.',

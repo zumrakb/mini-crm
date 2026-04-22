@@ -106,6 +106,35 @@
     "languageBody": "Switch your preference instantly. The interface and navigation update together.",
     "themeTitle": "Appearance",
     "themeBody": "Switch the app between light and dark mode.",
+    "notifications": {
+      "title": "Notifications",
+      "summary": "Permission: {{permission}}. Scheduled term reminders: {{count}}.",
+      "summaryUnavailable": "The notification summary could not be loaded right now.",
+      "permissionAction": "Request notification permission",
+      "testAction": "Show test notification",
+      "syncAction": "Rebuild term reminders",
+      "permissionResultTitle": "Notification permission result",
+      "testSuccessTitle": "Test notification sent",
+      "testSuccessBody": "If the device allows notifications, you should see it immediately.",
+      "syncSuccessTitle": "Reminders updated",
+      "syncSuccessBody": "Pending term reminders were synced again on this device.",
+      "errorTitle": "Notification action failed",
+      "errorBody": "Something went wrong while handling notifications.",
+      "permissionStates": {
+        "authorized": "Allowed",
+        "provisional": "Provisional",
+        "denied": "Not allowed"
+      },
+      "channels": {
+        "termReminders": "Term Reminders"
+      },
+      "messages": {
+        "testTitle": "Mini CRM test notification",
+        "testBody": "Notifications are working on this device.",
+        "termTitle": "Term reminder for {{customer}}",
+        "termBody": "{{product}} due date: {{date}}"
+      }
+    },
     "dataTitle": "Data export",
     "dataBody": "Export backups from your device. A short confirmation is shown before download starts.",
     "versionTitle": "Version info",

@@ -19,6 +19,13 @@ import {
   exportBackupJsonFile,
   type BackupExportFile,
 } from '../utils/backupUtils';
+import {
+  getNotificationDebugSummary,
+  requestNotificationPermission,
+  showTestNotification,
+  syncTermReminders,
+  type NotificationDebugSummary,
+} from '../services/termNotifications';
 
 const APP_VERSION = '0.0.1';
 
@@ -29,6 +36,8 @@ const SettingsScreen: React.FC = () => {
   const { preference, setPreference } = useAppTheme();
   const [isJsonBusy, setIsJsonBusy] = useState(false);
   const [isExcelBusy, setIsExcelBusy] = useState(false);
+  const [isNotificationBusy, setIsNotificationBusy] = useState(false);
+  const [notificationSummary, setNotificationSummary] = useState<NotificationDebugSummary | null>(null);
   const [pendingExport, setPendingExport] = useState<ExportKind>(null);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
 
@@ -43,6 +52,82 @@ const SettingsScreen: React.FC = () => {
     { code: 'light', label: t('settingsDashboard.themeOptions.light') },
     { code: 'dark', label: t('settingsDashboard.themeOptions.dark') },
   ];
+
+  const refreshNotificationSummary = useCallback(async () => {
+    try {
+      const summary = await getNotificationDebugSummary();
+      setNotificationSummary(summary);
+    } catch {
+      setNotificationSummary(null);
+    }
+  }, []);
+
+  const handleNotificationPermission = useCallback(async () => {
+    setIsNotificationBusy(true);
+
+    try {
+      const permission = await requestNotificationPermission();
+      await refreshNotificationSummary();
+
+      Alert.alert(
+        t('settingsDashboard.notifications.permissionResultTitle'),
+        t(`settingsDashboard.notifications.permissionStates.${permission}`),
+      );
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.notifications.errorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.notifications.errorBody'),
+      );
+    } finally {
+      setIsNotificationBusy(false);
+    }
+  }, [refreshNotificationSummary, t]);
+
+  const handleTestNotification = useCallback(async () => {
+    setIsNotificationBusy(true);
+
+    try {
+      await showTestNotification();
+      await refreshNotificationSummary();
+
+      Alert.alert(
+        t('settingsDashboard.notifications.testSuccessTitle'),
+        t('settingsDashboard.notifications.testSuccessBody'),
+      );
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.notifications.errorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.notifications.errorBody'),
+      );
+    } finally {
+      setIsNotificationBusy(false);
+    }
+  }, [refreshNotificationSummary, t]);
+
+  const handleReminderSync = useCallback(async () => {
+    setIsNotificationBusy(true);
+
+    try {
+      await syncTermReminders();
+      await refreshNotificationSummary();
+
+      Alert.alert(
+        t('settingsDashboard.notifications.syncSuccessTitle'),
+        t('settingsDashboard.notifications.syncSuccessBody'),
+      );
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.notifications.errorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.notifications.errorBody'),
+      );
+    } finally {
+      setIsNotificationBusy(false);
+    }
+  }, [refreshNotificationSummary, t]);
+
+  React.useEffect(() => {
+    refreshNotificationSummary().catch(() => undefined);
+  }, [refreshNotificationSummary]);
 
   const deliverFile = useCallback(async (file: BackupExportFile) => {
     if (Platform.OS === 'android') {
@@ -103,12 +188,12 @@ const SettingsScreen: React.FC = () => {
 
   const handleConfirmExport = useCallback(() => {
     if (pendingExport === 'json') {
-      void handleJsonDownload();
+      handleJsonDownload().catch(() => undefined);
       return;
     }
 
     if (pendingExport === 'excel') {
-      void handleExcelExport();
+      handleExcelExport().catch(() => undefined);
     }
   }, [handleExcelExport, handleJsonDownload, pendingExport]);
 
@@ -199,9 +284,7 @@ const SettingsScreen: React.FC = () => {
                     <AppButton
                       key={button.code}
                       label={`${button.flag} ${button.label}`}
-                      onPress={() => {
-                        void i18n.changeLanguage(button.code);
-                      }}
+                      onPress={() => i18n.changeLanguage(button.code).catch(() => undefined)}
                       variant={isActive ? 'primary' : 'secondary'}
                       style={{ flex: 1 }}
                     />
@@ -223,14 +306,53 @@ const SettingsScreen: React.FC = () => {
                     <AppButton
                       key={button.code}
                       label={button.label}
-                      onPress={() => {
-                        void setPreference(button.code);
-                      }}
+                      onPress={() => setPreference(button.code).catch(() => undefined)}
                       variant={isActive ? 'primary' : 'secondary'}
                       style={{ flex: 1 }}
                     />
                   );
                 })}
+              </View>
+            </View>
+
+            <View className="flex-col gap-4">
+              <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.notifications.title')}
+              </Text>
+
+              <Text className="text-sm" style={uiStyles.bodyText}>
+                {notificationSummary
+                  ? t('settingsDashboard.notifications.summary', {
+                    permission: t(`settingsDashboard.notifications.permissionStates.${notificationSummary.permission}`),
+                    count: notificationSummary.scheduledCount,
+                  })
+                  : t('settingsDashboard.notifications.summaryUnavailable')}
+              </Text>
+
+              <View className="flex-col gap-3">
+                <AppButton
+                  label={t('settingsDashboard.notifications.permissionAction')}
+                  onPress={() => handleNotificationPermission().catch(() => undefined)}
+                  disabled={isNotificationBusy}
+                  variant="primary"
+                  iconName="notifications-outline"
+                />
+
+                <AppButton
+                  label={t('settingsDashboard.notifications.testAction')}
+                  onPress={() => handleTestNotification().catch(() => undefined)}
+                  disabled={isNotificationBusy}
+                  variant="secondary"
+                  iconName="flash-outline"
+                />
+
+                <AppButton
+                  label={t('settingsDashboard.notifications.syncAction')}
+                  onPress={() => handleReminderSync().catch(() => undefined)}
+                  disabled={isNotificationBusy}
+                  variant="secondary"
+                  iconName="refresh-outline"
+                />
               </View>
             </View>
 

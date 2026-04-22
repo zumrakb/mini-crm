@@ -106,6 +106,35 @@
     "languageBody": "Tercihini anında değiştir. Arayüz ve navigasyon birlikte güncellenir.",
     "themeTitle": "Görünüm",
     "themeBody": "Uygulamayı açık ve koyu mod arasında değiştir.",
+    "notifications": {
+      "title": "Bildirimler",
+      "summary": "İzin durumu: {{permission}}. Planlı termin hatırlatması: {{count}}.",
+      "summaryUnavailable": "Bildirim özeti şu anda okunamadı.",
+      "permissionAction": "Bildirim izni iste",
+      "testAction": "Test bildirimi göster",
+      "syncAction": "Termin hatırlatmalarını yeniden kur",
+      "permissionResultTitle": "Bildirim izni sonucu",
+      "testSuccessTitle": "Test bildirimi gönderildi",
+      "testSuccessBody": "Cihaz izin veriyorsa bildirimi hemen görmelisin.",
+      "syncSuccessTitle": "Hatırlatmalar güncellendi",
+      "syncSuccessBody": "Bekleyen terminler için cihazdaki hatırlatmalar yeniden senkronlandı.",
+      "errorTitle": "Bildirim işlemi başarısız",
+      "errorBody": "Bildirim işlemi sırasında bir sorun oluştu.",
+      "permissionStates": {
+        "authorized": "İzin verildi",
+        "provisional": "Geçici izin",
+        "denied": "İzin verilmedi"
+      },
+      "channels": {
+        "termReminders": "Termin Hatırlatmaları"
+      },
+      "messages": {
+        "testTitle": "Mini CRM test bildirimi",
+        "testBody": "Bu cihazda bildirimler çalışıyor.",
+        "termTitle": "{{customer}} için termin hatırlatması",
+        "termBody": "{{product}} beklenen tarih: {{date}}"
+      }
+    },
     "dataTitle": "Veri dışa aktarma",
     "dataBody": "Yedekleri cihazından dışa aktar. İndirme başlamadan önce küçük bir onay gösterilir.",
     "versionTitle": "Sürüm bilgisi",
