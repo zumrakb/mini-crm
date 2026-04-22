@@ -40,6 +40,20 @@ Tek kullanıcılı, Android odaklı, offline-first çalışan bir müşteri / ak
 
 ---
 
+## TODO Sonra Bakılacaklar
+
+- Push notification sistemi eklenecek ama şimdi yapılmayacak.
+- Bildirim akışı onaylanırsa ilk aday senaryolar:
+  - Bugün termin var
+  - Yarın termin var
+  - Uzun süredir ziyaret edilmeyen müşteri var
+- Uygulama Türkiye'de sahada çalışan küçük işletmeler için genişletilecek ama şimdi yapılmayacak.
+- Play Store odağı için ürün kapsamı sonra netleştirilecek.
+- Uygulama boyut küçültme çalışması yapılacak ama şimdi yapılmayacak.
+- Release boyut analizi, kütüphane etkisi ve shrink/minify adımları sonra ele alınacak.
+
+---
+
 ## Veri Modeli
 
 ### `customers`
