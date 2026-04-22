@@ -1,0 +1,184 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  KeyboardAvoidingView,
+  Modal,
+  PanResponder,
+  Platform,
+  Pressable,
+  type StyleProp,
+  View,
+  type ViewStyle,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SMART_PDF_DARK, uiStyles } from './theme';
+
+interface BottomSheetModalProps {
+  visible: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  sheetStyle?: StyleProp<ViewStyle>;
+  disableKeyboardAvoiding?: boolean;
+}
+
+const CLOSE_THRESHOLD = 96;
+
+const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
+  visible,
+  onClose,
+  children,
+  sheetStyle,
+  disableKeyboardAvoiding = false,
+}) => {
+  const insets = useSafeAreaInsets();
+  const [isRendered, setIsRendered] = useState(visible);
+  const translateY = useRef(new Animated.Value(320)).current;
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      setIsRendered(true);
+      Animated.parallel([
+        Animated.spring(translateY, {
+          toValue: 0,
+          useNativeDriver: true,
+          bounciness: 0,
+          speed: 18,
+        }),
+        Animated.timing(backdropOpacity, {
+          toValue: 1,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      return;
+    }
+
+    if (!isRendered) {
+      return;
+    }
+
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: 320,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (finished) {
+        setIsRendered(false);
+      }
+    });
+  }, [backdropOpacity, isRendered, translateY, visible]);
+
+  const resetPosition = useCallback(() => {
+    Animated.spring(translateY, {
+      toValue: 0,
+      useNativeDriver: true,
+      bounciness: 0,
+      speed: 16,
+    }).start();
+  }, [translateY]);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_event, gestureState) =>
+          gestureState.dy > 8 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx),
+        onPanResponderMove: (_event, gestureState) => {
+          translateY.setValue(Math.max(0, gestureState.dy));
+        },
+        onPanResponderRelease: (_event, gestureState) => {
+          if (gestureState.dy > CLOSE_THRESHOLD || gestureState.vy > 1.2) {
+            onClose();
+            return;
+          }
+
+          resetPosition();
+        },
+        onPanResponderTerminate: resetPosition,
+      }),
+    [onClose, resetPosition, translateY],
+  );
+
+  const sheetContent = (
+    <Animated.View
+      className="rounded-t-[28px] px-5 pt-4"
+      style={[
+        uiStyles.modalSheetCompact,
+        {
+          paddingBottom: Math.max(insets.bottom, 16) + 12,
+          transform: [{ translateY }],
+        },
+        sheetStyle,
+      ]}
+      {...panResponder.panHandlers}
+    >
+      <Pressable
+        onPress={onClose}
+        hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}
+        className="mb-4 self-center"
+      >
+        <View
+          className="h-1.5 w-12 rounded-full"
+          style={uiStyles.modalHandle}
+        />
+      </Pressable>
+      {children}
+    </Animated.View>
+  );
+
+  return (
+    <Modal
+      animationType="fade"
+      visible={isRendered}
+      transparent
+      statusBarTranslucent
+      presentationStyle="overFullScreen"
+      onRequestClose={onClose}
+    >
+      <View className="flex-1 justify-end" pointerEvents="box-none">
+        <Animated.View
+          pointerEvents="box-none"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            opacity: backdropOpacity,
+          }}
+        >
+          <Pressable
+            onPress={onClose}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: SMART_PDF_DARK.backdrop,
+            }}
+          />
+        </Animated.View>
+
+        {disableKeyboardAvoiding ? (
+          sheetContent
+        ) : (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          >
+            {sheetContent}
+          </KeyboardAvoidingView>
+        )}
+      </View>
+    </Modal>
+  );
+};
+
+export default BottomSheetModal;

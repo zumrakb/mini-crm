@@ -15,6 +15,7 @@ interface AppButtonProps {
   iconOnly?: boolean;
   iconName?: React.ComponentProps<typeof Ionicons>['name'];
   description?: string;
+  fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   activeOpacity?: number;
@@ -29,6 +30,7 @@ const AppButton: React.FC<AppButtonProps> = ({
   iconOnly = false,
   iconName,
   description,
+  fullWidth = false,
   style,
   textStyle,
   activeOpacity = 0.85,
@@ -82,7 +84,7 @@ const AppButton: React.FC<AppButtonProps> = ({
         variantStyles[variant],
         {
           minHeight,
-          width: iconOnly ? minHeight : undefined,
+          width: iconOnly ? minHeight : fullWidth ? '100%' : undefined,
           opacity: disabled ? 0.6 : 1,
         },
         style,

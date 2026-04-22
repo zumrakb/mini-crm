@@ -1,8 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -11,12 +8,12 @@ import {
 } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod/v3';
 import AppButton from '../components/ui/AppButton';
 import AppDateField, {
   type AppDateFieldHandle,
 } from '../components/ui/AppDateField';
+import BottomSheetModal from '../components/ui/BottomSheetModal';
 import {
   SMART_PDF_DARK,
   TEXT_INPUT_CLASSNAME,
@@ -94,7 +91,6 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
   onClose,
 }) => {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const addTerm = useTermStore(state => state.add);
   const updateTerm = useTermStore(state => state.update);
   const addActivity = useActivityStore(state => state.add);
@@ -220,107 +216,84 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
   });
 
   return (
-    <Modal
-      animationType="slide"
+    <BottomSheetModal
       visible={visible}
-      transparent
-      statusBarTranslucent
-      presentationStyle="overFullScreen"
-      onRequestClose={closeModal}
+      onClose={closeModal}
     >
-      <View
-        className="flex-1 justify-end"
-        style={{ backgroundColor: SMART_PDF_DARK.backdrop }}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View
-            className="rounded-t-[32px] px-6 pt-6"
-            style={[
-              uiStyles.modalSheet,
-              { paddingBottom: Math.max(insets.bottom, 18) + 14 },
-            ]}
+      <View className="flex-col gap-4">
+        <View className="flex-row items-center justify-between gap-3">
+          <Text
+            className="text-[22px] font-semibold tracking-[-0.4px]"
+            style={uiStyles.titleText}
           >
-            <View
-              className="mb-5 h-1.5 w-14 self-center rounded-full"
-              style={uiStyles.modalHandle}
-            />
+            {term ? t('newTerm.editTitle') : t('newTerm.title')}
+          </Text>
 
-            <View className="flex-col gap-5">
-              <View className="flex-row items-center justify-between gap-3">
+          <AppButton
+            label={t('common.cancel')}
+            onPress={closeModal}
+            variant="pill"
+            compact
+            iconOnly
+            iconName="close"
+            style={uiStyles.borderless}
+          />
+        </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="flex-col gap-4">
+            {customerId === undefined ? (
+              <View className="flex-col gap-2">
                 <Text
-                  className="text-[24px] font-semibold tracking-[-0.5px]"
+                  className="text-sm font-semibold"
                   style={uiStyles.titleText}
                 >
-                  {term ? t('newTerm.editTitle') : t('newTerm.title')}
+                  {t('newTerm.fields.customer')}
                 </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {customers.map(customer => {
+                    const isSelected = selectedCustomerId === customer.id;
 
-                <AppButton
-                  label={t('common.cancel')}
-                  onPress={closeModal}
-                  variant="pill"
-                  compact
-                  iconOnly
-                  iconName="close"
-                  style={uiStyles.borderless}
-                />
-              </View>
-
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-              >
-                <View className="flex-col gap-4">
-                  {customerId === undefined ? (
-                    <View className="flex-col gap-2">
-                      <Text
-                        className="text-sm font-semibold"
-                        style={uiStyles.titleText}
-                      >
-                        {t('newTerm.fields.customer')}
-                      </Text>
-                      <View className="flex-row flex-wrap gap-2">
-                        {customers.map(customer => {
-                          const isSelected = selectedCustomerId === customer.id;
-
-                          return (
-                            <TouchableOpacity
-                              key={customer.id}
-                              onPress={() => setValue('customerId', customer.id, {
-                                shouldValidate: true,
-                              })}
-                              activeOpacity={0.85}
-                              className="rounded-full px-4 py-2.5"
-                              style={
-                                isSelected
-                                  ? uiStyles.accentSurface
-                                  : uiStyles.mutedSurface
-                              }
-                            >
-                              <Text
-                                className="text-sm font-medium"
-                                style={
-                                  isSelected
-                                    ? uiStyles.titleText
-                                    : uiStyles.bodyText
-                                }
-                              >
-                                {customer.companyName}
-                              </Text>
-                            </TouchableOpacity>
-                          );
+                    return (
+                      <TouchableOpacity
+                        key={customer.id}
+                        onPress={() => setValue('customerId', customer.id, {
+                          shouldValidate: true,
                         })}
-                      </View>
-                      {errors.customerId ? (
-                        <Text className="text-sm" style={uiStyles.errorText}>
-                          {errors.customerId.message}
+                        activeOpacity={0.85}
+                        className="rounded-full px-4 py-2.5"
+                        style={
+                          isSelected
+                            ? uiStyles.accentSurface
+                            : uiStyles.mutedSurface
+                        }
+                      >
+                        <Text
+                          className="text-sm font-medium"
+                          style={
+                            isSelected
+                              ? uiStyles.titleText
+                              : uiStyles.bodyText
+                          }
+                        >
+                          {customer.companyName}
                         </Text>
-                      ) : null}
-                    </View>
-                  ) : null}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                {errors.customerId ? (
+                  <Text className="text-sm" style={uiStyles.errorText}>
+                    {errors.customerId.message}
+                  </Text>
+                ) : null}
+              </View>
+            ) : null}
 
-                  <Controller
+            <Controller
                     control={control}
                     name="productName"
                     render={({ field: { onBlur, onChange, value } }) => (
@@ -356,7 +329,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
                     )}
                   />
 
-                  <Controller
+            <Controller
                     control={control}
                     name="orderDate"
                     render={({ field: { onChange, value } }) => (
@@ -372,7 +345,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
                     )}
                   />
 
-                  <Controller
+            <Controller
                     control={control}
                     name="expectedDate"
                     render={({ field: { onChange, value } }) => (
@@ -388,7 +361,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
                     )}
                   />
 
-                  <Controller
+            <Controller
                     control={control}
                     name="note"
                     render={({ field: { onBlur, onChange, value } }) => (
@@ -419,31 +392,29 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
                     )}
                   />
 
-                  {submitError ? (
-                    <Text className="text-sm" style={uiStyles.errorText}>
-                      {submitError}
-                    </Text>
-                  ) : null}
-                </View>
-              </ScrollView>
-
-              <AppButton
-                label={
-                  isSubmitting
-                    ? t('newTerm.submitting')
-                    : term
-                      ? t('newTerm.editSubmit')
-                      : t('newTerm.submit')
-                }
-                onPress={onSubmit}
-                variant="primary"
-                disabled={isSubmitting}
-              />
-            </View>
+            {submitError ? (
+              <Text className="text-sm" style={uiStyles.errorText}>
+                {submitError}
+              </Text>
+            ) : null}
           </View>
-        </KeyboardAvoidingView>
+        </ScrollView>
+
+        <AppButton
+          label={
+            isSubmitting
+              ? t('newTerm.submitting')
+              : term
+                ? t('newTerm.editSubmit')
+                : t('newTerm.submit')
+          }
+          onPress={onSubmit}
+          variant="primary"
+          disabled={isSubmitting}
+          fullWidth
+        />
       </View>
-    </Modal>
+    </BottomSheetModal>
   );
 };
 

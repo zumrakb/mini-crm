@@ -60,11 +60,18 @@ export const lightModeColors = {
 type AppColors = typeof darkModeColors;
 
 export const CONTROL_SIZES = {
-  button: 48,
-  buttonCompact: 40,
+  button: 40,
+  buttonCompact: 36,
   input: 48,
   search: 52,
   textAreaMin: 96,
+} as const;
+
+export const FLOATING_TAB_BAR = {
+  height: 64,
+  offset: 16,
+  widthPercent: '84%',
+  contentPaddingBottom: 124,
 } as const;
 
 export const FEEDBACK_COLORS = {
@@ -174,6 +181,9 @@ function getUiStyleValue(key: string) {
         backgroundColor: activeColors.input,
         color: activeColors.text,
         minHeight: CONTROL_SIZES.input,
+        paddingTop: 0,
+        paddingBottom: 0,
+        textAlignVertical: 'center' as const,
         borderWidth: 0,
         borderColor: 'transparent',
       };
@@ -204,6 +214,14 @@ function getUiStyleValue(key: string) {
     case 'modalSheetStrong':
       return {
         backgroundColor: activeColors.background,
+        ...activeShadows.modalSheetStrong,
+      };
+    case 'modalSheetCompact':
+      return {
+        backgroundColor: activeColors.background,
+        maxHeight: '78%' as const,
+        borderWidth: 0,
+        borderColor: 'transparent',
         ...activeShadows.modalSheetStrong,
       };
     case 'modalHandle':
