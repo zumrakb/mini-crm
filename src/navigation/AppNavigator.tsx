@@ -5,13 +5,13 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import HomeScreen from '../screens/HomeScreen';
 import TermListScreen from '../screens/TermListScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CustomerStackNavigator from './stacks/CustomerStack';
 import { RootTabParamList } from '../types/navigation';
+import FloatingTabBar from './FloatingTabBar';
 import { useAppTheme } from '../components/ui/theme';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -36,53 +36,10 @@ const AppNavigator: React.FC = () => {
     <NavigationContainer theme={navigationTheme}>
       <Tab.Navigator
         initialRouteName="Home"
-        screenOptions={({ route }) => ({
+        tabBar={props => <FloatingTabBar {...props} />}
+        screenOptions={{
           headerShown: false,
-          tabBarStyle: {
-            backgroundColor: colors.background,
-            borderTopWidth: 1,
-            borderTopColor: colors.divider,
-            height: 68,
-            paddingBottom: 10,
-            paddingTop: 8,
-            shadowColor: colors.shadow,
-            shadowOpacity: isDark ? 0.16 : 0,
-            shadowRadius: isDark ? 20 : 0,
-            shadowOffset: {
-              width: 0,
-              height: isDark ? -8 : 0,
-            },
-            elevation: isDark ? 10 : 0,
-          },
-          tabBarItemStyle: {
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-          tabBarIconStyle: {
-            marginBottom: 2,
-          },
-          tabBarActiveTintColor: colors.accent,
-          tabBarInactiveTintColor: colors.muted,
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: '600',
-          },
-          tabBarIcon: ({ color, size }) => {
-            const iconSize = size ?? 22;
-            switch (route.name) {
-              case 'Home':
-                return <Ionicons name="home-outline" size={iconSize} color={color} />;
-              case 'Customers':
-                return <Ionicons name="people-outline" size={iconSize} color={color} />;
-              case 'Terms':
-                return <Ionicons name="calendar-outline" size={iconSize} color={color} />;
-              case 'Settings':
-                return <Ionicons name="settings-outline" size={iconSize} color={color} />;
-              default:
-                return <Ionicons name="ellipse-outline" size={iconSize} color={color} />;
-            }
-          },
-        })}
+        }}
       >
         <Tab.Screen
           name="Home"

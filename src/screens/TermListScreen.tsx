@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Modal,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -8,13 +7,13 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TermItem from '../components/term/TermItem';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
+import BottomSheetModal from '../components/ui/BottomSheetModal';
 import SurfaceCard from '../components/ui/SurfaceCard';
-import { SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
+import { FLOATING_TAB_BAR, SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
 import { isPendingTermStatus, TERM_STATUS } from '../constants/termStatus';
 import type { Customer } from '../constants/customer.types';
 import NewTermModal from '../modals/NewTermModal';
@@ -94,7 +93,6 @@ const FilterChip = ({
 
 const TermListScreen: React.FC = () => {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const terms = useTermStore(state => state.terms);
   const isLoading = useTermStore(state => state.isLoading);
   const error = useTermStore(state => state.error);
@@ -280,13 +278,11 @@ const TermListScreen: React.FC = () => {
                 </Text>
               </SurfaceCard>
             ) : filteredTerms.length === 0 ? (
-              <SurfaceCard tone="soft">
-                <Text className="text-sm leading-6" style={uiStyles.bodyText}>
-                  {terms.length === 0
-                    ? t('termsScreen.emptyBody')
-                    : t('termsScreen.emptyFilteredBody')}
-                </Text>
-              </SurfaceCard>
+              <Text className="text-sm leading-6" style={uiStyles.bodyText}>
+                {terms.length === 0
+                  ? t('termsScreen.emptyBody')
+                  : t('termsScreen.emptyFilteredBody')}
+              </Text>
             ) : (
               <View className="flex-col gap-3">
                 {filteredTerms.map(term => (
@@ -308,131 +304,109 @@ const TermListScreen: React.FC = () => {
         />
       </View>
 
-      <Modal
+      <BottomSheetModal
         visible={isFilterVisible}
-        transparent
-        animationType="slide"
-        statusBarTranslucent
-        presentationStyle="overFullScreen"
-        onRequestClose={() => setIsFilterVisible(false)}
+        onClose={() => setIsFilterVisible(false)}
       >
-        <View
-          className="flex-1 justify-end"
-          style={{ backgroundColor: SMART_PDF_DARK.backdrop }}
-        >
-          <View
-            className="rounded-t-[32px] px-6 pt-6"
-            style={[
-              uiStyles.modalSheet,
-              { paddingBottom: Math.max(insets.bottom, 18) + 14 },
-            ]}
-          >
-            <View
-              className="mb-5 h-1.5 w-14 self-center rounded-full"
-              style={uiStyles.modalHandle}
+        <View className="flex-col gap-4">
+          <View className="flex-row items-center justify-between gap-3">
+            <Text
+              className="text-[22px] font-semibold tracking-[-0.4px]"
+              style={uiStyles.titleText}
+            >
+              {t('termsScreen.filters.title')}
+            </Text>
+
+            <AppButton
+              label={t('common.cancel')}
+              onPress={() => setIsFilterVisible(false)}
+              variant="pill"
+              compact
+              iconOnly
+              iconName="close"
+              style={uiStyles.borderless}
             />
+          </View>
 
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View className="flex-col gap-5">
-              <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  className="text-[24px] font-semibold tracking-[-0.5px]"
-                  style={uiStyles.titleText}
-                >
-                  {t('termsScreen.filters.title')}
+              <View className="flex-col gap-3">
+                <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                  {t('termsScreen.filters.company')}
                 </Text>
-
-                <AppButton
-                  label={t('common.cancel')}
-                  onPress={() => setIsFilterVisible(false)}
-                  variant="pill"
-                  compact
-                  iconOnly
-                  iconName="close"
-                  style={uiStyles.borderless}
-                />
+                <View className="flex-row flex-wrap gap-2">
+                  {companyOptions.map(option => (
+                    <FilterChip
+                      key={option.value}
+                      isActive={
+                        option.value ===
+                        (companyFilter === 'all' ? 'all' : `${companyFilter}`)
+                      }
+                      label={option.label}
+                      onPress={() =>
+                        setCompanyFilter(
+                          option.value === 'all' ? 'all' : Number(option.value),
+                        )
+                      }
+                    />
+                  ))}
+                </View>
               </View>
 
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View className="flex-col gap-5">
-                  <View className="flex-col gap-3">
-                    <Text className="text-sm font-semibold" style={uiStyles.titleText}>
-                      {t('termsScreen.filters.company')}
-                    </Text>
-                    <View className="flex-row flex-wrap gap-2">
-                      {companyOptions.map(option => (
-                        <FilterChip
-                          key={option.value}
-                          isActive={
-                            option.value ===
-                            (companyFilter === 'all' ? 'all' : `${companyFilter}`)
-                          }
-                          label={option.label}
-                          onPress={() =>
-                            setCompanyFilter(
-                              option.value === 'all' ? 'all' : Number(option.value),
-                            )
-                          }
-                        />
-                      ))}
-                    </View>
-                  </View>
-
-                  <View className="flex-col gap-3">
-                    <Text className="text-sm font-semibold" style={uiStyles.titleText}>
-                      {t('termsScreen.filters.dateRange')}
-                    </Text>
-                    <View className="flex-row flex-wrap gap-2">
-                      {dateOptions.map(option => (
-                        <FilterChip
-                          key={option.value}
-                          isActive={dateRange === option.value}
-                          label={option.label}
-                          onPress={() => setDateRange(option.value)}
-                        />
-                      ))}
-                    </View>
-                  </View>
-
-                  <View className="flex-col gap-3">
-                    <Text className="text-sm font-semibold" style={uiStyles.titleText}>
-                      {t('termsScreen.filters.status')}
-                    </Text>
-                    <View className="flex-row flex-wrap gap-2">
-                      {statusOptions.map(option => (
-                        <FilterChip
-                          key={option.value}
-                          isActive={statusFilter === option.value}
-                          label={option.label}
-                          onPress={() => setStatusFilter(option.value)}
-                        />
-                      ))}
-                    </View>
-                  </View>
+              <View className="flex-col gap-3">
+                <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                  {t('termsScreen.filters.dateRange')}
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {dateOptions.map(option => (
+                    <FilterChip
+                      key={option.value}
+                      isActive={dateRange === option.value}
+                      label={option.label}
+                      onPress={() => setDateRange(option.value)}
+                    />
+                  ))}
                 </View>
-              </ScrollView>
+              </View>
 
-              <View className="flex-row gap-3">
-                <AppButton
-                  label={t('termsScreen.filters.reset')}
-                  onPress={() => {
-                    setCompanyFilter('all');
-                    setDateRange('all');
-                    setStatusFilter('all');
-                  }}
-                  variant="secondary"
-                  style={[uiStyles.borderless, styles.modalAction]}
-                />
-                <AppButton
-                  label={t('termsScreen.filters.apply')}
-                  onPress={() => setIsFilterVisible(false)}
-                  variant="primary"
-                  style={styles.modalAction}
-                />
+              <View className="flex-col gap-3">
+                <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                  {t('termsScreen.filters.status')}
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {statusOptions.map(option => (
+                    <FilterChip
+                      key={option.value}
+                      isActive={statusFilter === option.value}
+                      label={option.label}
+                      onPress={() => setStatusFilter(option.value)}
+                    />
+                  ))}
+                </View>
               </View>
             </View>
+          </ScrollView>
+
+          <View className="flex-row gap-3">
+            <AppButton
+              label={t('termsScreen.filters.reset')}
+              onPress={() => {
+                setCompanyFilter('all');
+                setDateRange('all');
+                setStatusFilter('all');
+              }}
+              variant="secondary"
+              style={styles.modalAction}
+            />
+            <AppButton
+              label={t('termsScreen.filters.apply')}
+              onPress={() => setIsFilterVisible(false)}
+              variant="primary"
+              style={styles.modalAction}
+            />
           </View>
         </View>
-      </Modal>
+      </BottomSheetModal>
     </AppScreen>
   );
 };
@@ -440,7 +414,7 @@ const TermListScreen: React.FC = () => {
 function createStyles() {
   return {
     scrollContent: {
-      paddingBottom: 120,
+      paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom,
     },
     headerIconButton: {
       width: 40,
@@ -478,18 +452,17 @@ function createStyles() {
     },
     modalAction: {
       flex: 1,
-      minHeight: 42,
     },
     floatingActionWrap: {
       position: 'absolute' as const,
       right: 24,
-      bottom: 24,
+      bottom: FLOATING_TAB_BAR.height + FLOATING_TAB_BAR.offset + 20,
       alignItems: 'flex-end' as const,
     },
     floatingActionButton: {
-      minHeight: 44,
-      paddingHorizontal: 20,
-      borderRadius: 24,
+      minHeight: 40,
+      paddingHorizontal: 18,
+      borderRadius: 22,
       ...SHADOWS.floatingCompact,
     },
   };

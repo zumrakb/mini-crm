@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,15 +9,15 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Calendar, LocaleConfig, type DateData } from 'react-native-calendars';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppButton from '../components/ui/AppButton';
+import BottomSheetModal from '../components/ui/BottomSheetModal';
 import AppScreen from '../components/ui/AppScreen';
 import SurfaceCard from '../components/ui/SurfaceCard';
 import TermItem from '../components/term/TermItem';
 import NewActivityModal from '../modals/NewActivityModal';
 import NewTermModal from '../modals/NewTermModal';
-import { SMART_PDF_DARK, uiStyles, useAppTheme } from '../components/ui/theme';
-import { getActivityDatesInRange } from '../repositories/activity.repository';
+import { FLOATING_TAB_BAR, SMART_PDF_DARK, uiStyles, useAppTheme } from '../components/ui/theme';
+import { getActivityDatesInRange, getActivitiesByDate } from '../repositories/activity.repository';
 import { isPendingTermStatus } from '../constants/termStatus';
 import { useActivityStore } from '../store/activity.store';
 import { useCustomerStore } from '../store/customer.store';
@@ -113,7 +110,6 @@ LocaleConfig.locales.en = {
 const HomeScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { colors } = useAppTheme();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const customers = useCustomerStore(state => state.customers);
   const loadCustomers = useCustomerStore(state => state.load);
@@ -236,6 +232,11 @@ const HomeScreen: React.FC = () => {
     [pendingTerms, today],
   );
 
+  const todayActivities = useMemo(
+    () => getActivitiesByDate(today).slice(0, 3),
+    [today],
+  );
+
   const markedDates = useMemo(() => {
     const monthDates = monthActivityDatesByMonth[visibleMonth] ?? [];
     const isMonthLoaded = Object.prototype.hasOwnProperty.call(
@@ -312,7 +313,7 @@ const HomeScreen: React.FC = () => {
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: 28 }}
+        contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
         showsVerticalScrollIndicator={false}
       >
         <View className="px-6 pb-6 pt-6">
@@ -396,6 +397,79 @@ const HomeScreen: React.FC = () => {
                 <View className="flex-row items-center justify-between gap-4">
                   <View className="flex-1">
                     <Text className="text-lg font-semibold" style={uiStyles.titleText}>
+                      {t('homeDashboard.todayTasksTitle')}
+                    </Text>
+                  </View>
+                </View>
+
+                {todayActivities.length ? (
+                  <View className="flex-col gap-3">
+                    {todayActivities.map(activity => {
+                      const customer = customerMap.get(activity.customerId);
+
+                      return (
+                        <TouchableOpacity
+                          key={activity.id}
+                          onPress={() =>
+                            navigation.navigate('Customers', {
+                              screen: 'CustomerDetail',
+                              params: { customerId: activity.customerId },
+                            })
+                          }
+                          activeOpacity={0.88}
+                          className="rounded-[22px] px-4 py-4"
+                          style={uiStyles.mutedSurface}
+                        >
+                          <View className="flex-col gap-2">
+                            <View className="flex-row items-start justify-between gap-3">
+                              <View className="min-w-0 flex-1 gap-1">
+                                <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                                  {customer?.customerName ?? t('homeDashboard.unknownCustomer')}
+                                </Text>
+                                <Text className="text-xs" style={uiStyles.bodyText}>
+                                  {customer?.companyName ?? t('homeDashboard.missingCompany')}
+                                </Text>
+                              </View>
+
+                              <View
+                                className="rounded-full px-3 py-1.5"
+                                style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+                              >
+                                <Text
+                                  className="text-xs font-semibold"
+                                  style={{
+                                    color:
+                                      SMART_PDF_DARK.statusBar === 'light-content'
+                                        ? SMART_PDF_DARK.accent
+                                        : SMART_PDF_DARK.accentMuted,
+                                  }}
+                                >
+                                  {activity.type}
+                                </Text>
+                              </View>
+                            </View>
+
+                            <Text className="text-sm leading-6" style={uiStyles.titleText}>
+                              {activity.note?.trim() || t('activityItem.emptyNote')}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <SurfaceCard tone="soft">
+                    <Text className="text-sm" style={uiStyles.bodyText}>
+                      {t('homeDashboard.emptyTodayTasks')}
+                    </Text>
+                  </SurfaceCard>
+                )}
+              </View>
+
+              <View className="flex-col gap-4">
+                <View className="flex-row items-center justify-between gap-4">
+                  <View className="flex-1">
+                    <Text className="text-lg font-semibold" style={uiStyles.titleText}>
                       {t('homeDashboard.upcomingTermsTitle')}
                     </Text>
                   </View>
@@ -416,9 +490,11 @@ const HomeScreen: React.FC = () => {
                     ))}
                   </View>
                 ) : (
-                  <Text className="text-sm" style={uiStyles.bodyText}>
-                    {t('homeDashboard.emptyTermsTitle')}
-                  </Text>
+                  <SurfaceCard tone="soft">
+                    <Text className="text-sm" style={uiStyles.bodyText}>
+                      {t('homeDashboard.emptyTermsTitle')}
+                    </Text>
+                  </SurfaceCard>
                 )}
               </View>
             </View>
@@ -426,158 +502,134 @@ const HomeScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
+      <BottomSheetModal
         visible={isAgendaVisible}
-        transparent
-        statusBarTranslucent
-        presentationStyle="overFullScreen"
-        onRequestClose={() => setIsAgendaVisible(false)}
+        onClose={() => setIsAgendaVisible(false)}
       >
-        <View
-          className="flex-1 justify-end"
-          style={{ backgroundColor: SMART_PDF_DARK.backdrop }}
-        >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          >
-            <View
-              className="rounded-t-[32px] px-6 pt-6"
-              style={[
-                uiStyles.modalSheet,
-                { paddingBottom: Math.max(insets.bottom, 18) + 14 },
-              ]}
-            >
-              <View
-                className="mb-5 h-1.5 w-14 self-center rounded-full"
-                style={uiStyles.modalHandle}
-              />
-
-                <View className="flex-col gap-5">
-                  <View className="flex-row items-center justify-between gap-3">
-                    <View className="min-w-0 flex-1 gap-1">
-                    <Text
-                      className="text-[24px] font-semibold tracking-[-0.5px]"
-                      style={uiStyles.titleText}
-                    >
-                      {t('homeDashboard.dayAgendaTitle')}
-                    </Text>
-                    <Text className="text-sm" style={uiStyles.bodyText}>
-                      {formatDate(selectedDate, locale)}
-                    </Text>
-                  </View>
-
-                  <AppButton
-                    label={t('common.cancel')}
-                    onPress={() => setIsAgendaVisible(false)}
-                    variant="pill"
-                    compact
-                    iconOnly
-                    iconName="close"
-                  />
-                </View>
-
-                <View className="flex-row gap-3">
-                  <AppButton
-                    label={t('homeDashboard.addActivity')}
-                    onPress={() => {
-                      setIsAgendaVisible(false);
-                      openActivityModal(selectedDate);
-                    }}
-                    variant="primary"
-                    iconName="add"
-                  />
-                  <AppButton
-                    label={t('homeDashboard.actions.terms')}
-                    onPress={() => {
-                      setIsAgendaVisible(false);
-                      openTermModal(selectedDate);
-                    }}
-                    variant="secondary"
-                    iconName="calendar-outline"
-                  />
-                </View>
-
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 8 }}
-                >
-                  {isAgendaLoading ? (
-                    <View className="items-center gap-3 rounded-[24px] px-5 py-8">
-                      <ActivityIndicator color={SMART_PDF_DARK.accent} />
-                      <Text className="text-center text-sm leading-6" style={uiStyles.bodyText}>
-                        {t('customerDetail.loadingActivities')}
-                      </Text>
-                    </View>
-                  ) : activities.length ? (
-                    <View className="flex-col gap-3">
-                      {activities.map(activity => {
-                        const customer = customerMap.get(activity.customerId);
-
-                        return (
-                          <TouchableOpacity
-                            key={activity.id}
-                            onPress={() => {
-                              setIsAgendaVisible(false);
-                              navigation.navigate('Customers', {
-                                screen: 'CustomerDetail',
-                                params: { customerId: activity.customerId },
-                              });
-                            }}
-                            activeOpacity={0.88}
-                            className="rounded-[22px] px-4 py-4"
-                            style={uiStyles.mutedSurface}
-                          >
-                            <View className="flex-col gap-2">
-                              <View className="flex-row items-start justify-between gap-3">
-                                <View className="min-w-0 flex-1 gap-1">
-                                  <Text className="text-sm font-semibold" style={uiStyles.titleText}>
-                                    {customer?.customerName ?? t('homeDashboard.unknownCustomer')}
-                                  </Text>
-                                  <Text className="text-xs" style={uiStyles.bodyText}>
-                                    {customer?.companyName ?? t('homeDashboard.missingCompany')}
-                                  </Text>
-                                </View>
-
-                                <View
-                                  className="rounded-full px-3 py-1.5"
-                                  style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
-                                >
-                                  <Text
-                                    className="text-xs font-semibold"
-                                    style={{
-                                      color:
-                                        SMART_PDF_DARK.statusBar === 'light-content'
-                                          ? SMART_PDF_DARK.accent
-                                          : SMART_PDF_DARK.accentMuted,
-                                    }}
-                                  >
-                                    {activity.type}
-                                  </Text>
-                                </View>
-                              </View>
-
-                              <Text className="text-sm leading-6" style={uiStyles.titleText}>
-                                {activity.note?.trim() || t('activityItem.emptyNote')}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </View>
-                  ) : (
-                    <View className="flex-col gap-3">
-                      <Text className="text-sm" style={uiStyles.bodyText}>
-                        {t('homeDashboard.emptyAgendaTitle')}
-                      </Text>
-                    </View>
-                  )}
-                </ScrollView>
-              </View>
+        <View className="flex-col gap-4">
+          <View className="flex-row items-center justify-between gap-3">
+            <View className="min-w-0 flex-1 gap-1">
+              <Text
+                className="text-[22px] font-semibold tracking-[-0.4px]"
+                style={uiStyles.titleText}
+              >
+                {t('homeDashboard.dayAgendaTitle')}
+              </Text>
+              <Text className="text-sm" style={uiStyles.bodyText}>
+                {formatDate(selectedDate, locale)}
+              </Text>
             </View>
-          </KeyboardAvoidingView>
+
+            <AppButton
+              label={t('common.cancel')}
+              onPress={() => setIsAgendaVisible(false)}
+              variant="pill"
+              compact
+              iconOnly
+              iconName="close"
+            />
+          </View>
+
+          <View className="flex-row gap-3">
+            <AppButton
+              label={t('homeDashboard.addActivity')}
+              onPress={() => {
+                setIsAgendaVisible(false);
+                openActivityModal(selectedDate);
+              }}
+              variant="primary"
+              iconName="add"
+              style={{ flex: 1 }}
+            />
+            <AppButton
+              label={t('homeDashboard.actions.terms')}
+              onPress={() => {
+                setIsAgendaVisible(false);
+                openTermModal(selectedDate);
+              }}
+              variant="secondary"
+              iconName="calendar-outline"
+              style={{ flex: 1 }}
+            />
+          </View>
+
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 8 }}
+          >
+            {isAgendaLoading ? (
+              <View className="items-center gap-3 rounded-[24px] px-5 py-8">
+                <ActivityIndicator color={SMART_PDF_DARK.accent} />
+                <Text className="text-center text-sm leading-6" style={uiStyles.bodyText}>
+                  {t('customerDetail.loadingActivities')}
+                </Text>
+              </View>
+            ) : activities.length ? (
+              <View className="flex-col gap-3">
+                {activities.map(activity => {
+                  const customer = customerMap.get(activity.customerId);
+
+                  return (
+                    <TouchableOpacity
+                      key={activity.id}
+                      onPress={() => {
+                        setIsAgendaVisible(false);
+                        navigation.navigate('Customers', {
+                          screen: 'CustomerDetail',
+                          params: { customerId: activity.customerId },
+                        });
+                      }}
+                      activeOpacity={0.88}
+                      className="rounded-[22px] px-4 py-4"
+                      style={uiStyles.mutedSurface}
+                    >
+                      <View className="flex-col gap-2">
+                        <View className="flex-row items-start justify-between gap-3">
+                          <View className="min-w-0 flex-1 gap-1">
+                            <Text className="text-sm font-semibold" style={uiStyles.titleText}>
+                              {customer?.customerName ?? t('homeDashboard.unknownCustomer')}
+                            </Text>
+                            <Text className="text-xs" style={uiStyles.bodyText}>
+                              {customer?.companyName ?? t('homeDashboard.missingCompany')}
+                            </Text>
+                          </View>
+
+                          <View
+                            className="rounded-full px-3 py-1.5"
+                            style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+                          >
+                            <Text
+                              className="text-xs font-semibold"
+                              style={{
+                                color:
+                                  SMART_PDF_DARK.statusBar === 'light-content'
+                                    ? SMART_PDF_DARK.accent
+                                    : SMART_PDF_DARK.accentMuted,
+                              }}
+                            >
+                              {activity.type}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <Text className="text-sm leading-6" style={uiStyles.titleText}>
+                          {activity.note?.trim() || t('activityItem.emptyNote')}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ) : (
+              <SurfaceCard tone="soft">
+                <Text className="text-sm" style={uiStyles.bodyText}>
+                  {t('homeDashboard.emptyAgendaTitle')}
+                </Text>
+              </SurfaceCard>
+            )}
+          </ScrollView>
         </View>
-      </Modal>
+      </BottomSheetModal>
     </AppScreen>
   );
 };

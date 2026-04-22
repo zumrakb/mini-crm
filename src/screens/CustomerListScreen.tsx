@@ -12,10 +12,9 @@ import CustomerCard from '../components/customer/CustomerCard';
 import CustomerSearchBar from '../components/customer/CustomerSearchBar';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
-import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import SurfaceCard from '../components/ui/SurfaceCard';
-import { SMART_PDF_DARK } from '../components/ui/theme';
+import { FLOATING_TAB_BAR, SMART_PDF_DARK } from '../components/ui/theme';
 import NewCustomerModal from '../modals/NewCustomerModal';
 import { useActivityStore } from '../store/activity.store';
 import { useCustomerStore } from '../store/customer.store';
@@ -102,9 +101,6 @@ const CustomerListScreen: React.FC = () => {
               variant="primary"
               compact
               iconName="add"
-              style={{
-                minHeight: 40,
-              }}
             />
           }
         />
@@ -164,7 +160,7 @@ const CustomerListScreen: React.FC = () => {
               />
             </View>
           )}
-          contentContainerStyle={{ paddingBottom: 28 }}
+          contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
           showsVerticalScrollIndicator={false}
           onRefresh={load}
           refreshing={isLoading}
@@ -173,23 +169,15 @@ const CustomerListScreen: React.FC = () => {
           ListEmptyComponent={
             <View className="px-6 pt-4">
               {error ? (
-                <EmptyState
-                  title={t('customersScreen.errorTitle')}
-                  description={error}
-                />
+                <Text className="text-sm leading-6" style={{ color: SMART_PDF_DARK.muted }}>
+                  {error}
+                </Text>
               ) : (
-                <EmptyState
-                  title={
-                    searchQuery.trim()
-                      ? t('customersScreen.searchEmptyTitle')
-                      : t('customersScreen.emptyTitle')
-                  }
-                  description={
-                    searchQuery.trim()
-                      ? t('customersScreen.searchEmptyBody')
-                      : t('customersScreen.emptyBody')
-                  }
-                />
+                <Text className="text-sm leading-6" style={{ color: SMART_PDF_DARK.muted }}>
+                  {searchQuery.trim()
+                    ? t('customersScreen.searchEmptyBody')
+                    : t('customersScreen.emptyBody')}
+                </Text>
               )}
             </View>
           }

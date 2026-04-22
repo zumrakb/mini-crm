@@ -15,7 +15,7 @@ import ActivityItem from '../components/activity/ActivityItem';
 import TermItem from '../components/term/TermItem';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
-import { SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
+import { FLOATING_TAB_BAR, SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
 import type { Customer } from '../constants/customer.types';
 import CustomerEditModal from '../modals/CustomerEditModal';
 import NewActivityModal from '../modals/NewActivityModal';
@@ -106,34 +106,13 @@ const SectionTab: React.FC<SectionTabProps> = ({
 };
 
 interface SectionStateProps {
-  iconName: React.ComponentProps<typeof Ionicons>['name'];
   message: string;
-  accent?: boolean;
 }
 
-const SectionState: React.FC<SectionStateProps> = ({
-  iconName,
-  message,
-  accent = false,
-}) => {
-  const styles = createStyles();
-
+const SectionState: React.FC<SectionStateProps> = ({ message }) => {
   return (
-    <View
-      className="items-center gap-3 rounded-[24px] px-5 py-8"
-      style={styles.sectionState}
-    >
-      <View
-        className="rounded-full p-3"
-        style={accent ? styles.stateIconAccent : styles.stateIconMuted}
-      >
-        <Ionicons
-          name={iconName}
-          size={18}
-          color={accent ? SMART_PDF_DARK.accent : SMART_PDF_DARK.muted}
-        />
-      </View>
-      <Text className="text-center text-sm leading-6" style={uiStyles.bodyText}>
+    <View className="px-1 py-3">
+      <Text className="text-sm leading-6" style={uiStyles.bodyText}>
         {message}
       </Text>
     </View>
@@ -384,20 +363,12 @@ const CustomerDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                   <View className="flex-col gap-4">
                     {isLoading && sortedActivities.length === 0 ? (
                       <SectionState
-                        iconName="time-outline"
                         message={t('customerDetail.loadingActivities')}
-                        accent
                       />
                     ) : error ? (
-                      <SectionState
-                        iconName="alert-circle-outline"
-                        message={error}
-                      />
+                      <SectionState message={error} />
                     ) : sortedActivities.length === 0 ? (
-                      <SectionState
-                        iconName="document-text-outline"
-                        message={t('customerDetail.emptyActivitiesBody')}
-                      />
+                      <SectionState message={t('customerDetail.emptyActivitiesBody')} />
                     ) : (
                       <View className="flex-col gap-3">
                         {sortedActivities.map(activity => (
@@ -411,21 +382,11 @@ const CustomerDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                 <View style={[styles.page, { width: pagerWidth || undefined }]}>
                   <View className="flex-col gap-3">
                     {isTermsLoading && terms.length === 0 ? (
-                      <SectionState
-                        iconName="cube-outline"
-                        message={t('customerDetail.loadingTerms')}
-                        accent
-                      />
+                      <SectionState message={t('customerDetail.loadingTerms')} />
                     ) : termError ? (
-                      <SectionState
-                        iconName="alert-circle-outline"
-                        message={termError}
-                      />
+                      <SectionState message={termError} />
                     ) : terms.length === 0 ? (
-                      <SectionState
-                        iconName="cube-outline"
-                        message={t('customerDetail.emptyTermsBody')}
-                      />
+                      <SectionState message={t('customerDetail.emptyTermsBody')} />
                     ) : (
                       <View className="flex-col gap-3">
                         {sortedTerms.map(term => (
@@ -482,14 +443,14 @@ function createStyles() {
       fontWeight: '400' as const,
     },
     floatingActionButton: {
-      minHeight: 44,
-      paddingHorizontal: 20,
-      borderRadius: 24,
+      minHeight: 40,
+      paddingHorizontal: 18,
+      borderRadius: 22,
       ...SHADOWS.floatingCompact,
     },
     scrollContent: {
       flexGrow: 1,
-      paddingBottom: 120,
+      paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom,
     },
     scrollView: {
       backgroundColor: SMART_PDF_DARK.background,
@@ -520,15 +481,6 @@ function createStyles() {
     },
     inactiveTab: {
       backgroundColor: SMART_PDF_DARK.surface,
-    },
-    sectionState: {
-      backgroundColor: SMART_PDF_DARK.surface,
-    },
-    stateIconMuted: {
-      backgroundColor: SMART_PDF_DARK.surfaceMuted,
-    },
-    stateIconAccent: {
-      backgroundColor: SMART_PDF_DARK.accentSurface,
     },
     topBackdrop: {
       position: 'absolute' as const,
@@ -568,7 +520,7 @@ function createStyles() {
     floatingActionWrap: {
       position: 'absolute' as const,
       right: 24,
-      bottom: 24,
+      bottom: FLOATING_TAB_BAR.height + FLOATING_TAB_BAR.offset + 20,
       gap: 10,
       alignItems: 'flex-end' as const,
     },
