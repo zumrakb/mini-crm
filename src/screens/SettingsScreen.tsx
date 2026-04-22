@@ -13,7 +13,6 @@ import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
 import BottomSheetModal from '../components/ui/BottomSheetModal';
 import PageHeader from '../components/ui/PageHeader';
-import SurfaceCard from '../components/ui/SurfaceCard';
 import { FLOATING_TAB_BAR, uiStyles, useAppTheme, type AppThemePreference } from '../components/ui/theme';
 import {
   exportBackupExcelFile,
@@ -168,27 +167,13 @@ const SettingsScreen: React.FC = () => {
             />
           </View>
 
-          <SurfaceCard tone="soft">
-            <View className="flex-col gap-3">
-              <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                {t('settingsDashboard.appInfoTitle')}
-              </Text>
-              <Text className="text-sm leading-6" style={uiStyles.bodyText}>
-                {t('settingsDashboard.appInfoBody')}
-              </Text>
-            </View>
-          </SurfaceCard>
+          <Text className="text-base font-semibold" style={uiStyles.titleText}>
+            {t('settingsDashboard.appInfoTitle')}
+          </Text>
 
-          <SurfaceCard tone="soft">
-            <View className="flex-col gap-3">
-              <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                {t('settingsDashboard.securityTitle')}
-              </Text>
-              <Text className="text-sm leading-6" style={uiStyles.bodyText}>
-                {t('settingsDashboard.securityBody')}
-              </Text>
-            </View>
-          </SurfaceCard>
+          <Text className="text-base font-semibold" style={uiStyles.titleText}>
+            {t('settingsDashboard.securityTitle')}
+          </Text>
         </View>
       </BottomSheetModal>
 
@@ -201,107 +186,92 @@ const SettingsScreen: React.FC = () => {
           <View className="flex-col gap-4">
             <PageHeader title={t('settingsDashboard.title')} />
 
-            <SurfaceCard>
-              <View className="flex-col gap-4">
-                <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                  {t('settingsDashboard.languageTitle')}
-                </Text>
+            <View className="flex-col gap-4">
+              <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.languageTitle')}
+              </Text>
 
-                <View className="flex-row gap-3">
-                  {languageButtons.map(button => {
-                    const isActive = currentLanguage === button.code;
+              <View className="flex-row gap-3">
+                {languageButtons.map(button => {
+                  const isActive = currentLanguage === button.code;
 
-                    return (
-                      <AppButton
-                        key={button.code}
-                        label={`${button.flag} ${button.label}`}
-                        onPress={() => {
-                          void i18n.changeLanguage(button.code);
-                        }}
-                        variant={isActive ? 'primary' : 'secondary'}
-                        style={{ flex: 1 }}
-                      />
-                    );
-                  })}
-                </View>
+                  return (
+                    <AppButton
+                      key={button.code}
+                      label={`${button.flag} ${button.label}`}
+                      onPress={() => {
+                        void i18n.changeLanguage(button.code);
+                      }}
+                      variant={isActive ? 'primary' : 'secondary'}
+                      style={{ flex: 1 }}
+                    />
+                  );
+                })}
               </View>
-            </SurfaceCard>
+            </View>
 
-            <SurfaceCard>
-              <View className="flex-col gap-4">
-                <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                  {t('settingsDashboard.themeTitle')}
-                </Text>
+            <View className="flex-col gap-4">
+              <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.themeTitle')}
+              </Text>
 
-                <View className="flex-row gap-3">
-                  {themeButtons.map(button => {
-                    const isActive = preference === button.code;
+              <View className="flex-row gap-3">
+                {themeButtons.map(button => {
+                  const isActive = preference === button.code;
 
-                    return (
-                      <AppButton
-                        key={button.code}
-                        label={button.label}
-                        onPress={() => {
-                          void setPreference(button.code);
-                        }}
-                        variant={isActive ? 'primary' : 'secondary'}
-                        style={{ flex: 1 }}
-                      />
-                    );
-                  })}
-                </View>
+                  return (
+                    <AppButton
+                      key={button.code}
+                      label={button.label}
+                      onPress={() => {
+                        void setPreference(button.code);
+                      }}
+                      variant={isActive ? 'primary' : 'secondary'}
+                      style={{ flex: 1 }}
+                    />
+                  );
+                })}
               </View>
-            </SurfaceCard>
+            </View>
 
-            <SurfaceCard>
-              <View className="flex-col gap-4">
-                <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                  {t('settingsDashboard.dataTitle')}
-                </Text>
+            <View className="flex-col gap-4">
+              <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.dataTitle')}
+              </Text>
 
-                <View className="flex-row gap-3">
-                  <AppButton
-                    label={t('settingsDashboard.shortJsonAction')}
-                    onPress={() => setPendingExport('json')}
-                    disabled={isJsonBusy}
-                    variant="primary"
-                    iconName="download-outline"
-                    style={{ flex: 1 }}
-                  />
+              <View className="flex-row gap-3">
+                <AppButton
+                  label={t('settingsDashboard.shortJsonAction')}
+                  onPress={() => setPendingExport('json')}
+                  disabled={isJsonBusy}
+                  variant="primary"
+                  iconName="download-outline"
+                  style={{ flex: 1 }}
+                />
 
-                  <AppButton
-                    label={t('settingsDashboard.shortExcelAction')}
-                    onPress={() => setPendingExport('excel')}
-                    disabled={isExcelBusy}
-                    variant="secondary"
-                    iconName="download-outline"
-                    style={{ flex: 1 }}
-                  />
-                </View>
+                <AppButton
+                  label={t('settingsDashboard.shortExcelAction')}
+                  onPress={() => setPendingExport('excel')}
+                  disabled={isExcelBusy}
+                  variant="secondary"
+                  iconName="download-outline"
+                  style={{ flex: 1 }}
+                />
               </View>
-            </SurfaceCard>
+            </View>
 
-            <SurfaceCard tone="soft">
-              <View className="flex-col gap-4">
-                <View className="flex-row items-center justify-between gap-4">
-                  <View className="gap-1">
-                    <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                      {t('settingsDashboard.versionTitle')}
-                    </Text>
-                    <Text className="text-sm" style={uiStyles.bodyText}>
-                      {t('settingsDashboard.versionLabel', { version: APP_VERSION })}
-                    </Text>
-                  </View>
+            <View className="flex-col gap-4">
+              <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                {t('settingsDashboard.versionTitle')}
+              </Text>
 
-                  <AppButton
-                    label={t('settingsDashboard.versionAction')}
-                    onPress={() => setIsAboutVisible(true)}
-                    variant="pill"
-                    iconName="information-circle-outline"
-                  />
-                </View>
-              </View>
-            </SurfaceCard>
+              <AppButton
+                label={t('settingsDashboard.versionAction')}
+                onPress={() => setIsAboutVisible(true)}
+                variant="pill"
+                iconName="information-circle-outline"
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
