@@ -23,6 +23,7 @@ import NewTermModal from '../../modals/NewTermModal';
 
 interface TermItemProps {
   term: Term;
+  companyName?: string;
 }
 
 function normalizeLegacyTermDuration(value: string): string {
@@ -31,7 +32,7 @@ function normalizeLegacyTermDuration(value: string): string {
     .replace(/\bgun\b/g, 'gün');
 }
 
-const TermItem: React.FC<TermItemProps> = ({ term }) => {
+const TermItem: React.FC<TermItemProps> = ({ term, companyName }) => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
@@ -146,6 +147,15 @@ const TermItem: React.FC<TermItemProps> = ({ term }) => {
                 {normalizeLegacyTermDuration(term.termDuration)}
               </Text>
             </View>
+            {companyName ? (
+              <Text
+                className="text-xs leading-5"
+                style={uiStyles.bodyText}
+                numberOfLines={1}
+              >
+                {companyName}
+              </Text>
+            ) : null}
           </View>
 
           <View className="items-end gap-2" style={styles.menuWrap}>

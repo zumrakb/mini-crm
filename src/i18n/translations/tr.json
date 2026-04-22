@@ -111,6 +111,7 @@
       "summary": "İzin durumu: {{permission}}. Planlı termin hatırlatması: {{count}}.",
       "summaryUnavailable": "Bildirim özeti şu anda okunamadı.",
       "permissionAction": "Bildirim izni iste",
+      "testInlineAction": "Dene",
       "testAction": "Test bildirimi göster",
       "syncAction": "Termin hatırlatmalarını yeniden kur",
       "permissionResultTitle": "Bildirim izni sonucu",
@@ -141,10 +142,10 @@
     "versionAction": "Uygulama Hakkında",
     "versionInfoTitle": "Uygulama hakkında",
     "versionLabel": "Sürüm {{version}}",
-    "appInfoTitle": "Mini CRM",
-    "appInfoBody": "Mini CRM müşterileri, aktiviteleri ve terminleri hızlı şekilde takip etmek için tasarlanmış sade bir yerel uygulamadır.",
-    "securityTitle": "Güvenlik ve gizlilik",
-    "securityBody": "Verileriniz sadece sizin telefonunuzda tutulur. Uygulama cloud senkronizasyon kullanmaz; yedekleme işlemleri sizin başlattığınız manuel dışa aktarma ile çalışır.",
+    "appInfoTitle": "",
+    "appInfoBody": "",
+    "securityTitle": "",
+    "securityBody": "Verileriniz sizin cihazınızda kalır, hiçbir sunucuya gönderilmez.",
     "confirmExportTitle": "Dışa aktarma onayı",
     "confirmJsonBody": "JSON yedeğini indirmek istediğine emin misin?",
     "confirmExcelBody": "Excel dosyasını indirmek istediğine emin misin?",
@@ -353,7 +354,8 @@
     "markAsCompleted": "Tamamlandı olarak işaretle",
     "expectedDateLabel": "Termin vadesi",
     "orderDateLabel": "Sipariş tarihi",
-    "edit": "Termini düzenle"
+    "edit": "Termini düzenle",
+    "companyFallback": "Şirket bilgisi yok"
   },
   "termStatus": {
     "ordered": "Sipariş edildi",

@@ -388,9 +388,13 @@ const CustomerDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                     ) : terms.length === 0 ? (
                       <SectionState message={t('customerDetail.emptyTermsBody')} />
                     ) : (
-                      <View className="flex-col gap-3">
-                        {sortedTerms.map(term => (
-                          <TermItem key={term.id} term={term} />
+                        <View className="flex-col gap-3">
+                          {sortedTerms.map(term => (
+                          <TermItem
+                            key={term.id}
+                            term={term}
+                            companyName={customer.companyName}
+                          />
                         ))}
                       </View>
                     )}

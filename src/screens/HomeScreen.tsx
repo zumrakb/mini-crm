@@ -17,7 +17,7 @@ import TermItem from '../components/term/TermItem';
 import NewActivityModal from '../modals/NewActivityModal';
 import NewTermModal from '../modals/NewTermModal';
 import { FLOATING_TAB_BAR, SMART_PDF_DARK, uiStyles, useAppTheme } from '../components/ui/theme';
-import { getActivityDatesInRange, getActivitiesByDate } from '../repositories/activity.repository';
+import { getActivityDatesInRange } from '../repositories/activity.repository';
 import { isPendingTermStatus } from '../constants/termStatus';
 import { useActivityStore } from '../store/activity.store';
 import { useCustomerStore } from '../store/customer.store';
@@ -232,9 +232,13 @@ const HomeScreen: React.FC = () => {
     [pendingTerms, today],
   );
 
-  const todayActivities = useMemo(
-    () => getActivitiesByDate(today).slice(0, 3),
-    [today],
+  const todayTerms = useMemo(
+    () =>
+      [...pendingTerms]
+        .filter(term => term.expectedDate === today)
+        .sort((left, right) => left.id - right.id)
+        .slice(0, 3),
+    [pendingTerms, today],
   );
 
   const markedDates = useMemo(() => {
@@ -402,67 +406,20 @@ const HomeScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {todayActivities.length ? (
+                {todayTerms.length ? (
                   <View className="flex-col gap-3">
-                    {todayActivities.map(activity => {
-                      const customer = customerMap.get(activity.customerId);
-
-                      return (
-                        <TouchableOpacity
-                          key={activity.id}
-                          onPress={() =>
-                            navigation.navigate('Customers', {
-                              screen: 'CustomerDetail',
-                              params: { customerId: activity.customerId },
-                            })
-                          }
-                          activeOpacity={0.88}
-                          className="rounded-[22px] px-4 py-4"
-                          style={uiStyles.mutedSurface}
-                        >
-                          <View className="flex-col gap-2">
-                            <View className="flex-row items-start justify-between gap-3">
-                              <View className="min-w-0 flex-1 gap-1">
-                                <Text className="text-sm font-semibold" style={uiStyles.titleText}>
-                                  {customer?.customerName ?? t('homeDashboard.unknownCustomer')}
-                                </Text>
-                                <Text className="text-xs" style={uiStyles.bodyText}>
-                                  {customer?.companyName ?? t('homeDashboard.missingCompany')}
-                                </Text>
-                              </View>
-
-                              <View
-                                className="rounded-full px-3 py-1.5"
-                                style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
-                              >
-                                <Text
-                                  className="text-xs font-semibold"
-                                  style={{
-                                    color:
-                                      SMART_PDF_DARK.statusBar === 'light-content'
-                                        ? SMART_PDF_DARK.accent
-                                        : SMART_PDF_DARK.accentMuted,
-                                  }}
-                                >
-                                  {activity.type}
-                                </Text>
-                              </View>
-                            </View>
-
-                            <Text className="text-sm leading-6" style={uiStyles.titleText}>
-                              {activity.note?.trim() || t('activityItem.emptyNote')}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
+                    {todayTerms.map(term => (
+                      <TermItem
+                        key={term.id}
+                        term={term}
+                        companyName={customerMap.get(term.customerId)?.companyName}
+                      />
+                    ))}
                   </View>
                 ) : (
-                  <SurfaceCard tone="soft">
-                    <Text className="text-sm" style={uiStyles.bodyText}>
-                      {t('homeDashboard.emptyTodayTasks')}
-                    </Text>
-                  </SurfaceCard>
+                  <Text className="text-sm" style={uiStyles.bodyText}>
+                    {t('homeDashboard.emptyTodayTasks')}
+                  </Text>
                 )}
               </View>
 
@@ -486,15 +443,17 @@ const HomeScreen: React.FC = () => {
                 {upcomingTerms.length ? (
                   <View className="flex-col gap-3">
                     {upcomingTerms.map(term => (
-                      <TermItem key={term.id} term={term} />
+                      <TermItem
+                        key={term.id}
+                        term={term}
+                        companyName={customerMap.get(term.customerId)?.companyName}
+                      />
                     ))}
                   </View>
                 ) : (
-                  <SurfaceCard tone="soft">
-                    <Text className="text-sm" style={uiStyles.bodyText}>
-                      {t('homeDashboard.emptyTermsTitle')}
-                    </Text>
-                  </SurfaceCard>
+                  <Text className="text-sm" style={uiStyles.bodyText}>
+                    {t('homeDashboard.emptyTermsTitle')}
+                  </Text>
                 )}
               </View>
             </View>

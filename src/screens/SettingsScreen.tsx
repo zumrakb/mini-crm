@@ -4,6 +4,7 @@ import {
   Platform,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +53,7 @@ const SettingsScreen: React.FC = () => {
     { code: 'light', label: t('settingsDashboard.themeOptions.light') },
     { code: 'dark', label: t('settingsDashboard.themeOptions.dark') },
   ];
+  const styles = createStyles(colors, isDark);
 
   const refreshNotificationSummary = useCallback(async () => {
     try {
@@ -274,12 +276,8 @@ const SettingsScreen: React.FC = () => {
             />
           </View>
 
-          <Text className="text-base font-semibold" style={uiStyles.titleText}>
-            {t('settingsDashboard.appInfoTitle')}
-          </Text>
-
-          <Text className="text-base font-semibold" style={uiStyles.titleText}>
-            {t('settingsDashboard.securityTitle')}
+          <Text className="text-base leading-7" style={uiStyles.bodyText}>
+            {t('settingsDashboard.securityBody')}
           </Text>
         </View>
       </BottomSheetModal>
@@ -342,9 +340,21 @@ const SettingsScreen: React.FC = () => {
             </View>
 
             <View className="flex-col gap-4">
-              <Text className="text-base font-semibold" style={uiStyles.titleText}>
-                {t('settingsDashboard.notifications.title')}
-              </Text>
+              <View className="flex-row items-center justify-between gap-3">
+                <Text className="text-base font-semibold" style={uiStyles.titleText}>
+                  {t('settingsDashboard.notifications.title')}
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => handleTestNotification().catch(() => undefined)}
+                  activeOpacity={0.75}
+                  disabled={isNotificationBusy}
+                >
+                  <Text style={styles.testActionText}>
+                    {t('settingsDashboard.notifications.testInlineAction')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               <Text className="text-sm" style={uiStyles.bodyText}>
                 {notificationSummary
@@ -362,14 +372,6 @@ const SettingsScreen: React.FC = () => {
                   disabled={isNotificationBusy}
                   variant="primary"
                   iconName="notifications-outline"
-                />
-
-                <AppButton
-                  label={t('settingsDashboard.notifications.testAction')}
-                  onPress={() => handleTestNotification().catch(() => undefined)}
-                  disabled={isNotificationBusy}
-                  variant="secondary"
-                  iconName="flash-outline"
                 />
 
                 <AppButton
@@ -426,5 +428,18 @@ const SettingsScreen: React.FC = () => {
     </AppScreen>
   );
 };
+
+function createStyles(
+  colors: ReturnType<typeof useAppTheme>['colors'],
+  _isDark: boolean,
+) {
+  return {
+    testActionText: {
+      color: colors.accent,
+      fontSize: 13,
+      fontWeight: '700' as const,
+    },
+  };
+}
 
 export default SettingsScreen;

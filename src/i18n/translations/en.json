@@ -111,6 +111,7 @@
       "summary": "Permission: {{permission}}. Scheduled term reminders: {{count}}.",
       "summaryUnavailable": "The notification summary could not be loaded right now.",
       "permissionAction": "Request notification permission",
+      "testInlineAction": "Try",
       "testAction": "Show test notification",
       "syncAction": "Rebuild term reminders",
       "permissionResultTitle": "Notification permission result",
@@ -141,10 +142,10 @@
     "versionAction": "About the App",
     "versionInfoTitle": "About the app",
     "versionLabel": "Version {{version}}",
-    "appInfoTitle": "Mini CRM",
-    "appInfoBody": "Mini CRM is a simple local-first app designed to keep track of customers, activities, and terms quickly.",
-    "securityTitle": "Security and privacy",
-    "securityBody": "Your data stays only on your phone. The app does not use cloud sync; backups work only through manual exports that you start.",
+    "appInfoTitle": "",
+    "appInfoBody": "",
+    "securityTitle": "",
+    "securityBody": "Your data stays on your device and is never sent to any server.",
     "confirmExportTitle": "Export confirmation",
     "confirmJsonBody": "Are you sure you want to download the JSON backup?",
     "confirmExcelBody": "Are you sure you want to download the Excel file?",
@@ -353,7 +354,8 @@
     "markAsCompleted": "Mark as completed",
     "expectedDateLabel": "Term due date",
     "orderDateLabel": "Order date",
-    "edit": "Edit term"
+    "edit": "Edit term",
+    "companyFallback": "No company info"
   },
   "termStatus": {
     "ordered": "Ordered",

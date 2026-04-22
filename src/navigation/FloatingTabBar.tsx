@@ -31,8 +31,8 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
   const { width } = useWindowDimensions();
   const tabBarWidth = Math.min(width - 40, 360);
   const tabBarLeft = (width - tabBarWidth) / 2;
-  const tabBarBackgroundColor = isDark ? colors.surfaceAlt : '#FFFFFF';
-  const activeTintColor = isDark ? colors.accent : colors.accentMuted;
+  const tabBarBackgroundColor = isDark ? colors.surfaceAlt : colors.surfaceAlt;
+  const activeTintColor = isDark ? colors.accent : colors.accent;
   const inactiveTintColor = isDark ? colors.muted : '#7C8AA0';
 
   return (
@@ -93,6 +93,9 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
           const tintColor = isFocused
             ? activeTintColor
             : inactiveTintColor;
+          const itemBackgroundColor = isFocused
+            ? (isDark ? colors.surfaceMuted : colors.surface)
+            : 'transparent';
 
           return (
             <TouchableOpacity
@@ -109,6 +112,10 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 2,
+                borderRadius: 18,
+                backgroundColor: itemBackgroundColor,
+                marginHorizontal: 2,
+                paddingVertical: 6,
               }}
             >
               <Ionicons

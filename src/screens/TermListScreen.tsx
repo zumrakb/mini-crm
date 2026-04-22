@@ -106,6 +106,9 @@ const TermListScreen: React.FC = () => {
   const [companyFilter, setCompanyFilter] = useState<number | 'all'>('all');
   const [dateRange, setDateRange] = useState<DateRange>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [draftCompanyFilter, setDraftCompanyFilter] = useState<number | 'all'>('all');
+  const [draftDateRange, setDraftDateRange] = useState<DateRange>('all');
+  const [draftStatusFilter, setDraftStatusFilter] = useState<StatusFilter>('all');
 
   useFocusEffect(
     useCallback(() => {
@@ -205,6 +208,30 @@ const TermListScreen: React.FC = () => {
   ].filter(Boolean).length;
   const styles = createStyles();
 
+  const openFilterModal = useCallback(() => {
+    setDraftCompanyFilter(companyFilter);
+    setDraftDateRange(dateRange);
+    setDraftStatusFilter(statusFilter);
+    setIsFilterVisible(true);
+  }, [companyFilter, dateRange, statusFilter]);
+
+  const closeFilterModal = useCallback(() => {
+    setIsFilterVisible(false);
+  }, []);
+
+  const handleResetFilters = useCallback(() => {
+    setDraftCompanyFilter('all');
+    setDraftDateRange('all');
+    setDraftStatusFilter('all');
+  }, []);
+
+  const handleApplyFilters = useCallback(() => {
+    setCompanyFilter(draftCompanyFilter);
+    setDateRange(draftDateRange);
+    setStatusFilter(draftStatusFilter);
+    setIsFilterVisible(false);
+  }, [draftCompanyFilter, draftDateRange, draftStatusFilter]);
+
   return (
     <AppScreen>
       <NewTermModal
@@ -244,7 +271,7 @@ const TermListScreen: React.FC = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => setIsFilterVisible(true)}
+                  onPress={openFilterModal}
                   activeOpacity={0.85}
                   className="items-center justify-center rounded-full"
                   style={styles.headerIconButton}
@@ -286,7 +313,11 @@ const TermListScreen: React.FC = () => {
             ) : (
               <View className="flex-col gap-3">
                 {filteredTerms.map(term => (
-                  <TermItem key={term.id} term={term} />
+                  <TermItem
+                    key={term.id}
+                    term={term}
+                    companyName={customerMap[term.customerId]?.companyName}
+                  />
                 ))}
               </View>
             )}
@@ -306,7 +337,7 @@ const TermListScreen: React.FC = () => {
 
       <BottomSheetModal
         visible={isFilterVisible}
-        onClose={() => setIsFilterVisible(false)}
+        onClose={closeFilterModal}
       >
         <View className="flex-col gap-4">
           <View className="flex-row items-center justify-between gap-3">
@@ -319,7 +350,7 @@ const TermListScreen: React.FC = () => {
 
             <AppButton
               label={t('common.cancel')}
-              onPress={() => setIsFilterVisible(false)}
+              onPress={closeFilterModal}
               variant="pill"
               compact
               iconOnly
@@ -340,11 +371,11 @@ const TermListScreen: React.FC = () => {
                       key={option.value}
                       isActive={
                         option.value ===
-                        (companyFilter === 'all' ? 'all' : `${companyFilter}`)
+                        (draftCompanyFilter === 'all' ? 'all' : `${draftCompanyFilter}`)
                       }
                       label={option.label}
                       onPress={() =>
-                        setCompanyFilter(
+                        setDraftCompanyFilter(
                           option.value === 'all' ? 'all' : Number(option.value),
                         )
                       }
@@ -361,9 +392,9 @@ const TermListScreen: React.FC = () => {
                   {dateOptions.map(option => (
                     <FilterChip
                       key={option.value}
-                      isActive={dateRange === option.value}
+                      isActive={draftDateRange === option.value}
                       label={option.label}
-                      onPress={() => setDateRange(option.value)}
+                      onPress={() => setDraftDateRange(option.value)}
                     />
                   ))}
                 </View>
@@ -377,9 +408,9 @@ const TermListScreen: React.FC = () => {
                   {statusOptions.map(option => (
                     <FilterChip
                       key={option.value}
-                      isActive={statusFilter === option.value}
+                      isActive={draftStatusFilter === option.value}
                       label={option.label}
-                      onPress={() => setStatusFilter(option.value)}
+                      onPress={() => setDraftStatusFilter(option.value)}
                     />
                   ))}
                 </View>
@@ -390,17 +421,13 @@ const TermListScreen: React.FC = () => {
           <View className="flex-row gap-3">
             <AppButton
               label={t('termsScreen.filters.reset')}
-              onPress={() => {
-                setCompanyFilter('all');
-                setDateRange('all');
-                setStatusFilter('all');
-              }}
+              onPress={handleResetFilters}
               variant="secondary"
               style={styles.modalAction}
             />
             <AppButton
               label={t('termsScreen.filters.apply')}
-              onPress={() => setIsFilterVisible(false)}
+              onPress={handleApplyFilters}
               variant="primary"
               style={styles.modalAction}
             />
