@@ -21,7 +21,10 @@ if (autolinkingFile.exists()) {
 }
 
 extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
-    ex.autolinkLibrariesFromCommand()
+    ex.autolinkLibrariesFromCommand(
+        ["node", "scripts/react-native-autolink-config.js"],
+        rootDir.parentFile
+    )
 }
 rootProject.name = 'mini-crm'
 include ':app'
