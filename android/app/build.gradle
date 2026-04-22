@@ -22,7 +22,9 @@ react {
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
     //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
-    // debuggableVariants = ["liteDebug", "prodDebug"]
+    // Keep regular debug connected to Metro for local development.
+    // The standalone build is bundled into the APK so it can be installed directly on a phone.
+    debuggableVariants = ["debug", "debugOptimized"]
 
     /* Bundling */
     //   A list containing the node command and its flags. Default is just 'node'.
@@ -99,6 +101,13 @@ android {
             signingConfig signingConfigs.debug
             // Enable cleartext traffic for development (HTTP support)
             manifestPlaceholders = [usesCleartextTraffic: "true"]
+        }
+        standalone {
+            initWith debug
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ["debug"]
+            // Bundle JS into the APK so the app works without Metro on the device.
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
