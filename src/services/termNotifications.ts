@@ -68,6 +68,16 @@ function getReminderDate(expectedDate: string): Date {
   return reminderDate;
 }
 
+function formatReminderTime(date: Date): string {
+  return new Intl.DateTimeFormat(
+    (i18n.language || 'en').startsWith('tr') ? 'tr-TR' : 'en-US',
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    },
+  ).format(date);
+}
+
 function canScheduleReminder(term: Term): boolean {
   if (!isPendingTermStatus(term.status)) {
     return false;
@@ -197,6 +207,7 @@ export async function scheduleTermReminder(term: Term): Promise<void> {
           term.expectedDate,
           (i18n.language || 'en').startsWith('tr') ? 'tr-TR' : 'en-US',
         ),
+        time: formatReminderTime(reminderDate),
       }),
       data: {
         customerId: `${term.customerId}`,

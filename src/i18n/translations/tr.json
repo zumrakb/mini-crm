@@ -14,7 +14,14 @@
     "cancel": "İptal",
     "edit": "Düzenle",
     "open": "Aç",
-    "select": "Seç"
+    "select": "Seç",
+    "pageSearchPlaceholder": "Sayfada arama yap",
+    "searchNoResults": "Aranan sonuç bulunamadı"
+  },
+  "errorScreen": {
+    "title": "Bir şey ters gitti",
+    "body": "Uygulama bu ekranı güvenli şekilde durdurdu. Tekrar deneyebilir veya ana akışa geri dönebilirsin.",
+    "retry": "Tekrar dene"
   },
   "languages": {
     "title": "Dil",
@@ -93,7 +100,12 @@
       "pendingTerms": "Bekleyen termin",
       "todayActivities": "Bugünkü aktivite"
     },
+    "termStatus": {
+      "onTrack": "Yolunda",
+      "needsAction": "Aksiyon Gerekli"
+    },
     "actions": {
+      "viewAll": "Tümünü Gör",
       "customers": "Müşteriler",
       "terms": "Terminler",
       "settings": "Ayarlar"
@@ -110,10 +122,10 @@
       "title": "Bildirimler",
       "summary": "İzin durumu: {{permission}}. Planlı termin hatırlatması: {{count}}.",
       "summaryUnavailable": "Bildirim özeti şu anda okunamadı.",
-      "permissionAction": "Bildirim izni iste",
+      "permissionAction": "İzin ver",
       "testInlineAction": "Dene",
       "testAction": "Test bildirimi göster",
-      "syncAction": "Termin hatırlatmalarını yeniden kur",
+      "syncAction": "Senkronize et",
       "permissionResultTitle": "Bildirim izni sonucu",
       "testSuccessTitle": "Test bildirimi gönderildi",
       "testSuccessBody": "Cihaz izin veriyorsa bildirimi hemen görmelisin.",
@@ -133,7 +145,7 @@
         "testTitle": "Mini CRM test bildirimi",
         "testBody": "Bu cihazda bildirimler çalışıyor.",
         "termTitle": "{{customer}} için termin hatırlatması",
-        "termBody": "{{product}} beklenen tarih: {{date}}"
+        "termBody": "{{product}} beklenen tarih: {{date}} saat {{time}}"
       }
     },
     "dataTitle": "Veri dışa aktarma",
@@ -142,6 +154,9 @@
     "versionAction": "Uygulama Hakkında",
     "versionInfoTitle": "Uygulama hakkında",
     "versionLabel": "Sürüm {{version}}",
+    "aboutPrivacyLineOne": "Müşteri verileri bu cihazda kalır.",
+    "aboutPrivacyLineTwo": "JSON veya Excel yedeği yalnızca sen başlattığında oluşturulur.",
+    "aboutPrivacyLineThree": "Bu uygulama müşteri verilerini herhangi bir sunucuya göndermez.",
     "appInfoTitle": "",
     "appInfoBody": "",
     "securityTitle": "",
@@ -194,11 +209,11 @@
   "customersScreen": {
     "subtitle": "Müşteri kayıtları burada listelenecek. Sonraki adımda kart görünümü daha da zenginleşecek.",
     "addButton": "Yeni Müşteri",
-    "searchPlaceholder": "Müşteri, şirket, telefon veya e-posta ara",
+    "searchPlaceholder": "Sayfada arama yap",
     "loading": "Müşteriler yükleniyor...",
     "emptyTitle": "Henüz müşteri yok",
     "emptyBody": "İlk müşteriyi eklediğinde burada listelenecek.",
-    "searchEmptyTitle": "Sonuç bulunamadı",
+    "searchEmptyTitle": "Aranan sonuç bulunamadı",
     "searchEmptyBody": "Arama metnini değiştirerek tekrar dene.",
     "errorTitle": "Müşteriler yüklenemedi"
   },
@@ -352,8 +367,13 @@
   },
   "termItem": {
     "markAsCompleted": "Tamamlandı olarak işaretle",
+    "detailTitle": "Termin detayları",
     "expectedDateLabel": "Termin vadesi",
     "orderDateLabel": "Sipariş tarihi",
+    "productLabel": "Ürün",
+    "companyLabel": "Müşteri",
+    "durationLabel": "Vade",
+    "statusLabel": "Durum",
     "edit": "Termini düzenle",
     "companyFallback": "Şirket bilgisi yok"
   },
