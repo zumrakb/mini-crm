@@ -402,10 +402,7 @@ const NewTermModal: React.FC<NewTermModalProps> = ({
           </View>
         </ScrollView>
 
-        <View
-          className="border-t pt-4"
-          style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
-        >
+        <View className="pt-4">
           <AppButton
             label={
               isSubmitting

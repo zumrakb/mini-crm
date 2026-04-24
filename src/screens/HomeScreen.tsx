@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -9,16 +8,28 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Calendar, LocaleConfig, type DateData } from 'react-native-calendars';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import TermItem from '../components/term/TermItem';
 import AppButton from '../components/ui/AppButton';
 import BottomSheetModal from '../components/ui/BottomSheetModal';
 import AppScreen from '../components/ui/AppScreen';
-import SurfaceCard from '../components/ui/SurfaceCard';
-import TermItem from '../components/term/TermItem';
+import AppTopBar, {
+  AvatarCircle,
+  BrandWordmark,
+  SearchGlyph,
+} from '../components/ui/AppTopBar';
+import EmptyState from '../components/ui/EmptyState';
+import InlineGlobalSearch from '../components/ui/InlineGlobalSearch';
 import NewActivityModal from '../modals/NewActivityModal';
 import NewTermModal from '../modals/NewTermModal';
-import { FLOATING_TAB_BAR, SMART_PDF_DARK, uiStyles, useAppTheme } from '../components/ui/theme';
-import { getActivityDatesInRange } from '../repositories/activity.repository';
+import {
+  FLOATING_TAB_BAR,
+  SMART_PDF_DARK,
+  uiStyles,
+  useAppTheme,
+} from '../components/ui/theme';
 import { isPendingTermStatus } from '../constants/termStatus';
+import { getActivityDatesInRange } from '../repositories/activity.repository';
 import { useActivityStore } from '../store/activity.store';
 import { useCustomerStore } from '../store/customer.store';
 import { useTermStore } from '../store/term.store';
@@ -49,12 +60,6 @@ function getMonthDayKeys(monthKey: string): string[] {
   }
 
   return days;
-}
-
-function getDayDifference(fromDate: string, toDate: string): number {
-  const from = parseISODate(fromDate);
-  const to = parseISODate(toDate);
-  return Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 function getDelayUntilNextDay(): number {
@@ -115,7 +120,6 @@ const HomeScreen: React.FC = () => {
   const loadCustomers = useCustomerStore(state => state.load);
   const terms = useTermStore(state => state.terms);
   const loadTerms = useTermStore(state => state.load);
-  const activities = useActivityStore(state => state.activities);
   const isActivitiesLoading = useActivityStore(state => state.isLoading);
   const activeActivityDate = useActivityStore(state => state.activeDate);
   const loadActivitiesByDate = useActivityStore(state => state.loadByDate);
@@ -125,9 +129,9 @@ const HomeScreen: React.FC = () => {
   const calendarLocale = (i18n.language || 'en').startsWith('tr') ? 'tr' : 'en';
   const [selectedDate, setSelectedDate] = useState(today);
   const [visibleMonth, setVisibleMonth] = useState(() => today.slice(0, 7));
-  const [monthActivityDatesByMonth, setMonthActivityDatesByMonth] = useState<Record<string, string[]>>(
-    {},
-  );
+  const [monthActivityDatesByMonth, setMonthActivityDatesByMonth] = useState<Record<string, string[]>>({});
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isAgendaVisible, setIsAgendaVisible] = useState(false);
   const [isActivityModalVisible, setIsActivityModalVisible] = useState(false);
   const [isTermModalVisible, setIsTermModalVisible] = useState(false);
@@ -171,6 +175,11 @@ const HomeScreen: React.FC = () => {
       loadDashboardLists();
       loadActivitiesByDate(selectedDate);
       refreshMonthActivityDates(visibleMonth);
+
+      return () => {
+        setIsSearchVisible(false);
+        setSearchQuery('');
+      };
     }, [loadActivitiesByDate, loadDashboardLists, refreshMonthActivityDates, selectedDate, visibleMonth]),
   );
 
@@ -210,43 +219,45 @@ const HomeScreen: React.FC = () => {
   }, [calendarLocale]);
 
   const customerMap = useMemo(
-    () =>
-      new Map(customers.map(customer => [customer.id, customer])),
+    () => new Map(customers.map(customer => [customer.id, customer])),
     [customers],
   );
+  const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase('tr-TR');
 
   const pendingTerms = useMemo(
-    () => terms.filter(term => isPendingTermStatus(term.status)),
+    () =>
+      [...terms]
+        .filter(term => isPendingTermStatus(term.status))
+        .sort((left, right) => left.expectedDate.localeCompare(right.expectedDate)),
     [terms],
   );
 
   const upcomingTerms = useMemo(
     () =>
-      [...pendingTerms]
+      pendingTerms
         .filter(term => {
-          const daysUntilDue = getDayDifference(today, term.expectedDate);
-          return daysUntilDue >= 0 && daysUntilDue <= 3;
-        })
-        .sort((left, right) => left.expectedDate.localeCompare(right.expectedDate))
-        .slice(0, 3),
-    [pendingTerms, today],
-  );
+          if (!normalizedSearchQuery) {
+            return true;
+          }
 
-  const todayTerms = useMemo(
-    () =>
-      [...pendingTerms]
-        .filter(term => term.expectedDate === today)
-        .sort((left, right) => left.id - right.id)
-        .slice(0, 3),
-    [pendingTerms, today],
+          const customer = customerMap.get(term.customerId);
+          return [
+            term.productName,
+            term.termDuration,
+            customer?.companyName ?? '',
+          ]
+            .join(' ')
+            .toLocaleLowerCase('tr-TR')
+            .includes(normalizedSearchQuery);
+        })
+        .slice(0, 2),
+    [customerMap, normalizedSearchQuery, pendingTerms],
   );
+  const showSearchNoResults = Boolean(normalizedSearchQuery) && upcomingTerms.length === 0;
 
   const markedDates = useMemo(() => {
     const monthDates = monthActivityDatesByMonth[visibleMonth] ?? [];
-    const isMonthLoaded = Object.prototype.hasOwnProperty.call(
-      monthActivityDatesByMonth,
-      visibleMonth,
-    );
+    const isMonthLoaded = Object.prototype.hasOwnProperty.call(monthActivityDatesByMonth, visibleMonth);
     const nextMarkedDates = (isMonthLoaded ? getMonthDayKeys(visibleMonth) : []).reduce<Record<string, {
       marked?: boolean;
       dotColor?: string;
@@ -270,37 +281,19 @@ const HomeScreen: React.FC = () => {
       nextMarkedDates[selectedDate] = {
         ...nextMarkedDates[selectedDate],
         selected: true,
-        selectedColor: colors.accentSurface,
-        selectedTextColor: colors.accent,
+        selectedColor: colors.accent,
+        selectedTextColor: '#FFFFFF',
       };
     }
 
     return nextMarkedDates;
-  }, [colors.accent, colors.accentSurface, monthActivityDatesByMonth, selectedDate, visibleMonth]);
-
-  const goToTerms = useCallback(() => {
-    navigation.navigate('Terms');
-  }, [navigation]);
+  }, [colors.accent, monthActivityDatesByMonth, selectedDate, visibleMonth]);
 
   const openAgenda = useCallback((date: string) => {
     setSelectedDate(date);
     loadActivitiesByDate(date);
     setIsAgendaVisible(true);
   }, [loadActivitiesByDate]);
-
-  const openActivityModal = useCallback((date: string) => {
-    setSelectedDate(date);
-    setIsActivityModalVisible(true);
-  }, []);
-
-  const openTermModal = useCallback((date: string) => {
-    setSelectedDate(date);
-    setIsTermModalVisible(true);
-  }, []);
-
-  const handleDayPress = useCallback((date: string) => {
-    openAgenda(date);
-  }, [openAgenda]);
 
   return (
     <AppScreen>
@@ -320,142 +313,104 @@ const HomeScreen: React.FC = () => {
         contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="px-6 pb-6 pt-6">
-          <View className="flex-col gap-6">
-            <View className="flex-row items-center justify-between gap-4">
-              <Text
-                className="flex-1 text-[24px] font-semibold tracking-[-0.5px]"
-                style={uiStyles.titleText}
-              >
-                {t('homeDashboard.title')}
-              </Text>
+        <View className="px-5 pb-6 pt-6">
+          <View className="flex-col gap-8">
+            <View style={{ minHeight: 40, position: 'relative' }}>
+              <AppTopBar
+                left={(
+                  <>
+                    <AvatarCircle image="profile" size={34} />
+                    <BrandWordmark />
+                  </>
+                )}
+                right={<SearchGlyph onPress={() => setIsSearchVisible(current => !current)} />}
+              />
 
-              <View
-                className="rounded-full px-3 py-1.5"
-                style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
-              >
-                <Text
-                  className="text-xs font-semibold"
-                  style={{
-                    color:
-                      SMART_PDF_DARK.statusBar === 'light-content'
-                        ? SMART_PDF_DARK.accent
-                        : SMART_PDF_DARK.accentMuted,
-                  }}
-                >
-                  {formatDate(selectedDate, locale)}
-                </Text>
-              </View>
+              <InlineGlobalSearch
+                visible={isSearchVisible}
+                query={searchQuery}
+                onChangeText={setSearchQuery}
+                onClose={() => setIsSearchVisible(false)}
+                placeholder={t('common.pageSearchPlaceholder')}
+                showNoResults={showSearchNoResults}
+                style={{ position: 'absolute', left: 0, right: 0, top: 0, zIndex: 20 }}
+              />
             </View>
 
-            <SurfaceCard
-              style={{
-                backgroundColor: colors.surface,
-                borderWidth: 0,
-                borderColor: 'transparent',
-              }}
+            <View
+              className="rounded-[26px] px-4 py-4"
+              style={{ backgroundColor: SMART_PDF_DARK.surfaceAlt }}
             >
-              <View className="overflow-hidden rounded-[24px]">
-                <Calendar
-                  key={`${calendarLocale}-${colors.statusBar}`}
-                  current={`${visibleMonth}-01`}
-                  markedDates={markedDates}
-                  markingType="dot"
-                  displayLoadingIndicator={!Object.prototype.hasOwnProperty.call(
-                    monthActivityDatesByMonth,
-                    visibleMonth,
-                  )}
-                  enableSwipeMonths
-                  firstDay={1}
-                  onDayPress={day => handleDayPress(day.dateString)}
-                  onMonthChange={handleVisibleMonthChange}
-                  theme={{
-                    calendarBackground: colors.surface,
-                    textSectionTitleColor: colors.muted,
-                    monthTextColor: colors.text,
-                    dayTextColor: colors.text,
-                    todayTextColor: colors.accent,
-                    selectedDayBackgroundColor: colors.accentSurface,
-                    selectedDayTextColor: colors.accent,
-                    textDisabledColor: colors.muted,
-                    arrowColor: colors.accent,
-                    indicatorColor: colors.accent,
-                    dotColor: colors.accent,
-                    selectedDotColor: colors.accent,
-                    textMonthFontSize: 18,
-                    textMonthFontWeight: '700',
-                    textDayFontSize: 15,
-                    textDayHeaderFontSize: 12,
-                    textDayHeaderFontWeight: '700',
-                  }}
-                  style={{
-                    borderWidth: 0,
-                    borderColor: 'transparent',
-                  }}
-                />
-              </View>
-            </SurfaceCard>
+              <Calendar
+                key={`${calendarLocale}-${colors.statusBar}`}
+                current={`${visibleMonth}-01`}
+                markedDates={markedDates}
+                markingType="dot"
+                displayLoadingIndicator={!Object.prototype.hasOwnProperty.call(
+                  monthActivityDatesByMonth,
+                  visibleMonth,
+                )}
+                enableSwipeMonths
+                firstDay={1}
+                onDayPress={day => openAgenda(day.dateString)}
+                onMonthChange={handleVisibleMonthChange}
+                theme={{
+                  calendarBackground: SMART_PDF_DARK.surfaceAlt,
+                  textSectionTitleColor: colors.text,
+                  monthTextColor: colors.text,
+                  dayTextColor: colors.text,
+                  todayTextColor: colors.accent,
+                  selectedDayBackgroundColor: colors.accent,
+                  selectedDayTextColor: '#FFFFFF',
+                  textDisabledColor: '#9EA7A1',
+                  arrowColor: colors.text,
+                  indicatorColor: colors.accent,
+                  dotColor: colors.accent,
+                  selectedDotColor: '#FFFFFF',
+                  textMonthFontSize: 21,
+                  textMonthFontWeight: '700',
+                  textDayFontSize: 16,
+                  textDayHeaderFontSize: 13,
+                  textDayHeaderFontWeight: '500',
+                }}
+                style={{ borderWidth: 0 }}
+              />
+            </View>
 
             <View className="flex-col gap-4">
-              <View className="flex-col gap-4">
-                <View className="flex-row items-center justify-between gap-4">
-                  <View className="flex-1">
-                    <Text className="text-lg font-semibold" style={uiStyles.titleText}>
-                      {t('homeDashboard.todayTasksTitle')}
-                    </Text>
-                  </View>
-                </View>
-
-                {todayTerms.length ? (
-                  <View className="flex-col gap-3">
-                    {todayTerms.map(term => (
-                      <TermItem
-                        key={term.id}
-                        term={term}
-                        companyName={customerMap.get(term.customerId)?.companyName}
-                      />
-                    ))}
-                  </View>
-                ) : (
-                  <Text className="text-sm" style={uiStyles.bodyText}>
-                    {t('homeDashboard.emptyTodayTasks')}
-                  </Text>
-                )}
+              <View className="flex-row items-end justify-between">
+                <Text className="text-[20px] font-semibold tracking-[-0.6px]" style={uiStyles.titleText}>
+                  {t('homeDashboard.upcomingTermsTitle')}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setIsTermModalVisible(true)}
+                  activeOpacity={0.85}
+                  className="h-10 w-10 items-center justify-center rounded-full"
+                  style={{ backgroundColor: SMART_PDF_DARK.surfaceAlt }}
+                >
+                  <Ionicons name="add" size={24} color={SMART_PDF_DARK.text} />
+                </TouchableOpacity>
               </View>
 
-              <View className="flex-col gap-4">
-                <View className="flex-row items-center justify-between gap-4">
-                  <View className="flex-1">
-                    <Text className="text-lg font-semibold" style={uiStyles.titleText}>
-                      {t('homeDashboard.upcomingTermsTitle')}
-                    </Text>
-                  </View>
-
-                  <AppButton
-                    label={t('homeDashboard.actions.terms')}
-                    onPress={goToTerms}
-                    variant="pill"
-                    compact
-                    iconName="arrow-forward"
-                  />
+              {upcomingTerms.length ? (
+                <View className="flex-col gap-3">
+                  {upcomingTerms.map(term => (
+                    <TermItem
+                      key={term.id}
+                      term={term}
+                      companyName={customerMap.get(term.customerId)?.companyName}
+                    />
+                  ))}
                 </View>
-
-                {upcomingTerms.length ? (
-                  <View className="flex-col gap-3">
-                    {upcomingTerms.map(term => (
-                      <TermItem
-                        key={term.id}
-                        term={term}
-                        companyName={customerMap.get(term.customerId)?.companyName}
-                      />
-                    ))}
-                  </View>
-                ) : (
-                  <Text className="text-sm" style={uiStyles.bodyText}>
-                    {t('homeDashboard.emptyTermsTitle')}
-                  </Text>
-                )}
-              </View>
+              ) : (
+                <EmptyState
+                  title={
+                    showSearchNoResults
+                      ? t('common.searchNoResults')
+                      : t('homeDashboard.upcomingTermsTitle')
+                  }
+                />
+              )}
             </View>
           </View>
         </View>
@@ -494,7 +449,7 @@ const HomeScreen: React.FC = () => {
               label={t('homeDashboard.addActivity')}
               onPress={() => {
                 setIsAgendaVisible(false);
-                openActivityModal(selectedDate);
+                setIsActivityModalVisible(true);
               }}
               variant="primary"
               iconName="add"
@@ -504,28 +459,22 @@ const HomeScreen: React.FC = () => {
               label={t('homeDashboard.actions.terms')}
               onPress={() => {
                 setIsAgendaVisible(false);
-                openTermModal(selectedDate);
+                setIsTermModalVisible(true);
               }}
-              variant="secondary"
+              variant="soft"
               iconName="calendar-outline"
               style={{ flex: 1 }}
             />
           </View>
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 8 }}
-          >
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
             {isAgendaLoading ? (
-              <View className="items-center gap-3 rounded-[24px] px-5 py-8">
-                <ActivityIndicator color={SMART_PDF_DARK.accent} />
-                <Text className="text-center text-sm leading-6" style={uiStyles.bodyText}>
-                  {t('customerDetail.loadingActivities')}
-                </Text>
-              </View>
-            ) : activities.length ? (
+              <Text className="text-sm leading-6" style={uiStyles.bodyText}>
+                {t('customerDetail.loadingActivities')}
+              </Text>
+            ) : useActivityStore.getState().activities.length ? (
               <View className="flex-col gap-3">
-                {activities.map(activity => {
+                {useActivityStore.getState().activities.map(activity => {
                   const customer = customerMap.get(activity.customerId);
 
                   return (
@@ -536,11 +485,11 @@ const HomeScreen: React.FC = () => {
                         navigation.navigate('Customers', {
                           screen: 'CustomerDetail',
                           params: { customerId: activity.customerId },
-                        });
+                        } as never);
                       }}
                       activeOpacity={0.88}
                       className="rounded-[22px] px-4 py-4"
-                      style={uiStyles.mutedSurface}
+                      style={{ backgroundColor: SMART_PDF_DARK.surfaceAlt }}
                     >
                       <View className="flex-col gap-2">
                         <View className="flex-row items-start justify-between gap-3">
@@ -557,15 +506,7 @@ const HomeScreen: React.FC = () => {
                             className="rounded-full px-3 py-1.5"
                             style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
                           >
-                            <Text
-                              className="text-xs font-semibold"
-                              style={{
-                                color:
-                                  SMART_PDF_DARK.statusBar === 'light-content'
-                                    ? SMART_PDF_DARK.accent
-                                    : SMART_PDF_DARK.accentMuted,
-                              }}
-                            >
+                            <Text className="text-xs font-semibold" style={{ color: SMART_PDF_DARK.accent }}>
                               {activity.type}
                             </Text>
                           </View>
@@ -580,11 +521,7 @@ const HomeScreen: React.FC = () => {
                 })}
               </View>
             ) : (
-              <SurfaceCard tone="soft">
-                <Text className="text-sm" style={uiStyles.bodyText}>
-                  {t('homeDashboard.emptyAgendaTitle')}
-                </Text>
-              </SurfaceCard>
+              <EmptyState title={t('homeDashboard.emptyAgendaTitle')} />
             )}
           </ScrollView>
         </View>
