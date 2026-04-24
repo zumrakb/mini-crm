@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>All Terms - Mini CRM</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#404944",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#4f1f19",
+                        "on-background": "#191c1b",
+                        "on-secondary-fixed": "#100563",
+                        "surface": "#f8faf6",
+                        "tertiary-fixed-dim": "#ffb4a9",
+                        "on-surface": "#191c1b",
+                        "surface-bright": "#f8faf6",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#393689",
+                        "on-primary-fixed-variant": "#0b513d",
+                        "surface-variant": "#e1e3e0",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ea9e93",
+                        "on-primary-fixed": "#002117",
+                        "error": "#ba1a1a",
+                        "outline": "#707974",
+                        "secondary": "#5654a8",
+                        "surface-tint": "#2b6954",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1ee",
+                        "inverse-surface": "#2e312f",
+                        "secondary-container": "#a7a5ff",
+                        "surface-container-highest": "#e1e3e0",
+                        "surface-container": "#eceeeb",
+                        "surface-dim": "#d8dbd7",
+                        "tertiary-container": "#6b342d",
+                        "secondary-fixed": "#e2dfff",
+                        "on-tertiary-fixed-variant": "#6e372f",
+                        "inverse-primary": "#95d3ba",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#b0f0d6",
+                        "tertiary-fixed": "#ffdad5",
+                        "background": "#f8faf6",
+                        "on-tertiary-fixed": "#380d08",
+                        "on-primary-container": "#80bea6",
+                        "primary-fixed-dim": "#95d3ba",
+                        "surface-container-low": "#f2f4f1",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "on-secondary-fixed-variant": "#3e3c8f",
+                        "primary-container": "#064e3b",
+                        "primary": "#003527",
+                        "outline-variant": "#bfc9c3",
+                        "surface-container-high": "#e7e9e5"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "margin": "20px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "unit": "4px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    },
+                    fontSize: {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h1": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen antialiased selection:bg-primary selection:text-on-primary pb-[100px] md:pb-0">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 bg-white/10 dark:bg-emerald-950/10 backdrop-blur-md flex justify-between items-center px-6 py-5 w-full">
+<div class="flex items-center gap-xl">
+<span class="text-emerald-900 dark:text-emerald-50 font-bold tracking-widest text-xl font-display">CRM</span>
+<!-- Desktop Nav Cluster (Hidden on Mobile) -->
+<nav class="hidden md:flex items-center gap-md">
+<a class="font-label-md text-label-md text-slate-400 hover:bg-emerald-50/50 px-sm py-xs rounded-full transition-colors flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">home_max</span> Home
+                </a>
+<a class="font-label-md text-label-md text-slate-400 hover:bg-emerald-50/50 px-sm py-xs rounded-full transition-colors flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span> Customers
+                </a>
+<a class="font-label-md text-label-md text-emerald-900 bg-emerald-50/50 px-sm py-xs rounded-full transition-colors flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">description</span> Terms
+                </a>
+<a class="font-label-md text-label-md text-slate-400 hover:bg-emerald-50/50 px-sm py-xs rounded-full transition-colors flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                </a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-emerald-900 dark:text-emerald-50 hover:bg-emerald-50/50 p-xs rounded-full transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-white/20">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="close up professional headshot of a young woman with natural light and soft blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQvV5KnUpo-cO7xauFND5BjVsys_fyQqDOK6CNWrNFXz-ARwP574Rk3IpaaQuI1BGQjfjjLQrSY7X0fBL3y_pwZ9A68plEZjv6IEXeTHkPoP_CfhrI7_kX9IBnwOHHI2sZ2TNUBpd5Rz01B6HeZUP3nBKW4hVco3q5otMok2sjLQVuAi59jE3hzGs--YircPNhpB7ixXE4dThPcc67u125Vd7xsO9e89x2FsIXlYduagRokAWA1IvTQNO3rTbnv7_aElm90TdPPacb"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-margin md:px-xxl py-xl max-w-[1200px] mx-auto flex flex-col gap-xl">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-md border-b border-surface-container pb-md">
+<div class="flex flex-col gap-xs">
+<h1 class="font-display text-display text-on-surface">All Terms</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage and review all client contract agreements.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-full flex items-center justify-center gap-xs hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-[0_10px_30px_-10px_rgba(0,53,39,0.3)]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Term
+            </button>
+</section>
+<!-- Filters (Chips) -->
+<section class="flex overflow-x-auto hide-scrollbar gap-sm pb-xs">
+<button class="whitespace-nowrap px-md py-xs rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md border border-transparent hover:border-outline-variant transition-all">All Active</button>
+<button class="whitespace-nowrap px-md py-xs rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-[0_4px_12px_-4px_rgba(0,53,39,0.4)] transition-all">Pending</button>
+<button class="whitespace-nowrap px-md py-xs rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-transparent hover:bg-surface-container-high transition-all">Completed</button>
+<button class="whitespace-nowrap px-md py-xs rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-transparent hover:bg-surface-container-high transition-all">Drafts</button>
+</section>
+<!-- Bento Grid / Card List -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:bg-surface-bright transition-colors shadow-[0_20px_40px_-20px_rgba(6,78,59,0.08)]">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<h2 class="font-h2 text-h2 text-on-surface">Acme Corporation</h2>
+<span class="font-body-md text-body-md text-on-surface-variant">Enterprise Cloud Infrastructure SLA</span>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-auto pt-sm">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">Oct 15, 2023 — Oct 14, 2024</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-sm py-[2px] rounded-full flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-on-secondary-container"></span>
+                        Pending
+                    </div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:bg-surface-bright transition-colors shadow-[0_20px_40px_-20px_rgba(6,78,59,0.08)]">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<h2 class="font-h2 text-h2 text-on-surface">Globex Inc.</h2>
+<span class="font-body-md text-body-md text-on-surface-variant">Q4 Managed Services Retainer</span>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-auto pt-sm">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">Nov 01, 2023 — Jan 31, 2024</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-sm py-[2px] rounded-full flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-on-secondary-container"></span>
+                        Pending
+                    </div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:bg-surface-bright transition-colors shadow-[0_20px_40px_-20px_rgba(6,78,59,0.08)]">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<h2 class="font-h2 text-h2 text-on-surface">Initech Solutions</h2>
+<span class="font-body-md text-body-md text-on-surface-variant">Annual Software Licensing 2023</span>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-auto pt-sm">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">Jan 01, 2023 — Dec 31, 2023</span>
+</div>
+<div class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-sm py-[2px] rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">check</span>
+                        Completed
+                    </div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:bg-surface-bright transition-colors shadow-[0_20px_40px_-20px_rgba(6,78,59,0.08)]">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<h2 class="font-h2 text-h2 text-on-surface">Soylent Corp</h2>
+<span class="font-body-md text-body-md text-on-surface-variant">Data Migration Project Scope</span>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-auto pt-sm">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">Feb 15, 2024 — May 15, 2024</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-sm py-[2px] rounded-full flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-on-secondary-container"></span>
+                        Pending
+                    </div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-6 left-6 right-6 rounded-[32px] border border-white/20 dark:border-emerald-800/20 bg-white/70 dark:bg-emerald-900/70 backdrop-blur-2xl z-50 flex justify-around items-center px-8 py-4 shadow-[0_30px_60px_-15px_rgba(6,78,59,0.12)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-colors px-5 py-2" href="#">
+<span class="material-symbols-outlined">home_max</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-colors px-5 py-2" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Customers</span>
+</a>
+<!-- Active Tab -->
+<a class="flex flex-col items-center justify-center bg-emerald-100/50 dark:bg-emerald-800/50 text-emerald-900 dark:text-emerald-100 rounded-3xl px-5 py-2 tap-highlight-none transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Terms</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-colors px-5 py-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
