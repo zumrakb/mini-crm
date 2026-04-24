@@ -11,7 +11,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import TermItem from '../components/term/TermItem';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
+import AppTopBar, {
+  AvatarCircle,
+  BrandWordmark,
+  SearchGlyph,
+} from '../components/ui/AppTopBar';
 import BottomSheetModal from '../components/ui/BottomSheetModal';
+import EmptyState from '../components/ui/EmptyState';
+import InlineGlobalSearch from '../components/ui/InlineGlobalSearch';
 import SurfaceCard from '../components/ui/SurfaceCard';
 import { FLOATING_TAB_BAR, SHADOWS, SMART_PDF_DARK, uiStyles } from '../components/ui/theme';
 import { isPendingTermStatus, TERM_STATUS } from '../constants/termStatus';
@@ -71,25 +78,23 @@ const FilterChip = ({
   isActive: boolean;
   label: string;
   onPress: () => void;
-}) => {
-  const styles = createStyles();
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.85}
-      className="rounded-full px-4 py-2.5"
-      style={isActive ? styles.activeChip : styles.inactiveChip}
+}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.85}
+    className="rounded-full px-4 py-2.5"
+    style={{
+      backgroundColor: isActive ? SMART_PDF_DARK.accentSurface : SMART_PDF_DARK.surfaceAlt,
+    }}
+  >
+    <Text
+      className="text-[13px] font-semibold"
+      style={{ color: isActive ? SMART_PDF_DARK.accent : SMART_PDF_DARK.text }}
     >
-      <Text
-        className="text-sm font-semibold"
-        style={isActive ? styles.activeChipText : styles.inactiveChipText}
-      >
-        {label}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+      {label}
+    </Text>
+  </TouchableOpacity>
+);
 
 const TermListScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -100,6 +105,8 @@ const TermListScreen: React.FC = () => {
   const customers = useCustomerStore(state => state.customers);
   const loadCustomers = useCustomerStore(state => state.load);
 
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isTermModalVisible, setIsTermModalVisible] = useState(false);
@@ -109,20 +116,28 @@ const TermListScreen: React.FC = () => {
   const [draftCompanyFilter, setDraftCompanyFilter] = useState<number | 'all'>('all');
   const [draftDateRange, setDraftDateRange] = useState<DateRange>('all');
   const [draftStatusFilter, setDraftStatusFilter] = useState<StatusFilter>('all');
+  const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase('tr-TR');
 
   useFocusEffect(
     useCallback(() => {
       loadTerms();
       loadCustomers();
+
+      return () => {
+        setIsSearchVisible(false);
+        setSearchQuery('');
+      };
     }, [loadCustomers, loadTerms]),
   );
 
-  const customerMap = useMemo(() => {
-    return customers.reduce<Record<number, Customer>>((accumulator, customer) => {
-      accumulator[customer.id] = customer;
-      return accumulator;
-    }, {});
-  }, [customers]);
+  const customerMap = useMemo(
+    () =>
+      customers.reduce<Record<number, Customer>>((accumulator, customer) => {
+        accumulator[customer.id] = customer;
+        return accumulator;
+      }, {}),
+    [customers],
+  );
 
   const companyOptions = useMemo<FilterChipOption<string>[]>(() => {
     const uniqueCustomers = terms
@@ -164,49 +179,63 @@ const TermListScreen: React.FC = () => {
     [t],
   );
 
-  const filteredTerms = useMemo(() => {
-    return [...terms]
-      .filter(term => {
-        if (companyFilter !== 'all' && term.customerId !== companyFilter) {
-          return false;
-        }
+  const filteredTerms = useMemo(
+    () =>
+      [...terms]
+        .filter(term => {
+          if (normalizedSearchQuery) {
+            const customer = customerMap[term.customerId];
+            const searchText = [
+              term.productName,
+              term.termDuration,
+              customer?.companyName ?? '',
+            ]
+              .join(' ')
+              .toLocaleLowerCase('tr-TR');
 
-        if (!isWithinRange(term.orderDate, dateRange)) {
-          return false;
-        }
+            if (!searchText.includes(normalizedSearchQuery)) {
+              return false;
+            }
+          }
 
-        if (statusFilter === 'pending' && !isPendingTermStatus(term.status)) {
-          return false;
-        }
+          if (companyFilter !== 'all' && term.customerId !== companyFilter) {
+            return false;
+          }
 
-        if (
-          statusFilter === 'completed' &&
-          term.status !== TERM_STATUS.ARRIVED
-        ) {
-          return false;
-        }
+          if (!isWithinRange(term.orderDate, dateRange)) {
+            return false;
+          }
 
-        return true;
-      })
-      .sort((left, right) => {
-        const dateComparison = sortOrder === 'asc'
-          ? left.expectedDate.localeCompare(right.expectedDate)
-          : right.expectedDate.localeCompare(left.expectedDate);
+          if (statusFilter === 'pending' && !isPendingTermStatus(term.status)) {
+            return false;
+          }
 
-        if (dateComparison !== 0) {
-          return dateComparison;
-        }
+          if (statusFilter === 'completed' && term.status !== TERM_STATUS.ARRIVED) {
+            return false;
+          }
 
-        return sortOrder === 'asc' ? left.id - right.id : right.id - left.id;
-      });
-  }, [companyFilter, dateRange, sortOrder, statusFilter, terms]);
+          return true;
+        })
+        .sort((left, right) => {
+          const dateComparison = sortOrder === 'asc'
+            ? left.expectedDate.localeCompare(right.expectedDate)
+            : right.expectedDate.localeCompare(left.expectedDate);
+
+          if (dateComparison !== 0) {
+            return dateComparison;
+          }
+
+          return sortOrder === 'asc' ? left.id - right.id : right.id - left.id;
+        }),
+    [companyFilter, customerMap, dateRange, normalizedSearchQuery, sortOrder, statusFilter, terms],
+  );
+  const showSearchNoResults = Boolean(normalizedSearchQuery) && filteredTerms.length === 0;
 
   const activeFilterCount = [
     companyFilter !== 'all',
     dateRange !== 'all',
     statusFilter !== 'all',
   ].filter(Boolean).length;
-  const styles = createStyles();
 
   const openFilterModal = useCallback(() => {
     setDraftCompanyFilter(companyFilter);
@@ -214,10 +243,6 @@ const TermListScreen: React.FC = () => {
     setDraftStatusFilter(statusFilter);
     setIsFilterVisible(true);
   }, [companyFilter, dateRange, statusFilter]);
-
-  const closeFilterModal = useCallback(() => {
-    setIsFilterVisible(false);
-  }, []);
 
   const handleResetFilters = useCallback(() => {
     setDraftCompanyFilter('all');
@@ -241,56 +266,95 @@ const TermListScreen: React.FC = () => {
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="px-6 pb-6 pt-6">
-          <View className="flex-col gap-6">
-            <View className="flex-row items-start justify-between gap-4">
-              <Text
-                className="flex-1 text-[24px] font-semibold tracking-[-0.5px]"
-                style={uiStyles.titleText}
-              >
-                {t('termsScreen.title')}
-              </Text>
+        <View className="px-5 pb-6 pt-6">
+          <View className="flex-col gap-5">
+            <View style={{ minHeight: 40, position: 'relative' }}>
+              <AppTopBar
+                left={(
+                  <>
+                    <AvatarCircle image="profile" size={34} />
+                    <BrandWordmark label={t('termsScreen.title')} />
+                  </>
+                )}
+                right={(
+                  <View className="flex-row items-center gap-2">
+                    <TouchableOpacity
+                      onPress={() => setSortOrder(current => (current === 'asc' ? 'desc' : 'asc'))}
+                      activeOpacity={0.85}
+                      className="h-10 w-10 items-center justify-center rounded-full"
+                      style={{
+                        backgroundColor: SMART_PDF_DARK.surfaceAlt,
+                      }}
+                    >
+                      <Ionicons
+                        name="swap-vertical-outline"
+                        size={18}
+                        color={SMART_PDF_DARK.text}
+                      />
+                    </TouchableOpacity>
 
-              <View className="flex-row items-center gap-2">
-                <TouchableOpacity
-                  onPress={() =>
-                    setSortOrder(current => (current === 'asc' ? 'desc' : 'asc'))
-                  }
-                  activeOpacity={0.85}
-                  className="items-center justify-center rounded-full"
-                  style={styles.headerIconButton}
-                >
-                  <Ionicons
-                    name="swap-vertical-outline"
-                    size={18}
-                    color={SMART_PDF_DARK.text}
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={openFilterModal}
-                  activeOpacity={0.85}
-                  className="items-center justify-center rounded-full"
-                  style={styles.headerIconButton}
-                >
-                  <Ionicons
-                    name="options-outline"
-                    size={18}
-                    color={SMART_PDF_DARK.text}
-                  />
-                  {activeFilterCount > 0 ? (
-                    <View style={styles.filterBadge}>
-                      <Text style={styles.filterBadgeText}>
-                        {activeFilterCount}
+                    <TouchableOpacity
+                      onPress={openFilterModal}
+                      activeOpacity={0.85}
+                      className="flex-row items-center gap-2 rounded-full px-3 py-2.5"
+                      style={{
+                        backgroundColor: SMART_PDF_DARK.surfaceAlt,
+                      }}
+                    >
+                      <Ionicons
+                        name="options-outline"
+                        size={18}
+                        color={SMART_PDF_DARK.text}
+                      />
+                      <Text className="text-[14px] font-semibold" style={uiStyles.titleText}>
+                        {t('termsScreen.filters.title')}
                       </Text>
-                    </View>
-                  ) : null}
-                </TouchableOpacity>
-              </View>
+                      {activeFilterCount > 0 ? (
+                        <View
+                          className="rounded-full px-2 py-0.5"
+                          style={{ backgroundColor: SMART_PDF_DARK.accentSurface }}
+                        >
+                          <Text
+                            className="text-[12px] font-semibold"
+                            style={{ color: SMART_PDF_DARK.accent }}
+                          >
+                            {activeFilterCount}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </TouchableOpacity>
+
+                    <SearchGlyph onPress={() => setIsSearchVisible(current => !current)} />
+                  </View>
+                )}
+              />
+
+              <InlineGlobalSearch
+                visible={isSearchVisible}
+                query={searchQuery}
+                onChangeText={setSearchQuery}
+                onClose={() => setIsSearchVisible(false)}
+                placeholder={t('common.pageSearchPlaceholder')}
+                showNoResults={showSearchNoResults}
+                style={{ position: 'absolute', left: 0, right: 0, top: 0, zIndex: 20 }}
+              />
             </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View className="flex-row gap-3 pr-4">
+                {statusOptions.map(option => (
+                  <FilterChip
+                    key={option.value}
+                    isActive={statusFilter === option.value}
+                    label={option.label}
+                    onPress={() => setStatusFilter(option.value)}
+                  />
+                ))}
+              </View>
+            </ScrollView>
 
             {isLoading && terms.length === 0 ? (
               <SurfaceCard tone="soft">
@@ -305,11 +369,9 @@ const TermListScreen: React.FC = () => {
                 </Text>
               </SurfaceCard>
             ) : filteredTerms.length === 0 ? (
-              <Text className="text-sm leading-6" style={uiStyles.bodyText}>
-                {terms.length === 0
-                  ? t('termsScreen.emptyBody')
-                  : t('termsScreen.emptyFilteredBody')}
-              </Text>
+              <EmptyState
+                title={showSearchNoResults ? t('common.searchNoResults') : t('termsScreen.title')}
+              />
             ) : (
               <View className="flex-col gap-3">
                 {filteredTerms.map(term => (
@@ -325,24 +387,14 @@ const TermListScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      <View pointerEvents="box-none" style={styles.floatingActionWrap}>
-        <AppButton
-          label={t('customerDetail.addTermButton')}
-          onPress={() => setIsTermModalVisible(true)}
-          variant="primary"
-          iconName="calendar-outline"
-          style={styles.floatingActionButton}
-        />
-      </View>
-
       <BottomSheetModal
         visible={isFilterVisible}
-        onClose={closeFilterModal}
+        onClose={() => setIsFilterVisible(false)}
       >
-        <View className="flex-col gap-4">
+        <View className="flex-col gap-5">
           <View className="flex-row items-center justify-between gap-3">
             <Text
-              className="text-[22px] font-semibold tracking-[-0.4px]"
+              className="text-[18px] font-semibold tracking-[-0.35px]"
               style={uiStyles.titleText}
             >
               {t('termsScreen.filters.title')}
@@ -350,17 +402,16 @@ const TermListScreen: React.FC = () => {
 
             <AppButton
               label={t('common.cancel')}
-              onPress={closeFilterModal}
+              onPress={() => setIsFilterVisible(false)}
               variant="pill"
               compact
               iconOnly
               iconName="close"
-              style={uiStyles.borderless}
             />
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="flex-col gap-5">
+            <View className="flex-col gap-6">
               <View className="flex-col gap-3">
                 <Text className="text-sm font-semibold" style={uiStyles.titleText}>
                   {t('termsScreen.filters.company')}
@@ -423,76 +474,41 @@ const TermListScreen: React.FC = () => {
               label={t('termsScreen.filters.reset')}
               onPress={handleResetFilters}
               variant="secondary"
-              style={styles.modalAction}
+              style={{ flex: 1 }}
             />
             <AppButton
               label={t('termsScreen.filters.apply')}
               onPress={handleApplyFilters}
               variant="primary"
-              style={styles.modalAction}
+              style={{ flex: 1 }}
             />
           </View>
         </View>
       </BottomSheetModal>
+
+      <View
+        pointerEvents="box-none"
+        style={{
+          position: 'absolute',
+          right: 20,
+          bottom: FLOATING_TAB_BAR.height + FLOATING_TAB_BAR.offset + 18,
+          alignItems: 'flex-end',
+        }}
+      >
+        <AppButton
+          label={t('customerDetail.addTermButton')}
+          onPress={() => setIsTermModalVisible(true)}
+          variant="primary"
+          iconName="calendar-outline"
+          style={{
+            minHeight: 44,
+            paddingHorizontal: 18,
+            ...SHADOWS.floatingCompact,
+          }}
+        />
+      </View>
     </AppScreen>
   );
 };
-
-function createStyles() {
-  return {
-    scrollContent: {
-      paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom,
-    },
-    headerIconButton: {
-      width: 40,
-      height: 40,
-      backgroundColor: SMART_PDF_DARK.surface,
-    },
-    filterBadge: {
-      position: 'absolute' as const,
-      top: -3,
-      right: -2,
-      minWidth: 16,
-      height: 16,
-      borderRadius: 8,
-      alignItems: 'center' as const,
-      justifyContent: 'center' as const,
-      paddingHorizontal: 4,
-      backgroundColor: SMART_PDF_DARK.accent,
-    },
-    filterBadgeText: {
-      color: SMART_PDF_DARK.text,
-      fontSize: 10,
-      fontWeight: '700' as const,
-    },
-    activeChip: {
-      backgroundColor: SMART_PDF_DARK.accentSurface,
-    },
-    inactiveChip: {
-      backgroundColor: SMART_PDF_DARK.surfaceMuted,
-    },
-    activeChipText: {
-      color: SMART_PDF_DARK.text,
-    },
-    inactiveChipText: {
-      color: SMART_PDF_DARK.muted,
-    },
-    modalAction: {
-      flex: 1,
-    },
-    floatingActionWrap: {
-      position: 'absolute' as const,
-      right: 24,
-      bottom: FLOATING_TAB_BAR.height + FLOATING_TAB_BAR.offset + 20,
-      alignItems: 'flex-end' as const,
-    },
-    floatingActionButton: {
-      minHeight: 40,
-      paddingHorizontal: 18,
-      borderRadius: 22,
-      ...SHADOWS.floatingCompact,
-    },
-  };
-}
 
 export default TermListScreen;

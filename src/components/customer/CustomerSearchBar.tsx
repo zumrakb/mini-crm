@@ -20,7 +20,7 @@ const CustomerSearchBar: React.FC<CustomerSearchBarProps> = ({
 
   return (
     <View
-      className="flex-row items-center gap-3 rounded-[20px] px-4"
+      className="flex-row items-center gap-3 rounded-[24px] px-5"
       style={uiStyles.searchContainer}
     >
       <Ionicons
@@ -34,7 +34,7 @@ const CustomerSearchBar: React.FC<CustomerSearchBarProps> = ({
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={SMART_PDF_DARK.muted}
-        className="flex-1 py-0 text-[15px]"
+        className="flex-1 py-0 text-[13px]"
         autoCapitalize="none"
         autoCorrect={false}
         returnKeyType="search"

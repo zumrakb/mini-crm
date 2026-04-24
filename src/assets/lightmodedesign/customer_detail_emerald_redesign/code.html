@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Customer Detail - Mini CRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#404944",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#4f1f19",
+                        "on-background": "#191c1b",
+                        "on-secondary-fixed": "#100563",
+                        "surface": "#f8faf6",
+                        "tertiary-fixed-dim": "#ffb4a9",
+                        "on-surface": "#191c1b",
+                        "surface-bright": "#f8faf6",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#393689",
+                        "on-primary-fixed-variant": "#0b513d",
+                        "surface-variant": "#e1e3e0",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ea9e93",
+                        "on-primary-fixed": "#002117",
+                        "error": "#ba1a1a",
+                        "outline": "#707974",
+                        "secondary": "#5654a8",
+                        "surface-tint": "#2b6954",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1ee",
+                        "inverse-surface": "#2e312f",
+                        "secondary-container": "#a7a5ff",
+                        "surface-container-highest": "#e1e3e0",
+                        "surface-container": "#eceeeb",
+                        "surface-dim": "#d8dbd7",
+                        "tertiary-container": "#6b342d",
+                        "secondary-fixed": "#e2dfff",
+                        "on-tertiary-fixed-variant": "#6e372f",
+                        "inverse-primary": "#95d3ba",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#b0f0d6",
+                        "tertiary-fixed": "#ffdad5",
+                        "background": "#f8faf6",
+                        "on-tertiary-fixed": "#380d08",
+                        "on-primary-container": "#80bea6",
+                        "primary-fixed-dim": "#95d3ba",
+                        "surface-container-low": "#f2f4f1",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "on-secondary-fixed-variant": "#3e3c8f",
+                        "primary-container": "#064e3b",
+                        "primary": "#003527",
+                        "outline-variant": "#bfc9c3",
+                        "surface-container-high": "#e7e9e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "margin": "20px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h1": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 bg-white/10 dark:bg-emerald-950/10 backdrop-blur-md flex justify-between items-center px-6 py-5 no-border soft tonal layering flat no-shadows">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden hover:bg-emerald-50/50 transition-colors flex items-center justify-center cursor-pointer">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional man with short dark hair smiling warmly, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5HCnqiyPlIKDCpzgBvicmUUCoSX4d0tFT6pUZImk-WIRcyEJoJG5hI1idRX9ZVmm_Q7zyDHibA7EM4yw5YpzH0pt4D3KQl_IWFDQmQnoLtMM9VjDiZ9jm2pD_uD7EJhGuX8IaQFcjGj60L05vjABbI373Bpa6_j1ksBfmtRdYmnKFFXLjQjVMVf5-7ZfMnsz3gNb2G-N7qzvHUFFepvn7YqLcgf-m5TpLq2DVaNOoT0Epo42tY0x47WoFoZpZSV7suBNvCLN3eQaZ"/>
+</div>
+<span class="text-emerald-900 dark:text-emerald-50 font-bold tracking-widest text-xl font-h2">CRM</span>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-emerald-900 dark:text-emerald-50 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30 transition-colors Active: scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-margin py-xl flex flex-col gap-xxl">
+<!-- Back Navigation & Hero Header -->
+<div class="flex flex-col gap-xl">
+<a class="flex items-center gap-xs text-primary font-label-md text-label-md w-fit hover:opacity-70 transition-opacity" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Customers
+            </a>
+<div class="flex flex-col md:flex-row items-start md:items-center gap-xl relative">
+<!-- Decorative ambient glow -->
+<div class="absolute -top-10 -left-10 w-48 h-48 bg-primary-fixed blur-[60px] opacity-20 rounded-full pointer-events-none"></div>
+<div class="relative w-24 h-24 md:w-32 md:h-32 rounded-3xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(6,78,59,0.15)] bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Abstract minimal architectural facade with clean modern lines and large glass windows reflecting blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJcn7Ae6ZI02twUClpmqrxBfmDycnqmxWMbPcIpsurTZq_hvh49zc8q3vkPbnAWHrNkaZrYofRJOxL02678yfnLLEoOOTGNNWq3v1EUDlYi99fkXWnS-D6WqHEMm-rU-7hgOVR5drw1kVeD6W4BJC9lo9ipzxLC1nOOD3AIcAnJsOznB_AiNFOdZzWtA2P1wG-ygTvo2WSGQd9kGMh0uJgfO9XMgUElCfCZ1PO4xBWcbS510_LTLgTczkLMHKZPsKCuv23OOwAXpQW"/>
+</div>
+<div class="flex-1 flex flex-col gap-xs z-10">
+<div class="flex items-center gap-md">
+<h1 class="font-display text-display text-on-surface">Nexus Technologies</h1>
+<span class="bg-primary-fixed text-on-primary-fixed px-sm py-[2px] rounded-full font-label-sm text-label-sm uppercase tracking-wider">Active</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Enterprise cloud infrastructure and security solutions provider. Key strategic partner since Q2 2023.</p>
+</div>
+<div class="flex gap-md z-10 mt-md md:mt-0 w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-xs bg-surface-container-high text-on-surface px-lg py-md rounded-xl font-label-md text-label-md hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+                        Email
+                    </button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-xs bg-primary text-on-primary px-lg py-md rounded-xl font-label-md text-label-md hover:opacity-90 shadow-[0_10px_20px_-10px_rgba(6,78,59,0.3)] transition-all">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+                        Edit
+                    </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid: Contact & Info -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Contact Info Card -->
+<div class="col-span-1 md:col-span-7 bg-surface-container-lowest rounded-[24px] p-lg md:p-xl shadow-[0_30px_60px_-20px_rgba(6,78,59,0.03)] flex flex-col gap-lg">
+<h2 class="font-h2 text-h2 text-on-surface">Contact Information</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-xl">
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Primary Contact</span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Sarah Jenkins</span>
+<span class="font-body-md text-body-md text-on-surface-variant">VP of Engineering</span>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Phone</span>
+<span class="font-body-lg text-body-lg text-on-surface">+1 (555) 284-9382</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Mobile, Direct</span>
+</div>
+</div>
+<div class="flex items-start gap-md sm:col-span-2">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Headquarters</span>
+<span class="font-body-lg text-body-lg text-on-surface">100 Innovation Drive, Suite 400</span>
+<span class="font-body-md text-body-md text-on-surface-variant">San Francisco, CA 94105</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Metrics Card -->
+<div class="col-span-1 md:col-span-5 bg-surface-container-low rounded-[24px] p-lg md:p-xl flex flex-col gap-lg relative overflow-hidden">
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-secondary-container blur-[80px] opacity-30 rounded-full pointer-events-none"></div>
+<h2 class="font-h2 text-h2 text-on-surface relative z-10">Account Value</h2>
+<div class="flex flex-col gap-xs relative z-10 mt-auto">
+<span class="font-label-md text-label-md text-on-surface-variant">Annual Recurring Revenue</span>
+<span class="font-display text-display text-primary">$124,500</span>
+<div class="flex items-center gap-xs text-primary-container mt-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="font-label-sm text-label-sm">+12% vs last year</span>
+</div>
+</div>
+<div class="w-full h-[1px] bg-outline-variant/30 my-sm relative z-10"></div>
+<div class="flex justify-between items-center relative z-10">
+<span class="font-body-md text-body-md text-on-surface-variant">Renewal Date</span>
+<span class="font-label-md text-label-md text-on-surface">Oct 15, 2024</span>
+</div>
+</div>
+</div>
+<!-- Segmented Control & Content Area -->
+<div class="flex flex-col gap-lg w-full mt-xl">
+<!-- Segmented Control -->
+<div class="w-full flex justify-center sticky top-24 z-30 py-sm bg-surface/80 backdrop-blur-md">
+<div class="flex bg-surface-container-highest rounded-full p-unit w-full max-w-md shadow-inner">
+<button class="flex-1 bg-surface-container-lowest text-on-surface rounded-full py-sm font-label-md text-label-md shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all">
+                        Activity History
+                    </button>
+<button class="flex-1 text-on-surface-variant hover:text-on-surface rounded-full py-sm font-label-md text-label-md transition-all">
+                        Terms &amp; Contracts
+                    </button>
+</div>
+</div>
+<!-- Activity List (Canvas) -->
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-xl py-lg">
+<!-- Timeline Item 1 -->
+<div class="flex gap-lg group">
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed-dim text-on-secondary-fixed flex items-center justify-center shrink-0 z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined fill-icon">video_camera_front</span>
+</div>
+<div class="w-[2px] h-full bg-surface-container-high rounded-full my-xs"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-[20px] p-lg shadow-[0_10px_30px_-15px_rgba(6,78,59,0.05)] border border-white/50 pb-xl">
+<div class="flex justify-between items-start mb-md">
+<h3 class="font-h2 text-h2 text-on-surface">Q3 Strategy Review</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 2, 10:00 AM</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md leading-relaxed">Discussed expansion of cloud storage tier. Sarah indicated budget approval is likely by end of month. Need to send revised proposal highlighting security features.</p>
+<div class="flex gap-sm">
+<span class="bg-surface-container px-md py-[4px] rounded-full font-label-sm text-label-sm text-on-surface">Proposal Sent</span>
+<span class="bg-surface-container px-md py-[4px] rounded-full font-label-sm text-label-sm text-on-surface">High Priority</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="flex gap-lg group">
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0 z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="w-[2px] h-full bg-surface-container-high rounded-full my-xs"></div>
+</div>
+<div class="flex-1 bg-transparent py-sm">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Security Addendum Requested</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sep 28</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Legal team requested modifications to liability clause. Sent to our legal counsel for review.</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="flex gap-lg group">
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0 z-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined fill-icon">handshake</span>
+</div>
+<div class="w-[2px] h-8 bg-transparent"></div>
+</div>
+<div class="flex-1 bg-transparent py-sm">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Contract Renewed</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 15, 2023</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">12-month agreement signed with a 5% tier upgrade.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

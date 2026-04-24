@@ -328,10 +328,7 @@ const NewActivityModal: React.FC<NewActivityModalProps> = ({
           </View>
         </ScrollView>
 
-        <View
-          className="flex-row gap-3 border-t pt-4"
-          style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
-        >
+        <View className="flex-row gap-3 pt-4">
           <AppButton
             label={t('common.cancel')}
             onPress={closeModal}

@@ -14,7 +14,14 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "open": "Open",
-    "select": "Select"
+    "select": "Select",
+    "pageSearchPlaceholder": "Search this page",
+    "searchNoResults": "No results found"
+  },
+  "errorScreen": {
+    "title": "Something went wrong",
+    "body": "The app safely stopped this screen. Try again or return to your main flow.",
+    "retry": "Try again"
   },
   "languages": {
     "title": "Language",
@@ -93,7 +100,12 @@
       "pendingTerms": "Pending terms",
       "todayActivities": "Today's activities"
     },
+    "termStatus": {
+      "onTrack": "On Track",
+      "needsAction": "Needs Action"
+    },
     "actions": {
+      "viewAll": "View All",
       "customers": "Customers",
       "terms": "Terms",
       "settings": "Settings"
@@ -110,10 +122,10 @@
       "title": "Notifications",
       "summary": "Permission: {{permission}}. Scheduled term reminders: {{count}}.",
       "summaryUnavailable": "The notification summary could not be loaded right now.",
-      "permissionAction": "Request notification permission",
+      "permissionAction": "Allow",
       "testInlineAction": "Try",
       "testAction": "Show test notification",
-      "syncAction": "Rebuild term reminders",
+      "syncAction": "Synchronize",
       "permissionResultTitle": "Notification permission result",
       "testSuccessTitle": "Test notification sent",
       "testSuccessBody": "If the device allows notifications, you should see it immediately.",
@@ -133,7 +145,7 @@
         "testTitle": "Mini CRM test notification",
         "testBody": "Notifications are working on this device.",
         "termTitle": "Term reminder for {{customer}}",
-        "termBody": "{{product}} due date: {{date}}"
+        "termBody": "{{product}} due date: {{date}} at {{time}}"
       }
     },
     "dataTitle": "Data export",
@@ -142,6 +154,9 @@
     "versionAction": "About the App",
     "versionInfoTitle": "About the app",
     "versionLabel": "Version {{version}}",
+    "aboutPrivacyLineOne": "Your customer records stay on this device.",
+    "aboutPrivacyLineTwo": "Backups only start when you explicitly download JSON or Excel.",
+    "aboutPrivacyLineThree": "No customer data is sent to a server by this app.",
     "appInfoTitle": "",
     "appInfoBody": "",
     "securityTitle": "",
@@ -194,11 +209,11 @@
   "customersScreen": {
     "subtitle": "Customer records will be listed here. The card view will be enriched in the next step.",
     "addButton": "New Customer",
-    "searchPlaceholder": "Search by customer, company, phone, or email",
+    "searchPlaceholder": "Search this page",
     "loading": "Loading customers...",
     "emptyTitle": "No customers yet",
     "emptyBody": "The first customer you add will appear here.",
-    "searchEmptyTitle": "No matches found",
+    "searchEmptyTitle": "No results found",
     "searchEmptyBody": "Try changing the search text and search again.",
     "errorTitle": "Customers could not be loaded"
   },
@@ -352,8 +367,13 @@
   },
   "termItem": {
     "markAsCompleted": "Mark as completed",
+    "detailTitle": "Term details",
     "expectedDateLabel": "Term due date",
     "orderDateLabel": "Order date",
+    "productLabel": "Product",
+    "companyLabel": "Customer",
+    "durationLabel": "Duration",
+    "statusLabel": "Status",
     "edit": "Edit term",
     "companyFallback": "No company info"
   },

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mini CRM - Customers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-surface-variant": "#404944",
+                            "on-secondary": "#ffffff",
+                            "tertiary": "#4f1f19",
+                            "on-background": "#191c1b",
+                            "on-secondary-fixed": "#100563",
+                            "surface": "#f8faf6",
+                            "tertiary-fixed-dim": "#ffb4a9",
+                            "on-surface": "#191c1b",
+                            "surface-bright": "#f8faf6",
+                            "on-tertiary": "#ffffff",
+                            "on-secondary-container": "#393689",
+                            "on-primary-fixed-variant": "#0b513d",
+                            "surface-variant": "#e1e3e0",
+                            "error-container": "#ffdad6",
+                            "on-tertiary-container": "#ea9e93",
+                            "on-primary-fixed": "#002117",
+                            "error": "#ba1a1a",
+                            "outline": "#707974",
+                            "secondary": "#5654a8",
+                            "surface-tint": "#2b6954",
+                            "surface-container-lowest": "#ffffff",
+                            "inverse-on-surface": "#eff1ee",
+                            "inverse-surface": "#2e312f",
+                            "secondary-container": "#a7a5ff",
+                            "surface-container-highest": "#e1e3e0",
+                            "surface-container": "#eceeeb",
+                            "surface-dim": "#d8dbd7",
+                            "tertiary-container": "#6b342d",
+                            "secondary-fixed": "#e2dfff",
+                            "on-tertiary-fixed-variant": "#6e372f",
+                            "inverse-primary": "#95d3ba",
+                            "on-error": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "primary-fixed": "#b0f0d6",
+                            "tertiary-fixed": "#ffdad5",
+                            "background": "#f8faf6",
+                            "on-tertiary-fixed": "#380d08",
+                            "on-primary-container": "#80bea6",
+                            "primary-fixed-dim": "#95d3ba",
+                            "surface-container-low": "#f2f4f1",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed-dim": "#c3c0ff",
+                            "on-secondary-fixed-variant": "#3e3c8f",
+                            "primary-container": "#064e3b",
+                            "primary": "#003527",
+                            "outline-variant": "#bfc9c3",
+                            "surface-container-high": "#e7e9e5"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "xs": "4px",
+                            "sm": "8px",
+                            "margin": "20px",
+                            "xl": "32px",
+                            "xxl": "48px",
+                            "md": "16px",
+                            "lg": "24px",
+                            "gutter": "16px",
+                            "unit": "4px"
+                    },
+                    "fontFamily": {
+                            "body-lg": ["Manrope"],
+                            "display": ["Manrope"],
+                            "body-md": ["Manrope"],
+                            "h2": ["Manrope"],
+                            "label-md": ["Manrope"],
+                            "h1": ["Manrope"],
+                            "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                            "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-[120px] md:pb-xl font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 bg-white/10 dark:bg-emerald-950/10 backdrop-blur-md flex justify-between items-center px-6 py-5 w-full">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-md text-label-md shadow-sm">
+                JD
+            </div>
+<!-- Desktop Nav Cluster -->
+<nav class="hidden md:flex gap-lg ml-xl">
+<a class="text-slate-400 dark:text-slate-500 hover:text-emerald-900 transition-colors font-label-md text-label-md" href="#">Home</a>
+<a class="text-emerald-900 dark:text-emerald-50 font-label-md text-label-md" href="#">Customers</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-emerald-900 transition-colors font-label-md text-label-md" href="#">Terms</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-emerald-900 transition-colors font-label-md text-label-md" href="#">Settings</a>
+</nav>
+</div>
+<div class="text-emerald-900 dark:text-emerald-50 font-bold tracking-widest text-xl">CRM</div>
+<button class="text-emerald-900 dark:text-emerald-50 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="max-w-6xl mx-auto px-margin pt-xl flex flex-col gap-xxl">
+<!-- Screen Header & Search -->
+<section class="flex flex-col gap-lg">
+<div class="flex items-end justify-between">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Customers</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage your premium accounts</p>
+</div>
+<div class="bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md px-sm py-xs rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">monitoring</span>
+                    248 Active
+                </div>
+</div>
+<!-- Elevated Search Input -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-lg top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface font-body-lg text-body-lg pl-[56px] pr-lg py-lg rounded-xl border border-outline-variant/30 focus:border-primary focus:ring-0 shadow-[0_10px_30px_-15px_rgba(0,53,39,0.06)] transition-all placeholder:text-outline-variant" placeholder="Search companies, contacts, or tags..." type="text"/>
+</div>
+</section>
+<!-- Customer Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Customer Card 1 -->
+<article class="bg-surface-container-lowest rounded-[24px] p-lg flex flex-col gap-lg shadow-[0_8px_30px_-10px_rgba(0,53,39,0.04)] hover:shadow-[0_20px_40px_-15px_rgba(0,53,39,0.08)] transition-all group cursor-pointer border border-transparent hover:border-surface-variant/50 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex items-start gap-md relative z-10">
+<div class="w-14 h-14 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-h2 text-h2 shrink-0">
+                        OP
+                    </div>
+<div class="flex flex-col pt-1">
+<h2 class="font-h2 text-h2 text-on-surface leading-tight">OmniCorp Partners</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Sarah Jenkins • VP Sales</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-sm relative z-10">
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-lg">Enterprise</span>
+<span class="bg-secondary-fixed/50 text-on-secondary-fixed-variant font-label-sm text-label-sm px-sm py-xs rounded-lg">Q3 Renewal</span>
+</div>
+<div class="flex justify-between items-center pt-md border-t border-outline-variant/20 relative z-10">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span class="font-label-sm text-label-sm">Active 2h ago</span>
+</div>
+<button class="text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Customer Card 2 -->
+<article class="bg-surface-container-lowest rounded-[24px] p-lg flex flex-col gap-lg shadow-[0_8px_30px_-10px_rgba(0,53,39,0.04)] hover:shadow-[0_20px_40px_-15px_rgba(0,53,39,0.08)] transition-all group cursor-pointer border border-transparent hover:border-surface-variant/50 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex items-start gap-md relative z-10">
+<div class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h2 text-h2 shrink-0">
+                        NV
+                    </div>
+<div class="flex flex-col pt-1">
+<h2 class="font-h2 text-h2 text-on-surface leading-tight">Nova Ventures</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Marcus Chen • Founder</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-sm relative z-10">
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-lg">Startup</span>
+<span class="bg-tertiary-fixed/50 text-on-tertiary-fixed-variant font-label-sm text-label-sm px-sm py-xs rounded-lg">Onboarding</span>
+</div>
+<div class="flex justify-between items-center pt-md border-t border-outline-variant/20 relative z-10">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span class="font-label-sm text-label-sm">Active 1d ago</span>
+</div>
+<button class="text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Customer Card 3 -->
+<article class="bg-surface-container-lowest rounded-[24px] p-lg flex flex-col gap-lg shadow-[0_8px_30px_-10px_rgba(0,53,39,0.04)] hover:shadow-[0_20px_40px_-15px_rgba(0,53,39,0.08)] transition-all group cursor-pointer border border-transparent hover:border-surface-variant/50 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex items-start gap-md relative z-10">
+<div class="w-14 h-14 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-h2 text-h2 shrink-0">
+                        AL
+                    </div>
+<div class="flex flex-col pt-1">
+<h2 class="font-h2 text-h2 text-on-surface leading-tight">Apex Logistics</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Elena Rodriguez • CEO</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-sm relative z-10">
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-lg">Mid-Market</span>
+</div>
+<div class="flex justify-between items-center pt-md border-t border-outline-variant/20 relative z-10">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span class="font-label-sm text-label-sm">Active 3d ago</span>
+</div>
+<button class="text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Customer Card 4 -->
+<article class="bg-surface-container-lowest rounded-[24px] p-lg flex flex-col gap-lg shadow-[0_8px_30px_-10px_rgba(0,53,39,0.04)] hover:shadow-[0_20px_40px_-15px_rgba(0,53,39,0.08)] transition-all group cursor-pointer border border-transparent hover:border-surface-variant/50 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex items-start gap-md relative z-10">
+<div class="w-14 h-14 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-h2 text-h2 shrink-0">
+                        BW
+                    </div>
+<div class="flex flex-col pt-1">
+<h2 class="font-h2 text-h2 text-on-surface leading-tight">BrightWave Media</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">David Kim • CMO</p>
+</div>
+</div>
+<div class="flex items-center gap-sm mt-sm relative z-10">
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-lg">Agency</span>
+</div>
+<div class="flex justify-between items-center pt-md border-t border-outline-variant/20 relative z-10">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span class="font-label-sm text-label-sm">Active 1w ago</span>
+</div>
+<button class="text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-10 pt-2 bg-white/70 dark:bg-emerald-900/70 backdrop-blur-2xl">
+<div class="fixed bottom-6 left-6 right-6 rounded-[32px] border border-white/20 dark:border-emerald-800/20 shadow-[0_30px_60px_-15px_rgba(6,78,59,0.12)] pointer-events-none absolute inset-0 z-0"></div>
+<!-- Home -->
+<a class="relative z-10 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-all" href="#">
+<span class="material-symbols-outlined">home_max</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Home</span>
+</a>
+<!-- Customers (Active) -->
+<a class="relative z-10 flex flex-col items-center justify-center bg-emerald-100/50 dark:bg-emerald-800/50 text-emerald-900 dark:text-emerald-100 rounded-3xl px-5 py-2 scale-95 transition-transform duration-200 tap-highlight-none" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Customers</span>
+</a>
+<!-- Terms -->
+<a class="relative z-10 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Terms</span>
+</a>
+<!-- Settings -->
+<a class="relative z-10 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-800/30 rounded-3xl transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope font-medium text-[11px] tracking-wide mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

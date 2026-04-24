@@ -29,11 +29,11 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
   const { colors, isDark } = useAppTheme();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const tabBarWidth = Math.min(width - 40, 360);
+  const tabBarWidth = Math.min(width - 32, 388);
   const tabBarLeft = (width - tabBarWidth) / 2;
-  const tabBarBackgroundColor = isDark ? colors.surfaceAlt : colors.surfaceAlt;
-  const activeTintColor = isDark ? colors.accent : colors.accent;
-  const inactiveTintColor = isDark ? colors.muted : '#7C8AA0';
+  const tabBarBackgroundColor = isDark ? colors.surfaceAlt : colors.surface;
+  const activeTintColor = colors.accent;
+  const inactiveTintColor = isDark ? colors.muted : '#94A3B8';
 
   return (
     <View
@@ -52,13 +52,13 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
           bottom: Math.max(insets.bottom, FLOATING_TAB_BAR.offset),
           width: tabBarWidth,
           height: FLOATING_TAB_BAR.height,
-          borderRadius: 24,
+          borderRadius: 36,
           backgroundColor: tabBarBackgroundColor,
-          paddingHorizontal: 8,
-          paddingVertical: 6,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
           flexDirection: 'row',
           alignItems: 'center',
-          ...SHADOWS.modalSheetStrong,
+          ...SHADOWS.softAlt,
         }}
       >
         {state.routes.map((route, index) => {
@@ -93,10 +93,6 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
           const tintColor = isFocused
             ? activeTintColor
             : inactiveTintColor;
-          const itemBackgroundColor = isFocused
-            ? (isDark ? colors.surfaceMuted : colors.surface)
-            : 'transparent';
-
           return (
             <TouchableOpacity
               key={route.key}
@@ -111,22 +107,22 @@ const FloatingTabBar: React.FC<BottomTabBarProps> = ({
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 2,
-                borderRadius: 18,
-                backgroundColor: itemBackgroundColor,
+                gap: 4,
+                borderRadius: 24,
+                backgroundColor: 'transparent',
                 marginHorizontal: 2,
-                paddingVertical: 6,
+                paddingVertical: 9,
               }}
             >
               <Ionicons
                 name={getTabIcon(route.name as keyof RootTabParamList, isFocused)}
-                size={22}
+                size={21}
                 color={tintColor}
               />
               <Text
                 style={{
                   fontSize: 11,
-                  fontWeight: '600',
+                  fontWeight: isFocused ? '700' : '500',
                   color: tintColor,
                 }}
               >

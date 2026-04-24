@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import type { GestureResponderEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { CONTROL_SIZES, SMART_PDF_DARK } from './theme';
+import { CONTROL_SIZES, useAppTheme } from './theme';
 
 type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'pill';
 
@@ -19,6 +19,7 @@ interface AppButtonProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   activeOpacity?: number;
+  iconColorOverride?: string;
 }
 
 const AppButton: React.FC<AppButtonProps> = ({
@@ -34,35 +35,36 @@ const AppButton: React.FC<AppButtonProps> = ({
   style,
   textStyle,
   activeOpacity = 0.85,
+  iconColorOverride,
 }) => {
-  const isDark = SMART_PDF_DARK.statusBar === 'light-content';
+  const { colors, isDark } = useAppTheme();
   const variantStyles: Record<ButtonVariant, ViewStyle> = {
     primary: {
-      backgroundColor: isDark ? SMART_PDF_DARK.accent : SMART_PDF_DARK.accent,
+      backgroundColor: colors.accent,
     },
     secondary: {
-      backgroundColor: isDark ? SMART_PDF_DARK.surfaceMuted : SMART_PDF_DARK.surfaceMuted,
+      backgroundColor: colors.surfaceAlt,
     },
     soft: {
-      backgroundColor: SMART_PDF_DARK.accentSurface,
+      backgroundColor: colors.accentSurface,
     },
     pill: {
-      backgroundColor: isDark ? SMART_PDF_DARK.surface : SMART_PDF_DARK.surfaceAlt,
+      backgroundColor: isDark ? colors.surface : 'rgba(255,255,255,0.78)',
     },
   };
 
   const labelColors: Record<ButtonVariant, string> = {
     primary: '#FFFFFF',
-    secondary: SMART_PDF_DARK.text,
-    soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
-    pill: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.text,
+    secondary: colors.text,
+    soft: isDark ? colors.text : colors.accentMuted,
+    pill: colors.text,
   };
 
   const iconColors: Record<ButtonVariant, string> = {
     primary: '#FFFFFF',
-    secondary: SMART_PDF_DARK.text,
-    soft: isDark ? SMART_PDF_DARK.text : SMART_PDF_DARK.accentMuted,
-    pill: isDark ? SMART_PDF_DARK.accent : SMART_PDF_DARK.text,
+    secondary: colors.text,
+    soft: isDark ? colors.text : colors.accentMuted,
+    pill: isDark ? colors.accent : colors.text,
   };
 
   const minHeight = compact ? CONTROL_SIZES.buttonCompact : CONTROL_SIZES.button;
@@ -70,7 +72,7 @@ const AppButton: React.FC<AppButtonProps> = ({
     ? 'rounded-full'
     : compact
       ? 'rounded-full px-4'
-      : 'rounded-[20px] px-4';
+      : 'rounded-full px-5';
   const iconSize = compact ? 16 : 18;
 
   return (
@@ -96,13 +98,13 @@ const AppButton: React.FC<AppButtonProps> = ({
             <Ionicons
               name={iconName}
               size={iconSize}
-              color={iconColors[variant]}
+              color={iconColorOverride ?? iconColors[variant]}
             />
           ) : null}
 
           {iconOnly ? null : (
             <Text
-              className="text-center text-[15px] font-semibold"
+              className="text-center text-[14px] font-semibold"
               style={[{ color: labelColors[variant] }, textStyle]}
             >
               {label}
@@ -113,7 +115,7 @@ const AppButton: React.FC<AppButtonProps> = ({
         {description && !iconOnly ? (
           <Text
             className="text-center text-sm leading-5"
-            style={{ color: SMART_PDF_DARK.muted }}
+            style={{ color: colors.muted }}
           >
             {description}
           </Text>

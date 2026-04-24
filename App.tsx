@@ -12,6 +12,7 @@ import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import './src/i18n';
+import AppErrorBoundary from './src/components/ui/AppErrorBoundary';
 import { AppThemeProvider } from './src/components/ui/theme';
 import {
   autoRequestNotificationPermission,
@@ -30,7 +31,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AppThemeProvider>
-        <AppNavigator />
+        <AppErrorBoundary>
+          <AppNavigator />
+        </AppErrorBoundary>
       </AppThemeProvider>
     </SafeAreaProvider>
   );

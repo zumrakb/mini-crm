@@ -122,7 +122,7 @@ const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
 
       <TouchableOpacity
         onPress={openPicker}
-        className="flex-row items-center justify-between rounded-[20px] px-4 py-3"
+        className="flex-row items-center justify-between rounded-[22px] px-4 py-3"
         style={uiStyles.inputBase}
         activeOpacity={0.85}
       >
@@ -185,10 +185,7 @@ const AppDateField = forwardRef<AppDateFieldHandle, AppDateFieldProps>(({
               />
             </View>
 
-            <View
-              className="flex-row gap-3 border-t pt-4"
-              style={{ borderTopColor: 'rgba(148, 163, 184, 0.16)' }}
-            >
+            <View className="flex-row gap-3 pt-4">
               <AppButton
                 label={t('common.cancel')}
                 onPress={() => setIsPickerVisible(false)}

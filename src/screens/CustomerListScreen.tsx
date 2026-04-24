@@ -12,7 +12,11 @@ import CustomerCard from '../components/customer/CustomerCard';
 import CustomerSearchBar from '../components/customer/CustomerSearchBar';
 import AppButton from '../components/ui/AppButton';
 import AppScreen from '../components/ui/AppScreen';
-import PageHeader from '../components/ui/PageHeader';
+import AppTopBar, {
+  AvatarCircle,
+  BrandWordmark,
+} from '../components/ui/AppTopBar';
+import EmptyState from '../components/ui/EmptyState';
 import SurfaceCard from '../components/ui/SurfaceCard';
 import { FLOATING_TAB_BAR, SMART_PDF_DARK } from '../components/ui/theme';
 import NewCustomerModal from '../modals/NewCustomerModal';
@@ -67,42 +71,25 @@ const CustomerListScreen: React.FC = () => {
     [filteredCustomers, getLastByCustomer],
   );
 
-  const visibleCustomerCount = customerCards.length;
-
   const listHeader = (
-    <View className="px-6 pt-6">
-      <View className="flex-col gap-6 pb-6">
-        <PageHeader
-          title={t('common.customers')}
-          badge={
-            <View
-              className="rounded-full px-3 py-1.5"
-              style={{
-                backgroundColor: SMART_PDF_DARK.accentSurface,
-              }}
-            >
-              <Text
-                className="text-xs font-semibold tracking-[0.8px]"
-                style={{
-                  color:
-                    SMART_PDF_DARK.statusBar === 'light-content'
-                      ? SMART_PDF_DARK.accent
-                      : SMART_PDF_DARK.accentMuted,
-                }}
-              >
-                {visibleCustomerCount}
-              </Text>
-            </View>
-          }
-          trailing={
+    <View className="px-5 pb-5 pt-6">
+      <View className="flex-col gap-5">
+        <AppTopBar
+          left={(
+            <>
+              <AvatarCircle image="profile" size={34} />
+              <BrandWordmark label={t('common.customers')} />
+            </>
+          )}
+          right={(
             <AppButton
               label={t('customersScreen.addButton')}
               onPress={() => setIsModalVisible(true)}
-              variant="primary"
+              variant="pill"
               compact
               iconName="add"
             />
-          }
+          )}
         />
 
         <CustomerSearchBar
@@ -115,22 +102,6 @@ const CustomerListScreen: React.FC = () => {
     </View>
   );
 
-  const loadingState = (
-    <View className="px-6 pt-6">
-      <SurfaceCard tone="soft">
-        <View className="flex-col items-center gap-3">
-          <ActivityIndicator color={SMART_PDF_DARK.accent} />
-          <Text
-            className="text-sm"
-            style={{ color: SMART_PDF_DARK.muted }}
-          >
-            {t('customersScreen.loading')}
-          </Text>
-        </View>
-      </SurfaceCard>
-    </View>
-  );
-
   return (
     <AppScreen>
       <NewCustomerModal
@@ -138,51 +109,57 @@ const CustomerListScreen: React.FC = () => {
         onClose={() => setIsModalVisible(false)}
       />
 
-      {isLoading && customers.length === 0 ? (
-        <View className="flex-1">
-          {listHeader}
-          {loadingState}
-        </View>
-      ) : (
-        <FlatList
-          data={customerCards}
-          keyExtractor={item => item.customer.id.toString()}
-          renderItem={({ item }) => (
-            <View className="px-6">
-              <CustomerCard
-                customer={item.customer}
-                lastActivity={item.lastActivity}
-                onPress={() =>
-                  navigation.navigate('CustomerDetail', {
-                    customerId: item.customer.id,
-                  })
-                }
-              />
-            </View>
-          )}
-          contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
-          showsVerticalScrollIndicator={false}
-          onRefresh={load}
-          refreshing={isLoading}
-          ListHeaderComponent={listHeader}
-          ItemSeparatorComponent={() => <View className="h-5" />}
-          ListEmptyComponent={
-            <View className="px-6 pt-4">
-              {error ? (
+      <FlatList
+        data={customerCards}
+        keyExtractor={item => item.customer.id.toString()}
+        renderItem={({ item }) => (
+          <View className="px-5">
+            <CustomerCard
+              customer={item.customer}
+              lastActivity={item.lastActivity}
+              onPress={() =>
+                navigation.navigate('CustomerDetail', {
+                  customerId: item.customer.id,
+                })
+              }
+            />
+          </View>
+        )}
+        contentContainerStyle={{ paddingBottom: FLOATING_TAB_BAR.contentPaddingBottom }}
+        showsVerticalScrollIndicator={false}
+        onRefresh={load}
+        refreshing={isLoading}
+        ListHeaderComponent={listHeader}
+        ItemSeparatorComponent={() => <View className="h-4" />}
+        ListEmptyComponent={
+          <View className="px-5 pt-2">
+            {isLoading ? (
+              <SurfaceCard tone="soft">
+                <View className="flex-col items-center gap-3 py-6">
+                  <ActivityIndicator color={SMART_PDF_DARK.accent} />
+                  <Text className="text-sm" style={{ color: SMART_PDF_DARK.muted }}>
+                    {t('customersScreen.loading')}
+                  </Text>
+                </View>
+              </SurfaceCard>
+            ) : error ? (
+              <SurfaceCard tone="soft">
                 <Text className="text-sm leading-6" style={{ color: SMART_PDF_DARK.muted }}>
                   {error}
                 </Text>
-              ) : (
-                <Text className="text-sm leading-6" style={{ color: SMART_PDF_DARK.muted }}>
-                  {searchQuery.trim()
-                    ? t('customersScreen.searchEmptyBody')
-                    : t('customersScreen.emptyBody')}
-                </Text>
-              )}
-            </View>
-          }
-        />
-      )}
+              </SurfaceCard>
+            ) : (
+              <EmptyState
+                title={
+                  searchQuery.trim()
+                    ? t('common.searchNoResults')
+                    : t('customersScreen.emptyTitle')
+                }
+              />
+            )}
+          </View>
+        }
+      />
     </AppScreen>
   );
 };
