@@ -22,6 +22,38 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 jest.mock('react-native-localize', () => ({
   getLocales: () => [{ languageCode: 'en' }],
 }));
+jest.mock('@notifee/react-native', () => {
+  const AuthorizationStatus = {
+    NOT_DETERMINED: 0,
+    DENIED: 1,
+    AUTHORIZED: 2,
+    PROVISIONAL: 3,
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      createChannel: jest.fn(async () => 'term-reminders'),
+      getTriggerNotificationIds: jest.fn(async () => []),
+      cancelNotification: jest.fn(async () => undefined),
+      requestPermission: jest.fn(async () => ({
+        authorizationStatus: AuthorizationStatus.AUTHORIZED,
+      })),
+      getNotificationSettings: jest.fn(async () => ({
+        authorizationStatus: AuthorizationStatus.AUTHORIZED,
+      })),
+      displayNotification: jest.fn(async () => undefined),
+      createTriggerNotification: jest.fn(async () => undefined),
+    },
+    AndroidImportance: {
+      HIGH: 4,
+    },
+    AuthorizationStatus,
+    TriggerType: {
+      TIMESTAMP: 0,
+    },
+  };
+});
 jest.mock('../global.css', () => ({}), { virtual: true });
 jest.mock('../src/navigation/AppNavigator', () => () => null);
 jest.mock('../src/components/ui/theme', () => ({
