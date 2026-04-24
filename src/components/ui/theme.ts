@@ -31,47 +31,59 @@ export const darkModeColors = {
   danger: '#EF4444',
   dangerSurface: '#331415',
   success: '#10B981',
+  successSurface: '#12392C',
+  secondary: '#8E8CF6',
+  secondarySurface: '#29285D',
+  secondaryText: '#D9D7FF',
+  tertiarySurface: '#4E2721',
+  tertiaryText: '#FFD9D3',
   shadow: '#02070B',
   statusBar: 'light-content' as StatusBarStyle,
 };
 
 export const lightModeColors = {
-  accent: '#8B6F5A',
-  accentMuted: '#6D5443',
-  accentSurface: '#EEE4DA',
-  background: '#F5F1EA',
-  surface: '#FCFAF7',
-  surfaceAlt: '#F2E9DE',
-  surfaceMuted: '#E9DED1',
-  input: '#F9F5EF',
-  text: '#4A4038',
-  muted: '#7D7065',
-  divider: '#E5D8C8',
-  overlay: 'rgba(245, 241, 234, 0.94)',
-  backdrop: 'rgba(36, 49, 58, 0.18)',
-  iconButton: '#EADFD2',
-  danger: '#DC2626',
-  dangerSurface: '#FEF2F2',
-  success: '#059669',
-  shadow: '#9F8C78',
+  accent: '#4F8D78',
+  accentMuted: '#6CA58F',
+  accentSurface: '#E4F4EC',
+  background: '#F7FAF7',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F1F5F1',
+  surfaceMuted: '#EBF0EB',
+  input: '#FFFFFF',
+  text: '#191C1B',
+  muted: '#76807B',
+  divider: '#E3E8E3',
+  overlay: 'rgba(247, 250, 247, 0.94)',
+  backdrop: 'rgba(25, 28, 27, 0.16)',
+  iconButton: '#F1F5F1',
+  danger: '#BA1A1A',
+  dangerSurface: '#FFDAD6',
+  success: '#5D9B84',
+  successSurface: '#E2F3EA',
+  secondary: '#7FAF9A',
+  secondarySurface: '#EAF5EF',
+  secondaryText: '#5F8B77',
+  tertiarySurface: '#EFF7F1',
+  tertiaryText: '#6D8A79',
+  shadow: '#5F8B77',
   statusBar: 'dark-content' as StatusBarStyle,
 };
 
 type AppColors = typeof darkModeColors;
 
 export const CONTROL_SIZES = {
-  button: 40,
-  buttonCompact: 36,
-  input: 48,
-  search: 52,
-  textAreaMin: 96,
+  button: 44,
+  buttonCompact: 40,
+  input: 52,
+  search: 46,
+  textAreaMin: 112,
 } as const;
 
 export const FLOATING_TAB_BAR = {
-  height: 64,
-  offset: 16,
+  height: 76,
+  offset: 18,
   widthPercent: '84%',
-  contentPaddingBottom: 124,
+  contentPaddingBottom: 142,
 } as const;
 
 export const FEEDBACK_COLORS = {
@@ -79,7 +91,7 @@ export const FEEDBACK_COLORS = {
   errorTextLight: '#B91C1C',
 } as const;
 
-export const TEXT_INPUT_CLASSNAME = 'rounded-[20px] px-4 py-3 text-[15px]';
+export const TEXT_INPUT_CLASSNAME = 'rounded-[22px] px-4 py-3 text-[15px]';
 
 function buildShadows(colors: AppColors) {
   const isDark = colors.statusBar === 'light-content';
@@ -167,6 +179,8 @@ function getUiStyleValue(key: string) {
     case 'mutedSurface':
       return {
         backgroundColor: activeColors.surfaceMuted,
+        borderWidth: 0,
+        borderColor: 'transparent',
       };
     case 'accentSurface':
       return {

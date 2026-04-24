@@ -108,7 +108,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
 
   const sheetContent = (
     <Animated.View
-      className="rounded-t-[28px]"
+      className="rounded-t-[32px]"
       style={[
         uiStyles.modalSheetCompact,
         {
@@ -126,7 +126,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         style={[
           {
             backgroundColor: SMART_PDF_DARK.background,
-            paddingBottom: Math.max(insets.bottom, 16) + 12,
+            paddingBottom: Math.max(insets.bottom, 16) + 14,
           },
         ]}
       >
@@ -136,7 +136,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
           className="mb-4 self-center"
         >
           <View
-            className="h-1.5 w-12 rounded-full"
+            className="h-1.5 w-14 rounded-full"
             style={uiStyles.modalHandle}
           />
         </Pressable>

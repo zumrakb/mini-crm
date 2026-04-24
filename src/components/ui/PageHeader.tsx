@@ -18,14 +18,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   badge,
 }) => {
   return (
-    <View className="flex-col gap-4">
+    <View className="flex-col gap-3">
       {leading ? <View className="self-start">{leading}</View> : null}
 
       <View className="flex-row items-start justify-between gap-4">
-        <View className="flex-1 flex-col gap-2">
+        <View className="flex-1 flex-col gap-1.5">
           <View className="flex-row flex-wrap items-center gap-3">
             <Text
-              className="flex-shrink text-[24px] font-semibold tracking-[-0.5px]"
+              className="flex-shrink text-[26px] font-bold tracking-[-0.8px]"
               style={{ color: SMART_PDF_DARK.text }}
             >
               {title}
@@ -35,7 +35,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
           {subtitle ? (
             <Text
-              className="text-[13px] leading-5"
+              className="text-[14px] leading-6"
               style={{ color: SMART_PDF_DARK.muted }}
             >
               {subtitle}
