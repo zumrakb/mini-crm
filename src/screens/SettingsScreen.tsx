@@ -30,28 +30,40 @@ import {
   type BackupExportFile,
 } from '../utils/backupUtils';
 import {
+  appendDemoData,
+  getDemoDataSummary,
+  removeDemoData,
+  type DemoDataSummary,
+} from '../utils/demoData';
+import {
   getNotificationDebugSummary,
   requestNotificationPermission,
   showTestNotification,
   syncTermReminders,
   type NotificationDebugSummary,
 } from '../services/termNotifications';
+import { useCustomerStore } from '../store/customer.store';
+import { useTermStore } from '../store/term.store';
 
 const APP_VERSION = '0.0.1';
 
-type ExportKind = 'json' | 'excel' | null;
+type DataActionKind = 'json' | 'excel' | 'demo' | 'demoRemove' | null;
 
 const SettingsScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { preference, setPreference } = useAppTheme();
   const [isJsonBusy, setIsJsonBusy] = useState(false);
   const [isExcelBusy, setIsExcelBusy] = useState(false);
+  const [isDemoBusy, setIsDemoBusy] = useState(false);
+  const [demoSummary, setDemoSummary] = useState<DemoDataSummary | null>(null);
   const [isNotificationBusy, setIsNotificationBusy] = useState(false);
   const [notificationSummary, setNotificationSummary] = useState<NotificationDebugSummary | null>(null);
-  const [pendingExport, setPendingExport] = useState<ExportKind>(null);
+  const [pendingDataAction, setPendingDataAction] = useState<DataActionKind>(null);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const loadCustomers = useCustomerStore(state => state.load);
+  const loadTerms = useTermStore(state => state.load);
 
   const currentLanguage = (i18n.language || 'en').slice(0, 2);
   const languageButtons = [
@@ -67,6 +79,32 @@ const SettingsScreen: React.FC = () => {
     { code: 'dark', label: t('settingsDashboard.themeOptions.dark'), iconName: 'moon-outline' },
   ];
   const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase('tr-TR');
+  const hasDemoData = demoSummary?.hasDemoData ?? false;
+  const isDataActionBusy = isJsonBusy || isExcelBusy || isDemoBusy;
+  const demoPrimaryActionLabel = isDemoBusy && pendingDataAction === 'demo'
+    ? t('settingsDashboard.demoWorkingAction')
+    : hasDemoData
+      ? t('settingsDashboard.demoRefreshAction')
+      : t('settingsDashboard.demoShowAction');
+  const demoRemoveActionLabel = isDemoBusy && pendingDataAction === 'demoRemove'
+    ? t('settingsDashboard.demoRemoveWorkingAction')
+    : t('settingsDashboard.demoRemoveAction');
+  const demoStatusText = hasDemoData && demoSummary
+    ? t('settingsDashboard.demoActiveSummary', {
+      customers: demoSummary.customers,
+      terms: demoSummary.terms,
+      activities: demoSummary.activities,
+    })
+    : t('settingsDashboard.demoEmptySummary');
+  const confirmDataActionLabel = pendingDataAction === 'demo'
+    ? t('settingsDashboard.confirmDemoAction')
+    : pendingDataAction === 'demoRemove'
+      ? t('settingsDashboard.confirmDemoRemoveAction')
+      : t('settingsDashboard.confirmExportAction');
+
+  const refreshDemoSummary = useCallback(() => {
+    setDemoSummary(getDemoDataSummary());
+  }, []);
 
   const refreshNotificationSummary = useCallback(async () => {
     try {
@@ -142,15 +180,18 @@ const SettingsScreen: React.FC = () => {
 
   useEffect(() => {
     refreshNotificationSummary().catch(() => undefined);
-  }, [refreshNotificationSummary]);
+    refreshDemoSummary();
+  }, [refreshDemoSummary, refreshNotificationSummary]);
 
   useFocusEffect(
     useCallback(() => {
+      refreshDemoSummary();
+
       return () => {
         setIsSearchVisible(false);
         setSearchQuery('');
       };
-    }, []),
+    }, [refreshDemoSummary]),
   );
 
   const deliverFile = useCallback(async (file: BackupExportFile) => {
@@ -188,7 +229,7 @@ const SettingsScreen: React.FC = () => {
       );
     } finally {
       setIsJsonBusy(false);
-      setPendingExport(null);
+      setPendingDataAction(null);
     }
   }, [deliverFile, t]);
 
@@ -205,20 +246,82 @@ const SettingsScreen: React.FC = () => {
       );
     } finally {
       setIsExcelBusy(false);
-      setPendingExport(null);
+      setPendingDataAction(null);
     }
   }, [deliverFile, t]);
 
-  const handleConfirmExport = useCallback(() => {
-    if (pendingExport === 'json') {
+  const handleDemoImport = useCallback(async () => {
+    setIsDemoBusy(true);
+
+    try {
+      appendDemoData();
+      loadCustomers();
+      loadTerms();
+      refreshDemoSummary();
+      await syncTermReminders();
+      await refreshNotificationSummary();
+
+      Alert.alert(
+        t('settingsDashboard.demoImportSuccessTitle'),
+        t('settingsDashboard.demoImportSuccessBody'),
+      );
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.demoImportErrorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.demoImportErrorBody'),
+      );
+    } finally {
+      setIsDemoBusy(false);
+      setPendingDataAction(null);
+    }
+  }, [loadCustomers, loadTerms, refreshDemoSummary, refreshNotificationSummary, t]);
+
+  const handleDemoRemove = useCallback(async () => {
+    setIsDemoBusy(true);
+
+    try {
+      removeDemoData();
+      loadCustomers();
+      loadTerms();
+      refreshDemoSummary();
+      await syncTermReminders();
+      await refreshNotificationSummary();
+
+      Alert.alert(
+        t('settingsDashboard.demoRemoveSuccessTitle'),
+        t('settingsDashboard.demoRemoveSuccessBody'),
+      );
+    } catch (error) {
+      Alert.alert(
+        t('settingsDashboard.demoRemoveErrorTitle'),
+        error instanceof Error ? error.message : t('settingsDashboard.demoRemoveErrorBody'),
+      );
+    } finally {
+      setIsDemoBusy(false);
+      setPendingDataAction(null);
+    }
+  }, [loadCustomers, loadTerms, refreshDemoSummary, refreshNotificationSummary, t]);
+
+  const handleConfirmDataAction = useCallback(() => {
+    if (pendingDataAction === 'json') {
       handleJsonDownload().catch(() => undefined);
       return;
     }
 
-    if (pendingExport === 'excel') {
+    if (pendingDataAction === 'excel') {
       handleExcelExport().catch(() => undefined);
+      return;
     }
-  }, [handleExcelExport, handleJsonDownload, pendingExport]);
+
+    if (pendingDataAction === 'demo') {
+      handleDemoImport().catch(() => undefined);
+      return;
+    }
+
+    if (pendingDataAction === 'demoRemove') {
+      handleDemoRemove().catch(() => undefined);
+    }
+  }, [handleDemoImport, handleDemoRemove, handleExcelExport, handleJsonDownload, pendingDataAction]);
 
   const showThemeSection = !normalizedSearchQuery || [
     t('settingsDashboard.themeTitle'),
@@ -240,6 +343,10 @@ const SettingsScreen: React.FC = () => {
     t('settingsDashboard.dataTitle'),
     t('settingsDashboard.shortJsonAction'),
     t('settingsDashboard.shortExcelAction'),
+    t('settingsDashboard.demoImportAction'),
+    t('settingsDashboard.demoShowAction'),
+    t('settingsDashboard.demoRefreshAction'),
+    t('settingsDashboard.demoRemoveAction'),
   ].join(' ').toLocaleLowerCase('tr-TR').includes(normalizedSearchQuery);
 
   const showAboutAction = !normalizedSearchQuery || [
@@ -257,26 +364,36 @@ const SettingsScreen: React.FC = () => {
   return (
     <AppScreen>
       <BottomSheetModal
-        visible={pendingExport !== null}
-        onClose={() => setPendingExport(null)}
+        visible={pendingDataAction !== null}
+        onClose={() => {
+          if (!isDataActionBusy) {
+            setPendingDataAction(null);
+          }
+        }}
       >
         <View className="flex-col gap-4">
           <Text className="text-[22px] font-semibold tracking-[-0.4px]" style={uiStyles.titleText}>
-            {pendingExport === 'json'
+            {pendingDataAction === 'json'
               ? t('settingsDashboard.confirmJsonBody')
-              : t('settingsDashboard.confirmExcelBody')}
+              : pendingDataAction === 'excel'
+                ? t('settingsDashboard.confirmExcelBody')
+                : pendingDataAction === 'demoRemove'
+                  ? t('settingsDashboard.confirmDemoRemoveBody')
+                  : t('settingsDashboard.confirmDemoBody')}
           </Text>
 
           <View className="flex-row gap-3">
             <AppButton
               label={t('common.cancel')}
-              onPress={() => setPendingExport(null)}
+              onPress={() => setPendingDataAction(null)}
+              disabled={isDataActionBusy}
               variant="secondary"
               style={{ flex: 1 }}
             />
             <AppButton
-              label={t('settingsDashboard.confirmExportAction')}
-              onPress={handleConfirmExport}
+              label={confirmDataActionLabel}
+              onPress={handleConfirmDataAction}
+              disabled={isDataActionBusy}
               variant="primary"
               style={{ flex: 1 }}
             />
@@ -469,10 +586,30 @@ const SettingsScreen: React.FC = () => {
                   {t('settingsDashboard.dataTitle')}
                 </Text>
 
+                <Text className="text-[13px] leading-5" style={uiStyles.bodyText}>
+                  {demoStatusText}
+                </Text>
+
+                <AppButton
+                  label={demoPrimaryActionLabel}
+                  onPress={() => setPendingDataAction('demo')}
+                  disabled={isDemoBusy}
+                  variant="primary"
+                  iconName={hasDemoData ? 'refresh-outline' : 'sparkles-outline'}
+                />
+
+                <AppButton
+                  label={demoRemoveActionLabel}
+                  onPress={() => setPendingDataAction('demoRemove')}
+                  disabled={isDemoBusy || !hasDemoData}
+                  variant="secondary"
+                  iconName="trash-outline"
+                />
+
                 <View className="flex-row gap-2">
                   <AppButton
                     label={t('settingsDashboard.shortJsonAction')}
-                    onPress={() => setPendingExport('json')}
+                    onPress={() => setPendingDataAction('json')}
                     disabled={isJsonBusy}
                     variant="secondary"
                     iconName="download-outline"
@@ -481,7 +618,7 @@ const SettingsScreen: React.FC = () => {
 
                   <AppButton
                     label={t('settingsDashboard.shortExcelAction')}
-                    onPress={() => setPendingExport('excel')}
+                    onPress={() => setPendingDataAction('excel')}
                     disabled={isExcelBusy}
                     variant="soft"
                     iconName="download-outline"
