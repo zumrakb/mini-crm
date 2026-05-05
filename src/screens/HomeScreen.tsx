@@ -144,10 +144,6 @@ const HomeScreen: React.FC = () => {
   }, [loadCustomers, loadTerms]);
 
   const refreshMonthActivityDates = useCallback((monthKey: string) => {
-    if (Object.prototype.hasOwnProperty.call(monthActivityDatesByMonth, monthKey)) {
-      return;
-    }
-
     const [year, month] = monthKey.split('-').map(Number);
     const monthStart = parseISODate(formatMonthDate(year, month));
     const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 12, 0, 0, 0);
@@ -160,7 +156,7 @@ const HomeScreen: React.FC = () => {
       ...current,
       [monthKey]: nextDates,
     }));
-  }, [monthActivityDatesByMonth]);
+  }, []);
 
   const handleVisibleMonthChange = useCallback((monthData: DateData) => {
     const nextVisibleMonth = formatMonthKey(monthData.year, monthData.month);
