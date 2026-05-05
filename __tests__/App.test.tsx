@@ -6,6 +6,26 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 
 jest.mock('react-native-quick-sqlite', () => ({
+  QuickSQLite: {
+    open: jest.fn(),
+    close: jest.fn(),
+    delete: jest.fn(),
+    attach: jest.fn(),
+    detach: jest.fn(),
+    transaction: jest.fn(),
+    execute: jest.fn(() => ({
+      rows: { _array: [] },
+      insertId: 1,
+    })),
+    executeAsync: jest.fn(async () => ({
+      rows: { _array: [] },
+      insertId: 1,
+    })),
+    executeBatch: jest.fn(() => ({})),
+    executeBatchAsync: jest.fn(async () => ({})),
+    loadFile: jest.fn(() => ({})),
+    loadFileAsync: jest.fn(async () => ({})),
+  },
   open: () => ({
     execute: () => ({
       rows: { _array: [] },
